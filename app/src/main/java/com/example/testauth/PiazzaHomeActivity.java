@@ -17,6 +17,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.testauth.databinding.ActivityPiazzaHomeBinding;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class PiazzaHomeActivity extends AppCompatActivity {
 
@@ -34,8 +35,8 @@ public class PiazzaHomeActivity extends AppCompatActivity {
         binding.appBarPiazzaHome.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                FirebaseAuth.getInstance().signOut();
+                showAuth();
             }
         });
         DrawerLayout drawer = binding.drawerLayout;
@@ -43,7 +44,7 @@ public class PiazzaHomeActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
+                R.id.nav_home, R.id.nav_Treballadors, R.id.nav_Historial)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_piazza_home);
@@ -68,4 +69,11 @@ public class PiazzaHomeActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
+    private void showAuth () {
+
+        Intent intent = new Intent(this, PiazzaHomeActivity.class);
+        startActivity(intent);
+    }
+
 }

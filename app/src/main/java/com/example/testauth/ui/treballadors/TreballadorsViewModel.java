@@ -1,16 +1,16 @@
-package com.example.testauth.ui.slideshow;
+package com.example.testauth.ui.treballadors;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class SlideshowViewModel extends ViewModel {
+public class TreballadorsViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public SlideshowViewModel() {
+    public TreballadorsViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is slideshow fragment");
+        mText.setValue("This is Treballadors fragment");
     }
 
     public LiveData<String> getText() {

@@ -12,14 +12,14 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.example.testauth.ui.gallery.GalleryFragment"
+        android:id="@+id/nav_Treballadors"
+        android:name="com.example.testauth.ui.treballadors.TreballadorsFragment"
         android:label="@string/menu_treballadors"
-        tools:layout="@layout/fragment_gallery" />
+        tools:layout="@layout/fragment_treballadors" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.example.testauth.ui.slideshow.SlideshowFragment"
+        android:id="@+id/nav_Historial"
+        android:name="com.example.testauth.ui.historial.HistorialFragment"
         android:label="@string/menu_historial"
-        tools:layout="@layout/fragment_slideshow" />
+        tools:layout="@layout/fragment_historial" />
 </navigation>
