@@ -72,8 +72,12 @@ public class EmployeeActivity extends AppCompatActivity {
             horaEntrada = calendarEntrada.get(Calendar.HOUR_OF_DAY); // gets hour in 24h format
             minutEntrada = calendarEntrada.get(Calendar.MINUTE);        // gets hour in 12h format
 
-            return horaEntrada + ":" + minutEntrada;
+            if (minutEntrada < 10) {
+                return horaEntrada + ":0" + minutEntrada;
+            } else {
+                return horaEntrada + ":" + minutEntrada;
 
+            }
         } else {
 
             sortida = new Date();   // given date
@@ -83,7 +87,12 @@ public class EmployeeActivity extends AppCompatActivity {
             horaSortida = calendarSortida.get(Calendar.HOUR_OF_DAY); // gets hour in 24h format
             minutSortida = calendarSortida.get(Calendar.MINUTE);        // gets hour in 12h format
 
-            return horaSortida + ":" + minutSortida;
+            if (minutSortida < 10) {
+                return horaSortida + ":0" + minutEntrada;
+            } else {
+                return horaSortida + ":" + minutEntrada;
+
+            }
 
         }
 
