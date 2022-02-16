@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -70,9 +71,8 @@ public class EmployeeActivity extends AppCompatActivity {
 
             horaEntrada = calendarEntrada.get(Calendar.HOUR_OF_DAY); // gets hour in 24h format
             minutEntrada = calendarEntrada.get(Calendar.MINUTE);        // gets hour in 12h format
-            segonsEntrada = calendarEntrada.get(Calendar.SECOND);       // gets month number, NOTE this is zero based!
 
-            return horaEntrada + ":" + minutEntrada + ":" +segonsEntrada;
+            return horaEntrada + ":" + minutEntrada;
 
         } else {
 
@@ -82,9 +82,8 @@ public class EmployeeActivity extends AppCompatActivity {
 
             horaSortida = calendarSortida.get(Calendar.HOUR_OF_DAY); // gets hour in 24h format
             minutSortida = calendarSortida.get(Calendar.MINUTE);        // gets hour in 12h format
-            segonsSortida = calendarSortida.get(Calendar.SECOND);       // gets month number, NOTE this is zero based!
 
-            return horaSortida + ":" + minutSortida + ":" +segonsSortida;
+            return horaSortida + ":" + minutSortida;
 
         }
 
@@ -92,22 +91,23 @@ public class EmployeeActivity extends AppCompatActivity {
 
     public void iniciarJornada (View view) {
         dataEntrada = getData(true);
-        iniciarTextView.setText("Hora d'entrada: " + dataEntrada);
+        iniciarTextView.setText(dataEntrada);
+        iniciarTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, 20);
         iniciarJornadaBtn.setEnabled(false);
     }
 
     public void acabarJornada (View view) {
         dataSortida = getData(false);
-        acabarTextView.setText("Hora de sortida: " + dataSortida);
+        acabarTextView.setText(dataSortida);
         acabarJornadaBtn.setEnabled(false);
 
         calcularHores();
     }
 
     public void resetTime (View view) {
-        iniciarTextView.setText("Hora d'entrada: ");
-        acabarTextView.setText("Hora de sortida: ");
-        resultat.setText("Hores totals: ");
+        iniciarTextView.setText("--:--");
+        acabarTextView.setText("--:--");
+        resultat.setText("--:--");
 
         iniciarJornadaBtn.setEnabled(true);
         acabarJornadaBtn.setEnabled(true);
@@ -120,9 +120,8 @@ public class EmployeeActivity extends AppCompatActivity {
         long dia = l/(24*60*60*1000);
         long horasTotals = (1/(60*60*1000)-dia*24);
         long minutsTotals = ((l/(60*1000))-dia*24*60-horasTotals*60);
-        long segonsTotals = (l/1000-dia*24*60*60-horasTotals*60*60-minutsTotals*60);
 
-        ((TextView) findViewById(R.id.resultat)).setText(new StringBuilder().append("Total: ").append(horasTotals + ":" + minutsTotals + ":" + segonsTotals).toString());
+        ((TextView) findViewById(R.id.resultat)).setText(new StringBuilder().append("Total: ").append(horasTotals + ":" + minutsTotals).toString());
     }
 
     public void showAuth() {

@@ -23,14 +23,16 @@
 
     <include layout="@layout/content_piazza_home" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <!--<com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="16dp"
+        android:contentDescription="@string/exit"
+        android:src="?attr/actionModeCloseDrawable"
         app:backgroundTint="#FFFFFF"
-        app:srcCompat="@drawable/googleg_standard_color_18" />
+        tools:ignore="SpeakableTextPresentCheck" />-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

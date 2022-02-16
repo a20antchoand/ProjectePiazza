@@ -2,9 +2,11 @@ package com.example.testauth;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -35,14 +37,7 @@ public class PiazzaHomeActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarPiazzaHome.toolbar);
-        binding.appBarPiazzaHome.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                FirebaseAuth.getInstance().signOut();
-                showAuth();
-            }
-        });
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         // Passing each menu ID as a set of Ids because each
@@ -56,9 +51,11 @@ public class PiazzaHomeActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
+
         NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
         View headerView = navView.getHeaderView(0);
         ((TextView) headerView.findViewById(R.id.emailTextView)).setText(user.getEmail());
+
     }
 
     @Override
@@ -69,10 +66,34 @@ public class PiazzaHomeActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            // action with ID action_settings was selected
+            case R.id.action_settings:
+                Toast.makeText(this, "Tancant sessió", Toast.LENGTH_SHORT)
+                        .show();
+                logOut();
+                break;
+            default:
+                break;
+        }
+
+        return true;
+    }
+
+    @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_piazza_home);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    private void logOut () {
+
+        FirebaseAuth.getInstance().signOut();
+        showAuth();
     }
 
     private void showAuth () {

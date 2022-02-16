@@ -31,6 +31,14 @@ public class AuthActivity extends AppCompatActivity {
 
         Button logIn = (Button) findViewById(R.id.logIn);
 
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            if (FirebaseAuth.getInstance().getCurrentUser().getEmail().contains("admin")) {
+                showHome();
+            } else {
+                showEmployee();
+            }
+        } else {
+
             logIn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -52,6 +60,8 @@ public class AuthActivity extends AppCompatActivity {
                     }
                 }
             });
+
+        }
 
     }
 

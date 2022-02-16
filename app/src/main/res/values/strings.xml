@@ -6,9 +6,13 @@
     <string name="nav_header_title">Piazza</string>
     <string name="nav_header_subtitle">Email</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Configuració</string>
+    <string name="action_settings">Tancar sessió</string>
 
     <string name="menu_inici">Inici</string>
     <string name="menu_treballadors">Treballador</string>
     <string name="menu_historial">Historial</string>
+
+    <string name="emptyTime">--:--</string>
+    <string name="exit">exit</string>
+
 </resources>
