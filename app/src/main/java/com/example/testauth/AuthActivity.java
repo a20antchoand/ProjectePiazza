@@ -23,7 +23,6 @@ public class AuthActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
 
-
         setup();
 
     }
@@ -32,25 +31,27 @@ public class AuthActivity extends AppCompatActivity {
 
         Button logIn = (Button) findViewById(R.id.logIn);
 
+            logIn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-        logIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                    String email = ((EditText) findViewById(R.id.editTextEmail)).getText().toString() + "@gmail.com";
+                    String password = ((EditText) findViewById(R.id.editTextPassword)).getText().toString();
 
-                String email = ((EditText) findViewById(R.id.editTextEmail)).getText().toString() + "@gmail.com";
-                String password = ((EditText) findViewById(R.id.editTextPassword)).getText().toString();
-
-                if (!email.equals("") && !password.equals("")) {
-                    FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            showHome(email);
-                        } else {
-                            showAlert();
-                        }
-                    });
+                    if (!email.equals("") && !password.equals("")) {
+                        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                if (email.contains("admin"))
+                                    showHome();
+                                else
+                                    showEmployee();
+                            } else {
+                                showAlert();
+                            }
+                        });
+                    }
                 }
-            }
-        });
+            });
 
     }
 
@@ -64,10 +65,15 @@ public class AuthActivity extends AppCompatActivity {
         alerta.show();
     }
 
-    private void showHome (String email) {
+    private void showHome () {
 
         Intent intent = new Intent(this, PiazzaHomeActivity.class);
-        intent.putExtra("email", email);
+        startActivity(intent);
+    }
+
+    private void showEmployee () {
+
+        Intent intent = new Intent(this, EmployeeActivity.class);
         startActivity(intent);
     }
 

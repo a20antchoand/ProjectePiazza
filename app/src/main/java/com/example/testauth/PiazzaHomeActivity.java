@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.testauth.databinding.ActivityPiazzaHomeBinding;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class PiazzaHomeActivity extends AppCompatActivity {
 
@@ -28,6 +29,8 @@ public class PiazzaHomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
         binding = ActivityPiazzaHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -35,6 +38,7 @@ public class PiazzaHomeActivity extends AppCompatActivity {
         binding.appBarPiazzaHome.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 FirebaseAuth.getInstance().signOut();
                 showAuth();
             }
@@ -47,13 +51,14 @@ public class PiazzaHomeActivity extends AppCompatActivity {
                 R.id.nav_home, R.id.nav_Treballadors, R.id.nav_Historial)
                 .setOpenableLayout(drawer)
                 .build();
+
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_piazza_home);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
         NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
         View headerView = navView.getHeaderView(0);
-        ((TextView) headerView.findViewById(R.id.emailTextView)).setText(getIntent().getExtras().getString("email"));
+        ((TextView) headerView.findViewById(R.id.emailTextView)).setText(user.getEmail());
     }
 
     @Override
@@ -72,7 +77,7 @@ public class PiazzaHomeActivity extends AppCompatActivity {
 
     private void showAuth () {
 
-        Intent intent = new Intent(this, PiazzaHomeActivity.class);
+        Intent intent = new Intent(this, AuthActivity.class);
         startActivity(intent);
     }
 
