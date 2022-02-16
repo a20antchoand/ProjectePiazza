@@ -69,12 +69,15 @@ public class AuthActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, PiazzaHomeActivity.class);
         startActivity(intent);
+        finish();
     }
 
     private void showEmployee () {
 
         Intent intent = new Intent(this, EmployeeActivity.class);
         startActivity(intent);
+        finish();
     }
+
 
 }

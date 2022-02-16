@@ -2,18 +2,107 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/usuariTextView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".EmployeeActivity">
 
-    <TextView
-        android:id="@+id/employeeUser"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="25dp"
-        android:text="Usuari: "
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="25dp" />
+
+        <Button
+            android:id="@+id/logOutEmployee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:text="Tancar sessió"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/usuariTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="25dp"
+            android:text="Usuari: " />
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="?android:attr/listDivider" />
+
+        <Button
+            android:id="@+id/iniciarJornada"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="25dp"
+            android:onClick="iniciarJornada"
+            android:text="Iniciar Jornada"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/iniciarTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="25dp"
+            android:text="Hora d'entrada:" />
+
+        <Button
+            android:id="@+id/acabarJornada"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="25dp"
+            android:onClick="acabarJornada"
+            android:text="Acabar Jornada"
+            android:textColor="#000000" />
+
+        <TextView
+            android:id="@+id/acabarTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="25dp"
+            android:text="Hora de sortida: " />
+
+        <TextView
+            android:id="@+id/resultat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="25dp"
+            android:text="Hores totals: " />
+
+        <Button
+            android:id="@+id/resetTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="25dp"
+            android:onClick="resetTime"
+            android:text="REINICIAR DADES"
+            android:textColor="#000000" />
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

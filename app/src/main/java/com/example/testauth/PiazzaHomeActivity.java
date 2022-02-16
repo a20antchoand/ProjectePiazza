@@ -79,6 +79,7 @@ public class PiazzaHomeActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, AuthActivity.class);
         startActivity(intent);
+        finish();
     }
 
 }
