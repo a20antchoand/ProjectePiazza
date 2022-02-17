@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Controladores.EmployeeActivity">
+    tools:context="com.example.piazza.Controladores.EmployeeActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -105,13 +105,17 @@
 
             <Button
                 android:id="@+id/iniciarJornada"
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="match_parent"
+                android:enabled="false"
                 android:onClick="iniciarJornada"
-                android:text="Iniciar Jornada"
-                android:theme="@style/Button.White"
                 android:textColor="#000000"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:icon="@drawable/ic_baseline_play_arrow_24"
+                app:iconGravity="textEnd"
+                app:iconPadding="0dp"
+                app:iconSize="50dp"
+                app:iconTint="#000000" />
 
             <Space
                 android:layout_width="16dp"
@@ -120,13 +124,17 @@
             <Button
                 android:id="@+id/acabarJornada"
                 style="style/ButtonStart"
-                android:layout_width="wrap_content"
+                android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:enabled="false"
                 android:onClick="acabarJornada"
-                android:text="Acabar Jornada"
                 android:textColor="#000000"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:icon="@drawable/ic_baseline_stop_24"
+                app:iconGravity="textEnd"
+                app:iconPadding="0dp"
+                app:iconSize="50dp"
+                app:iconTint="#000000" />
         </LinearLayout>
 
         <TextView

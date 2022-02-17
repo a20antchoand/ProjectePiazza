@@ -3,23 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/navigation_inici">
 
     <fragment
-        android:id="@+id/nav_home"
-        android:name="com.example.testauth.ui.home.HomeFragment"
-        android:label="@string/menu_inici"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/navigation_inici"
+        android:name="com.example.piazza.ui.validar.ValidarFragment"
+        android:label="@string/title_inici"
+        tools:layout="@layout/fragment_validar" />
 
     <fragment
-        android:id="@+id/nav_Treballadors"
-        android:name="com.example.testauth.ui.treballadors.TreballadorsFragment"
-        android:label="@string/menu_treballadors"
+        android:id="@+id/navigation_treballadors"
+        android:name="com.example.piazza.ui.treballdors.TreballadorsFragment"
+        android:label="@string/title_treballadors"
         tools:layout="@layout/fragment_treballadors" />
 
     <fragment
-        android:id="@+id/nav_Historial"
-        android:name="com.example.testauth.ui.historial.HistorialFragment"
-        android:label="@string/menu_historial"
-        tools:layout="@layout/fragment_historial" />
+        android:id="@+id/navigation_administrar"
+        android:name="com.example.piazza.ui.administrar.AdministrarFragment"
+        android:label="@string/title_administrar"
+        tools:layout="@layout/fragment_administrar" />
 </navigation>

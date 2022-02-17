@@ -15,5 +15,10 @@
     <string name="emptyTime">--:--</string>
     <string name="slash">/</string>
     <string name="exit">exit</string>
+    <string name="title_activity_admin">AdminActivity</string>
+    <string name="title_inici">Validar</string>
+    <string name="title_treballadors">Treballadors</string>
+    <string name="title_administrar">Administrar</string>
+    <string name="title_activity_employee2">EmployeeActivity2</string>
 
 </resources>

@@ -1,4 +1,4 @@
-package com.example.testauth.Controladores;
+package com.example.piazza.Controladores;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,8 +39,14 @@ public class AuthActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
 
-                    String email = ((EditText) findViewById(R.id.editTextEmail)).getText().toString() + "@gmail.com";
-                    String password = ((EditText) findViewById(R.id.editTextPassword)).getText().toString();
+                    //String email = ((EditText) findViewById(R.id.editTextEmail)).getText().toString() + "@gmail.com";
+                    //String password = ((EditText) findViewById(R.id.editTextPassword)).getText().toString();
+
+                    //String email = "admin@gmail.com";
+                    //String password = "123456";
+
+                    String email = "toni@gmail.com";
+                    String password = "123456";
 
                     if (!email.equals("") && !password.equals("")) {
                         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
@@ -73,7 +79,7 @@ public class AuthActivity extends AppCompatActivity {
 
     private void showHome () {
 
-        Intent intent = new Intent(this, PiazzaHomeActivity.class);
+        Intent intent = new Intent(this, AdminActivity.class);
         startActivity(intent);
         finish();
     }

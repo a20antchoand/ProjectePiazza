@@ -1,4 +1,4 @@
-package com.example.testauth.ui.historial;
+package com.example.piazza.ui.validar;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,30 +12,34 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.testauth.databinding.FragmentHistorialBinding;
+import com.example.testauth.databinding.FragmentValidarBinding;
 
-public class HistorialFragment extends Fragment {
+public class ValidarFragment extends Fragment {
 
-    private HistorialViewModel HistorialViewModel;
-    private FragmentHistorialBinding binding;
+    private ValidarViewModel homeViewModel;
+    private FragmentValidarBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HistorialViewModel =
-                new ViewModelProvider(this).get(HistorialViewModel.class);
+        homeViewModel =
+                new ViewModelProvider(this).get(ValidarViewModel.class);
 
-        binding = FragmentHistorialBinding.inflate(inflater, container, false);
+        binding = FragmentValidarBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textHistorial;
-        HistorialViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        final TextView textView = binding.textHome;
+        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);
             }
         });
+
         return root;
+
+
     }
+
 
     @Override
     public void onDestroyView() {

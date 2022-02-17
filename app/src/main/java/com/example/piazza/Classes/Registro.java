@@ -1,4 +1,4 @@
-package com.example.testauth.Classes;
+package com.example.piazza.Classes;
 
 public class Registro {
 

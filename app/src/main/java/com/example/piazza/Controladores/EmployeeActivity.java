@@ -1,7 +1,8 @@
-package com.example.testauth.Controladores;
+package com.example.piazza.Controladores;
 
 import static com.google.firebase.crashlytics.internal.Logger.TAG;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -13,23 +14,22 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.testauth.Classes.Registro;
-import com.example.testauth.Classes.Usuario;
+import com.example.piazza.Classes.Registro;
+import com.example.piazza.Classes.Usuario;
 import com.example.testauth.R;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 
 public class EmployeeActivity extends AppCompatActivity {
@@ -73,7 +73,31 @@ public class EmployeeActivity extends AppCompatActivity {
             showAuth();
         });
 
+
+
         RecuperarUsuariBBDD();
+
+
+        final DocumentReference docRef = db.collection("users").document(user.getEmail());
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e);
+                    return;
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    Log.d(TAG, "Current data: " + snapshot.getData());
+                    Toast toast=Toast. makeText(getApplicationContext(),"Se ha modificado la BBDD",Toast. LENGTH_SHORT);
+                    toast. show();
+                } else {
+                    Log.d(TAG, "Current data: null");
+                }
+            }
+        });
+
 
     }
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.testauth">
+    package="com.example.testauth" >
 
     <application
         android:allowBackup="true"
@@ -8,18 +8,21 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.TestAuth">
+        android:theme="@style/Theme.TestAuth" >
         <activity
-            android:name=".Controladores.EmployeeActivity"
+            android:name=".EmployeeActivity2"
+            android:exported="false"
+            android:label="@string/title_activity_employee2" />
+        <activity
+            android:name="com.example.piazza.Controladores.AdminActivity"
+            android:exported="false"
+            android:label="@string/title_activity_admin" />
+        <activity
+            android:name="com.example.piazza.Controladores.EmployeeActivity"
             android:exported="true" />
         <activity
-            android:name=".Controladores.PiazzaHomeActivity"
-            android:exported="false"
-            android:label="@string/title_activity_piazza_home"
-            android:theme="@style/Theme.TestAuth.NoActionBar" />
-        <activity
-            android:name=".Controladores.AuthActivity"
-            android:exported="true">
+            android:name="com.example.piazza.Controladores.AuthActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

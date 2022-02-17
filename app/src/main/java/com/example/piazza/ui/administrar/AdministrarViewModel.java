@@ -1,16 +1,16 @@
-package com.example.testauth.ui.treballadors;
+package com.example.piazza.ui.administrar;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class TreballadorsViewModel extends ViewModel {
+public class AdministrarViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public TreballadorsViewModel() {
+    public AdministrarViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is Treballadors fragment");
+        mText.setValue("This is notifications fragment");
     }
 
     public LiveData<String> getText() {

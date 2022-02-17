@@ -1,7 +1,4 @@
-package com.example.testauth.Classes;
-
-import java.util.HashMap;
-import java.util.Map;
+package com.example.piazza.Classes;
 
 public class Usuario {
 
