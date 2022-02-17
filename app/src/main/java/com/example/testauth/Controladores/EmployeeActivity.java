@@ -5,6 +5,7 @@ import static com.google.firebase.crashlytics.internal.Logger.TAG;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -58,7 +59,9 @@ public class EmployeeActivity extends AppCompatActivity {
         acabarTextView = findViewById(R.id.acabarTextView);
         resultat = findViewById(R.id.resultat);
         iniciarJornadaBtn = findViewById(R.id.iniciarJornada);
+        iniciarJornadaBtn.setBackgroundColor(Color.GRAY);
         acabarJornadaBtn = findViewById(R.id.acabarJornada);
+        acabarJornadaBtn.setBackgroundColor(Color.GRAY);
         db = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -85,7 +88,6 @@ public class EmployeeActivity extends AppCompatActivity {
 
                 if (document.exists()) {
                     Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                    usuarioApp = new Usuario(document.getData().get("email").toString());
                     comprovarEntradaSortida();
                 } else {
                     Log.d(TAG, "No such document");
@@ -94,6 +96,7 @@ public class EmployeeActivity extends AppCompatActivity {
                     usuarioApp = new Usuario(user.getEmail());
                     GuardarUsuarioBBDD();
                     iniciarJornadaBtn.setEnabled(true);
+                    iniciarJornadaBtn.setBackgroundColor(Color.GREEN);
                 }
             } else {
                 Log.d(TAG, "get failed with ", task.getException());
@@ -125,28 +128,61 @@ public class EmployeeActivity extends AppCompatActivity {
         HashMap e = (HashMap) document.getData().get("registroEntrada");
         HashMap s = (HashMap) document.getData().get("registroSalida");
 
+        long anioEntrada = Long.parseLong(String.valueOf(e.get("anio")));
+        long mesEntrada = Long.parseLong(String.valueOf(e.get("mes")));
+        long diaEntrada = Long.parseLong(String.valueOf(e.get("dia")));
         long horaEntrada = Long.parseLong(String.valueOf(e.get("hora")));
         long minutEntrada = Long.parseLong(String.valueOf(e.get("minut")));
+
+        long anioSortida = Long.parseLong(String.valueOf(s.get("anio")));
+        long mesSortida = Long.parseLong(String.valueOf(s.get("mes")));
+        long diaSortida = Long.parseLong(String.valueOf(s.get("dia")));
         long horaSortida = Long.parseLong(String.valueOf(s.get("hora")));
         long minutSortida = Long.parseLong(String.valueOf(s.get("minut")));
 
+        Registro entrada;
+        Registro salida;
+
         if (horaEntrada != 0) {
 
-            iniciarTextView.setText(horaEntrada + ":" + minutEntrada);
+            changeTextTime(iniciarTextView, horaEntrada, minutEntrada);
             iniciarJornadaBtn.setEnabled(false);
+            iniciarJornadaBtn.setBackgroundColor(Color.GRAY);
+
+            entrada = new Registro(anioEntrada, mesEntrada, diaEntrada, horaEntrada, minutEntrada);
 
             if (horaSortida != 0) {
 
-                acabarTextView.setText(horaSortida + ":" + minutSortida);
+                changeTextTime(acabarTextView, horaSortida, minutSortida);
+
                 acabarJornadaBtn.setEnabled(false);
+                acabarJornadaBtn.setBackgroundColor(Color.GRAY);
+
+                salida = new Registro(anioSortida, mesSortida, diaSortida, horaSortida, minutSortida);
+
+                usuarioApp = new Usuario(user.getEmail(), entrada, salida);
+
+                calcularHores();
 
             } else {
 
+                salida = new Registro(0,0,0,0,0);
+
+                usuarioApp = new Usuario(user.getEmail(), entrada, salida);
+
                 acabarJornadaBtn.setEnabled(true);
+                acabarJornadaBtn.setBackgroundColor(Color.RED);
+
             }
+
+
 
         } else {
             iniciarJornadaBtn.setEnabled(true);
+            iniciarJornadaBtn.setBackgroundColor(Color.GREEN);
+
+            usuarioApp = new Usuario(user.getEmail());
+
         }
 
 
@@ -179,8 +215,11 @@ public class EmployeeActivity extends AppCompatActivity {
         changeTextTime(iniciarTextView,usuarioApp.getRegistroEntrada().getHora(), usuarioApp.getRegistroEntrada().getMinut() );
 
         iniciarJornadaBtn.setEnabled(false);
+        iniciarJornadaBtn.setBackgroundColor(Color.GRAY);
 
         acabarJornadaBtn.setEnabled(true);
+        acabarJornadaBtn.setBackgroundColor(Color.RED);
+
     }
 
     public void acabarJornada (View view) {
@@ -192,6 +231,8 @@ public class EmployeeActivity extends AppCompatActivity {
         changeTextTime(acabarTextView, usuarioApp.getRegistroSalida().getHora(), usuarioApp.getRegistroSalida().getMinut());
 
         acabarJornadaBtn.setEnabled(false);
+        acabarJornadaBtn.setBackgroundColor(Color.GRAY);
+
 
         calcularHores();
 
@@ -204,7 +245,9 @@ public class EmployeeActivity extends AppCompatActivity {
         resultat.setText("--:--");
 
         iniciarJornadaBtn.setEnabled(true);
+        iniciarJornadaBtn.setBackgroundColor(Color.GREEN);
         acabarJornadaBtn.setEnabled(false);
+        acabarJornadaBtn.setBackgroundColor(Color.GRAY);
 
         usuarioApp.setRegistroEntrada(resetFecha());
         usuarioApp.setRegistroSalida(resetFecha());
@@ -221,7 +264,7 @@ public class EmployeeActivity extends AppCompatActivity {
         long horasTotals = usuarioApp.getRegistroSalida().getHora() - usuarioApp.getRegistroEntrada().getHora();
         long minutsTotals = usuarioApp.getRegistroSalida().getMinut() - usuarioApp.getRegistroEntrada().getMinut();
 
-        changeTextTime((TextView) findViewById(R.id.resultat), horasTotals, minutsTotals);
+        changeTextTime(resultat, horasTotals, minutsTotals);
 
     }
 

@@ -15,12 +15,12 @@ public class Usuario {
         this.registroSalida = new Registro(0,0,0,0,0);
     }
 
-    public Usuario (Map<String, Object> info) {
+    public Usuario (String email, Registro entrada, Registro sortida) {
 
-        this.email = (String) info.get("email");
+        this.email = email;
 
-        this.registroEntrada = (Registro) info.get("registroEntrada");
-        this.registroSalida = (Registro) info.get("registroSalida");
+        this.registroEntrada = entrada;
+        this.registroSalida = sortida;
 
     }
 
