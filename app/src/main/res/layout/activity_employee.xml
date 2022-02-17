@@ -49,13 +49,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:baselineAligned="false"
+            android:gravity="center"
             android:orientation="horizontal"
             android:textAlignment="center">
-
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
 
             <TextView
                 android:id="@+id/iniciarTextView"
@@ -64,24 +60,18 @@
                 android:autoText="false"
                 android:text="@string/emptyTime"
                 android:textAlignment="center"
-                android:textSize="60sp"
-                app:autoSizeTextType="uniform" />
-
-            <Space
-                android:layout_width="25dp"
-                android:layout_height="wrap_content" />
+                android:textSize="50dp" />
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/acabarTextView2"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="a"
-                android:textSize="60sp"
+                android:layout_height="75dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:text="@string/slash"
+                android:textAlignment="center"
+                android:textSize="50dp"
                 app:autoSizeTextType="uniform" />
-
-            <Space
-                android:layout_width="25dp"
-                android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/acabarTextView"
@@ -89,18 +79,12 @@
                 android:layout_height="75dp"
                 android:text="@string/emptyTime"
                 android:textAlignment="center"
-                android:textSize="60sp"
+                android:textSize="50dp"
                 app:autoSizeTextType="uniform" />
-
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
 
         </LinearLayout>
 
-        <Space
-            android:layout_width="match_parent"
+        <Space android:layout_width="match_parent"
             android:layout_height="16dp" />
 
         <View
@@ -109,29 +93,35 @@
             android:layout_height="5dp"
             android:background="?android:attr/listDivider" />
 
-        <Button
-            android:id="@+id/iniciarJornada"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="25dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="25dp"
-            android:onClick="iniciarJornada"
-            android:text="Iniciar Jornada"
-            android:textColor="#000000" />
+            android:layout_height="75dp"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/acabarJornada"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="25dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="25dp"
-            android:onClick="acabarJornada"
-            android:text="Acabar Jornada"
-            android:textColor="#000000" />
+            <Button
+                android:id="@+id/iniciarJornada"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:onClick="iniciarJornada"
+                android:text="Iniciar Jornada"
+                android:theme="@style/Button.White"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+
+            <Space android:layout_width="16dp" />
+
+            <Button
+                android:id="@+id/acabarJornada"
+                style="style/ButtonStart"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:enabled="false"
+                android:onClick="acabarJornada"
+                android:text="Acabar Jornada"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/resultat"

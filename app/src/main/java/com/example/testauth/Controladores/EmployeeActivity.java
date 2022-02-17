@@ -23,8 +23,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -91,6 +93,7 @@ public class EmployeeActivity extends AppCompatActivity {
                     toast. show();
                     usuarioApp = new Usuario(user.getEmail());
                     GuardarUsuarioBBDD();
+                    iniciarJornadaBtn.setEnabled(true);
                 }
             } else {
                 Log.d(TAG, "get failed with ", task.getException());
@@ -130,6 +133,7 @@ public class EmployeeActivity extends AppCompatActivity {
         if (horaEntrada != 0) {
 
             iniciarTextView.setText(horaEntrada + ":" + minutEntrada);
+            iniciarJornadaBtn.setEnabled(false);
 
             if (horaSortida != 0) {
 
@@ -141,11 +145,11 @@ public class EmployeeActivity extends AppCompatActivity {
                 acabarJornadaBtn.setEnabled(true);
             }
 
-            iniciarJornadaBtn.setEnabled(false);
-
         } else {
             iniciarJornadaBtn.setEnabled(true);
         }
+
+
     }
 
     public Registro getFechaActual() {
@@ -172,9 +176,11 @@ public class EmployeeActivity extends AppCompatActivity {
 
         GuardarUsuarioBBDD();
 
-        iniciarTextView.setText(usuarioApp.getRegistroEntrada().getHora() + ":" + usuarioApp.getRegistroEntrada().getMinut());
+        changeTextTime(iniciarTextView,usuarioApp.getRegistroEntrada().getHora(), usuarioApp.getRegistroEntrada().getMinut() );
 
         iniciarJornadaBtn.setEnabled(false);
+
+        acabarJornadaBtn.setEnabled(true);
     }
 
     public void acabarJornada (View view) {
@@ -183,11 +189,14 @@ public class EmployeeActivity extends AppCompatActivity {
 
         GuardarUsuarioBBDD();
 
-        acabarTextView.setText(usuarioApp.getRegistroSalida().getHora() + ":" + usuarioApp.getRegistroSalida().getMinut());
+        changeTextTime(acabarTextView, usuarioApp.getRegistroSalida().getHora(), usuarioApp.getRegistroSalida().getMinut());
 
         acabarJornadaBtn.setEnabled(false);
 
+        calcularHores();
+
     }
+
 
     public void resetTime (View view) {
         iniciarTextView.setText("--:--");
@@ -195,7 +204,7 @@ public class EmployeeActivity extends AppCompatActivity {
         resultat.setText("--:--");
 
         iniciarJornadaBtn.setEnabled(true);
-        acabarJornadaBtn.setEnabled(true);
+        acabarJornadaBtn.setEnabled(false);
 
         usuarioApp.setRegistroEntrada(resetFecha());
         usuarioApp.setRegistroSalida(resetFecha());
@@ -212,9 +221,18 @@ public class EmployeeActivity extends AppCompatActivity {
         long horasTotals = usuarioApp.getRegistroSalida().getHora() - usuarioApp.getRegistroEntrada().getHora();
         long minutsTotals = usuarioApp.getRegistroSalida().getMinut() - usuarioApp.getRegistroEntrada().getMinut();
 
-        ((TextView) findViewById(R.id.resultat)).setText(horasTotals + ":" + minutsTotals);
+        changeTextTime((TextView) findViewById(R.id.resultat), horasTotals, minutsTotals);
 
     }
+
+
+    public void changeTextTime (TextView textView, long hora, long minut) {
+        if (minut < 10)
+            textView.setText(hora + ":0" + minut);
+        else
+            textView.setText(hora + ":" + minut);
+    }
+
 
     public void showAuth() {
 

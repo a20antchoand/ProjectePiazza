@@ -1,5 +1,6 @@
 package com.example.testauth.Classes;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Usuario {
@@ -10,9 +11,16 @@ public class Usuario {
 
     public Usuario(String email) {
         this.email = email;
-
         this.registroEntrada = new Registro(0,0,0,0,0);
         this.registroSalida = new Registro(0,0,0,0,0);
+    }
+
+    public Usuario (Map<String, Object> info) {
+
+        this.email = (String) info.get("email");
+
+        this.registroEntrada = (Registro) info.get("registroEntrada");
+        this.registroSalida = (Registro) info.get("registroSalida");
 
     }
 
