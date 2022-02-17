@@ -14,10 +14,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.piazza.Classes.Contador;
 import com.example.piazza.Classes.Registro;
 import com.example.piazza.Classes.Usuario;
 import com.example.testauth.R;
 
+import com.example.testauth.databinding.ActivityEmployeeBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -32,6 +34,13 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+
 public class EmployeeActivity extends AppCompatActivity {
 
     TextView iniciarTextView;
@@ -45,10 +54,27 @@ public class EmployeeActivity extends AppCompatActivity {
     FirebaseUser user;
     Usuario usuarioApp;
 
+    Contador contador;
+
+    private ActivityEmployeeBinding binding;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_employee);
+
+        binding = ActivityEmployeeBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        BottomNavigationView navView = findViewById(R.id.nav_view);
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.navigation_introduir_hores, R.id.navigation_home)
+                .build();
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(binding.navView, navController);
 
         setup();
 
@@ -65,7 +91,9 @@ public class EmployeeActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
 
-        ((TextView) findViewById(R.id.usuariTextView)).setText(user.getEmail());
+         contador = new Contador("Contador", findViewById(R.id.contador));
+
+        //((TextView) findViewById(R.id.contador)).setText(user.getEmail());
 
         findViewById(R.id.logOutEmployee).setOnClickListener(view -> {
 
@@ -92,6 +120,9 @@ public class EmployeeActivity extends AppCompatActivity {
                     Log.d(TAG, "Current data: " + snapshot.getData());
                     Toast toast=Toast. makeText(getApplicationContext(),"Se ha modificado la BBDD",Toast. LENGTH_SHORT);
                     toast. show();
+
+                    RecuperarUsuariBBDD();
+
                 } else {
                     Log.d(TAG, "Current data: null");
                 }
@@ -207,6 +238,8 @@ public class EmployeeActivity extends AppCompatActivity {
 
             usuarioApp = new Usuario(user.getEmail());
 
+            changeTextTime(iniciarTextView, horaEntrada, minutEntrada);
+            changeTextTime(acabarTextView, horaSortida, minutSortida);
         }
 
 
@@ -244,6 +277,8 @@ public class EmployeeActivity extends AppCompatActivity {
         acabarJornadaBtn.setEnabled(true);
         acabarJornadaBtn.setBackgroundColor(Color.RED);
 
+        new Thread(contador).start();
+
     }
 
     public void acabarJornada (View view) {
@@ -257,6 +292,7 @@ public class EmployeeActivity extends AppCompatActivity {
         acabarJornadaBtn.setEnabled(false);
         acabarJornadaBtn.setBackgroundColor(Color.GRAY);
 
+        contador.pause();
 
         calcularHores();
 
@@ -267,6 +303,9 @@ public class EmployeeActivity extends AppCompatActivity {
         iniciarTextView.setText("--:--");
         acabarTextView.setText("--:--");
         resultat.setText("--:--");
+
+        contador.pause();
+        contador.reiniciar();
 
         iniciarJornadaBtn.setEnabled(true);
         iniciarJornadaBtn.setBackgroundColor(Color.GREEN);

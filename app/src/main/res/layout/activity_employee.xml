@@ -6,6 +6,30 @@
     android:layout_height="match_parent"
     tools:context="com.example.piazza.Controladores.EmployeeActivity">
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:background="?android:attr/windowBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/bottom_nav_menu_employee" />
+
+    <fragment
+        android:id="@+id/nav_host_fragment_activity_main"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toTopOf="@id/nav_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navGraph="@navigation/mobile_navigation_employee" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -13,27 +37,17 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="-16dp">
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="25dp" />
-
-        <Button
-            android:id="@+id/logOutEmployee"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:text="Tancar sessió"
-            android:textColor="#000000" />
-
         <TextView
-            android:id="@+id/usuariTextView"
-            android:layout_width="wrap_content"
+            android:id="@+id/contador"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="25dp"
             android:layout_marginTop="25dp"
+            android:layout_marginEnd="25dp"
             android:layout_marginBottom="25dp"
-            android:text="Usuari: " />
+            android:gravity="center"
+            android:text="00:00:00"
+            android:textSize="48sp" />
 
         <View
             android:id="@+id/divider2"
@@ -60,7 +74,7 @@
                 android:autoText="false"
                 android:text="@string/emptyTime"
                 android:textAlignment="center"
-                android:textSize="50dp" />
+                android:textSize="50sp" />
 
             <TextView
                 android:id="@+id/acabarTextView2"
@@ -70,7 +84,7 @@
                 android:layout_marginRight="25dp"
                 android:text="@string/slash"
                 android:textAlignment="center"
-                android:textSize="50dp"
+                android:textSize="50sp"
                 app:autoSizeTextType="uniform" />
 
             <TextView
@@ -79,7 +93,7 @@
                 android:layout_height="75dp"
                 android:text="@string/emptyTime"
                 android:textAlignment="center"
-                android:textSize="50dp"
+                android:textSize="50sp"
                 app:autoSizeTextType="uniform" />
 
         </LinearLayout>
@@ -143,8 +157,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="25dp"
             android:layout_marginTop="25dp"
+            android:layout_marginEnd="25dp"
             android:layout_marginBottom="25dp"
-            android:text="@string/emptyTime" />
+            android:gravity="center"
+            android:text="@string/emptyTime"
+            android:textSize="34sp" />
 
         <Button
             android:id="@+id/resetTime"
@@ -156,6 +173,15 @@
             android:layout_marginBottom="25dp"
             android:onClick="resetTime"
             android:text="REINICIAR DADES"
+            android:textColor="#000000" />
+
+        <Button
+            android:id="@+id/logOutEmployee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:text="Tancar sessió"
             android:textColor="#000000" />
 
     </LinearLayout>
