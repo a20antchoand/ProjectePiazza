@@ -1,4 +1,4 @@
-package com.example.testauth;
+package com.example.testauth.Controladores;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,7 +8,7 @@ import android.view.Menu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.snackbar.Snackbar;
+import com.example.testauth.R;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.navigation.NavController;

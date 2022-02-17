@@ -1,8 +1,7 @@
-package com.example.testauth;
+package com.example.testauth.Controladores;
 
 import static com.google.firebase.crashlytics.internal.Logger.TAG;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -13,8 +12,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.example.testauth.Classes.Registro;
+import com.example.testauth.Classes.Usuario;
+import com.example.testauth.R;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,14 +37,10 @@ public class EmployeeActivity extends AppCompatActivity {
     Button iniciarJornadaBtn;
     Button acabarJornadaBtn;
 
-    Map<String, Integer> fechaEntrada;
-    Map<String, Integer> fechaSortida;
-
-    HashMap<String, Object> dadesUsuari;
-
     DocumentSnapshot document;
     FirebaseFirestore db;
     FirebaseUser user;
+    Usuario usuarioApp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,13 +80,16 @@ public class EmployeeActivity extends AppCompatActivity {
         docRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 document = task.getResult();
+
                 if (document.exists()) {
                     Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                    usuarioApp = new Usuario(document.getData().get("email").toString());
                     comprovarEntradaSortida();
                 } else {
                     Log.d(TAG, "No such document");
                     Toast toast=Toast. makeText(getApplicationContext(),"Se crea el usuario en la BBDD",Toast. LENGTH_SHORT);
                     toast. show();
+                    usuarioApp = new Usuario(user.getEmail());
                     GuardarUsuarioBBDD();
                 }
             } else {
@@ -102,16 +101,12 @@ public class EmployeeActivity extends AppCompatActivity {
 
     private void GuardarUsuarioBBDD() {
 
-        dadesUsuari = new HashMap<>();
-        dadesUsuari.put("email", user.getEmail());
-        dadesUsuari.put("hora_entrada", 0);
-        dadesUsuari.put("minuts_entrada", 0);
-        dadesUsuari.put("hora_sortida", 0);
-        dadesUsuari.put("minuts_sortida", 0);
 
         db.collection("users").document(Objects.requireNonNull(user.getEmail()))
-                .set(dadesUsuari)
-                .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
+                .set(usuarioApp)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "DocumentSnapshot successfully written!");
+                })
                 .addOnFailureListener(e -> {
                     Log.w(TAG, "Error writing document", e);
                     Toast toast2=Toast. makeText(getApplicationContext(),"No sha guardat a la BBDD",Toast. LENGTH_SHORT);
@@ -120,72 +115,25 @@ public class EmployeeActivity extends AppCompatActivity {
                 });
 
     }
-
-    private void GuardarUsuarioEntradaBBDD(long hora, long minuts) {
-
-        dadesUsuari.put("hora_entrada", hora);
-        dadesUsuari.put("minuts_entrada", minuts);
-
-        db.collection("users").document(Objects.requireNonNull(user.getEmail()))
-                .set(dadesUsuari)
-                .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
-                .addOnFailureListener(e -> {
-                    Log.w(TAG, "Error writing document", e);
-                    Toast toast2=Toast. makeText(getApplicationContext(),"No sha guardat a la BBDD",Toast. LENGTH_SHORT);
-                    toast2. setMargin(50,50);
-                    toast2. show();
-                });
-
-    }
-
-    private void GuardarUsuarioSalidaBBDD(long hora, long minuts) {
-
-        dadesUsuari.put("hora_sortida", hora);
-        dadesUsuari.put("minuts_sortida", minuts);
-
-        db.collection("users").document(Objects.requireNonNull(user.getEmail()))
-                .set(dadesUsuari)
-                .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
-                .addOnFailureListener(e -> {
-                    Log.w(TAG, "Error writing document", e);
-                    Toast toast2=Toast. makeText(getApplicationContext(),"No sha guardat a la BBDD",Toast. LENGTH_SHORT);
-                    toast2. setMargin(50,50);
-                    toast2. show();
-                });
-
-    }
-
 
 
     private void comprovarEntradaSortida() {
 
-        Toast toast=Toast. makeText(getApplicationContext(),""+ Objects.requireNonNull(document.getData()).get("hora_entrada"),Toast. LENGTH_SHORT);
-        toast. show();
+        HashMap e = (HashMap) document.getData().get("registroEntrada");
+        HashMap s = (HashMap) document.getData().get("registroSalida");
 
-        Map<String, Object> informacioUsuari = document.getData();
-
-        long horaEntrada = 0;
-        long horaSortida = 0;
-
-        try {
-            horaEntrada = (long) informacioUsuari.get("hora_entrada");
-        } catch (NullPointerException e) {
-            Log.d(TAG, "Error agafant hora d'entrada: " + e);
-        }
-
-        try {
-            horaSortida = (long) informacioUsuari.get("hora_sortida");
-        } catch (NullPointerException e) {
-            Log.d(TAG, "Error agafant hora de sortida: " + e);
-        }
+        long horaEntrada = Long.parseLong(String.valueOf(e.get("hora")));
+        long minutEntrada = Long.parseLong(String.valueOf(e.get("minut")));
+        long horaSortida = Long.parseLong(String.valueOf(s.get("hora")));
+        long minutSortida = Long.parseLong(String.valueOf(s.get("minut")));
 
         if (horaEntrada != 0) {
 
-            iniciarTextView.setText(document.getData().get("hora_entrada") + ":" + document.getData().get("minuts_entrada"));
+            iniciarTextView.setText(horaEntrada + ":" + minutEntrada);
 
             if (horaSortida != 0) {
 
-                acabarTextView.setText(document.getData().get("hora_sortida") + ":" + document.getData().get("minuts_sortida"));
+                acabarTextView.setText(horaSortida + ":" + minutSortida);
                 acabarJornadaBtn.setEnabled(false);
 
             } else {
@@ -200,44 +148,44 @@ public class EmployeeActivity extends AppCompatActivity {
         }
     }
 
-    public Map<String, Integer> getFechaActual() {
-
-        Map<String, Integer> fecha = new HashMap<>();
+    public Registro getFechaActual() {
 
         int dia = Integer.parseInt(new SimpleDateFormat("dd", Locale.getDefault()).format(new Date()));
         int mes = Integer.parseInt(new SimpleDateFormat("MM", Locale.getDefault()).format(new Date()));
         int anio = Integer.parseInt(new SimpleDateFormat("yyyy", Locale.getDefault()).format(new Date()));
-        int hores = Integer.parseInt(new SimpleDateFormat("HH", Locale.getDefault()).format(new Date()));
-        int minuts = Integer.parseInt(new SimpleDateFormat("mm", Locale.getDefault()).format(new Date()));
+        int hora = Integer.parseInt(new SimpleDateFormat("HH", Locale.getDefault()).format(new Date()));
+        int minut = Integer.parseInt(new SimpleDateFormat("mm", Locale.getDefault()).format(new Date()));
 
+        return new Registro(anio, mes, dia, hora, minut);
 
-        fecha.put("dia", dia);
-        fecha.put("mes", mes);
-        fecha.put("anio", anio);
-        fecha.put("hores", hores);
-        fecha.put("minuts", minuts);
+    }
 
-        return fecha;
+    public Registro resetFecha() {
+
+        return new Registro(0,0,0,0,0);
 
     }
 
     public void iniciarJornada (View view) {
 
-        fechaEntrada = getFechaActual();
+        usuarioApp.setRegistroEntrada(getFechaActual());
 
-        GuardarUsuarioEntradaBBDD(fechaEntrada.get("hores"), fechaEntrada.get("minuts"));
+        GuardarUsuarioBBDD();
+
+        iniciarTextView.setText(usuarioApp.getRegistroEntrada().getHora() + ":" + usuarioApp.getRegistroEntrada().getMinut());
 
         iniciarJornadaBtn.setEnabled(false);
     }
 
     public void acabarJornada (View view) {
-        fechaSortida = getFechaActual();
 
-        GuardarUsuarioSalidaBBDD(fechaSortida.get("hores"), fechaSortida.get("minuts"));
+        usuarioApp.setRegistroSalida(getFechaActual());
+
+        GuardarUsuarioBBDD();
+
+        acabarTextView.setText(usuarioApp.getRegistroSalida().getHora() + ":" + usuarioApp.getRegistroSalida().getMinut());
 
         acabarJornadaBtn.setEnabled(false);
-
-        calcularHores();
 
     }
 
@@ -249,19 +197,22 @@ public class EmployeeActivity extends AppCompatActivity {
         iniciarJornadaBtn.setEnabled(true);
         acabarJornadaBtn.setEnabled(true);
 
-        
+        usuarioApp.setRegistroEntrada(resetFecha());
+        usuarioApp.setRegistroSalida(resetFecha());
+
+        GuardarUsuarioBBDD();
         
     }
 
     private void calcularHores() {
 
-        int horasTotals = fechaSortida.get("hores") - fechaEntrada.get("hores");
-        int minutsTotals = fechaSortida.get("minuts") - fechaEntrada.get("minuts");
+        long diaEntrada = usuarioApp.getRegistroEntrada().getDia();
+        long diaSalida = usuarioApp.getRegistroSalida().getDia();
 
-        if (minutsTotals < 10)
-            ((TextView) findViewById(R.id.resultat)).setText(new StringBuilder().append("Total: ").append(horasTotals + ":0" + minutsTotals).toString());
-        else
-            ((TextView) findViewById(R.id.resultat)).setText(new StringBuilder().append("Total: ").append(horasTotals + ":" + minutsTotals).toString());
+        long horasTotals = usuarioApp.getRegistroSalida().getHora() - usuarioApp.getRegistroEntrada().getHora();
+        long minutsTotals = usuarioApp.getRegistroSalida().getMinut() - usuarioApp.getRegistroEntrada().getMinut();
+
+        ((TextView) findViewById(R.id.resultat)).setText(horasTotals + ":" + minutsTotals);
 
     }
 

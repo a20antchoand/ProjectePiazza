@@ -10,15 +10,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TestAuth">
         <activity
-            android:name=".EmployeeActivity"
+            android:name=".Controladores.EmployeeActivity"
             android:exported="true" />
         <activity
-            android:name=".PiazzaHomeActivity"
+            android:name=".Controladores.PiazzaHomeActivity"
             android:exported="false"
             android:label="@string/title_activity_piazza_home"
             android:theme="@style/Theme.TestAuth.NoActionBar" />
         <activity
-            android:name=".AuthActivity"
+            android:name=".Controladores.AuthActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
