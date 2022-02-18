@@ -11,15 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
-import com.example.piazza.Classes.Contador;
 import com.example.piazza.Classes.Registro;
 import com.example.piazza.Classes.Usuario;
 import com.example.piazza.Controladores.AuthActivity;
@@ -53,9 +49,6 @@ public class IntroduirHoresFragment extends Fragment {
     FirebaseUser user;
     Usuario usuarioApp;
 
-    Contador contador;
-
-
 
     private FragmentIntroduirHoresBinding binding;
     private View root;
@@ -82,8 +75,6 @@ public class IntroduirHoresFragment extends Fragment {
         acabarJornadaBtn.setBackgroundColor(Color.GRAY);
         db = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
-
-        contador = new Contador("Contador", root.findViewById(R.id.contador));
 
         //((TextView) findViewById(R.id.contador)).setText(user.getEmail());
 
@@ -275,8 +266,6 @@ public class IntroduirHoresFragment extends Fragment {
         acabarJornadaBtn.setEnabled(true);
         acabarJornadaBtn.setBackgroundColor(Color.RED);
 
-        new Thread(contador).start();
-
     }
 
     public void acabarJornada (View view) {
@@ -290,8 +279,6 @@ public class IntroduirHoresFragment extends Fragment {
         acabarJornadaBtn.setEnabled(false);
         acabarJornadaBtn.setBackgroundColor(Color.GRAY);
 
-        contador.pause();
-
         calcularHores();
 
     }
@@ -301,9 +288,6 @@ public class IntroduirHoresFragment extends Fragment {
         iniciarTextView.setText("--:--");
         acabarTextView.setText("--:--");
         resultat.setText("--:--");
-
-        contador.pause();
-        contador.reiniciar();
 
         iniciarJornadaBtn.setEnabled(true);
         iniciarJornadaBtn.setBackgroundColor(Color.GREEN);

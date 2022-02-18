@@ -1,11 +1,7 @@
 <resources>
     <string name="app_name">Piazza</string>
     <string name="title_activity_piazza_home">Piazza - Control Horari</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Piazza</string>
     <string name="nav_header_subtitle">Email</string>
-    <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Tancar sessió</string>
 
     <string name="menu_inici">Inici</string>
@@ -15,12 +11,10 @@
     <string name="emptyTime">--:--</string>
     <string name="slash">/</string>
     <string name="exit">exit</string>
-    <string name="title_activity_admin">AdminActivity</string>
+
     <string name="title_inici">Validar</string>
     <string name="title_treballadors">Treballadors</string>
     <string name="title_administrar">Administrar</string>
-    <string name="title_activity_employee2">EmployeeActivity2</string>
-
     <string name="title_historial">Historial</string>
     <string name="title_introduir_hores">Introduir Hores</string>
 </resources>

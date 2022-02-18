@@ -13,12 +13,10 @@
         <activity
             android:name="com.example.piazza.Controladores.AdminActivity"
             android:exported="false"
-            android:label="@string/title_activity_admin"
-            android:theme="@style/SplashTheme"/>
+            android:label="@string/title_administrar"/>
         <activity
             android:name="com.example.piazza.Controladores.EmployeeActivity"
-            android:exported="true"
-            android:theme="@style/SplashTheme"/>
+            android:exported="true"/>
         <activity
             android:name="com.example.piazza.Controladores.AuthActivity"
             android:exported="true"
