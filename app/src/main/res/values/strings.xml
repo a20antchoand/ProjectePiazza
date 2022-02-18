@@ -21,6 +21,6 @@
     <string name="title_administrar">Administrar</string>
     <string name="title_activity_employee2">EmployeeActivity2</string>
 
-    <string name="title_home">Historial</string>
+    <string name="title_historial">Historial</string>
     <string name="title_introduir_hores">Introduir Hores</string>
 </resources>

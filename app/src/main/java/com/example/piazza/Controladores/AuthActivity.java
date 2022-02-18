@@ -17,13 +17,17 @@ public class AuthActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_auth);
 
+        setTheme(R.style.AppTheme);
+
+        setContentView(R.layout.activity_auth);
         setup();
 
     }
 
     public void setup() {
+
+
 
         Button logIn = (Button) findViewById(R.id.logIn);
 
@@ -39,14 +43,14 @@ public class AuthActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
 
-                    //String email = ((EditText) findViewById(R.id.editTextEmail)).getText().toString() + "@gmail.com";
-                    //String password = ((EditText) findViewById(R.id.editTextPassword)).getText().toString();
+                    String email = ((EditText) findViewById(R.id.editTextEmail)).getText().toString() + "@gmail.com";
+                    String password = ((EditText) findViewById(R.id.editTextPassword)).getText().toString();
 
                     //String email = "admin@gmail.com";
                     //String password = "123456";
 
-                    String email = "toni@gmail.com";
-                    String password = "123456";
+                    //String email = "toni@gmail.com";
+                    //String password = "123456";
 
                     if (!email.equals("") && !password.equals("")) {
                         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {

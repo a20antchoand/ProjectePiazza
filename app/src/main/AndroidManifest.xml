@@ -9,20 +9,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TestAuth" >
-        <activity
-            android:name=".EmployeeActivity2"
-            android:exported="false"
-            android:label="@string/title_activity_employee2" />
+
         <activity
             android:name="com.example.piazza.Controladores.AdminActivity"
             android:exported="false"
-            android:label="@string/title_activity_admin" />
+            android:label="@string/title_activity_admin"
+            android:theme="@style/SplashTheme"/>
         <activity
             android:name="com.example.piazza.Controladores.EmployeeActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@style/SplashTheme"/>
         <activity
             android:name="com.example.piazza.Controladores.AuthActivity"
-            android:exported="true" >
+            android:exported="true"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

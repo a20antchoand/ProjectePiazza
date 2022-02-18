@@ -19,24 +19,14 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class AdministrarFragment extends Fragment {
 
-    private AdministrarViewModel administrarViewModel;
     private FragmentAdministrarBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        administrarViewModel =
-                new ViewModelProvider(this).get(AdministrarViewModel.class);
+
 
         binding = FragmentAdministrarBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-        final TextView textView = binding.textNotifications;
-        administrarViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
 
         binding.button.setOnClickListener(new View.OnClickListener() {
             @Override

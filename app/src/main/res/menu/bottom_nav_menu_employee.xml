@@ -6,8 +6,8 @@
         android:icon="@drawable/ic_baseline_more_time_24"
         android:title="@string/title_introduir_hores" />
     <item
-        android:id="@+id/navigation_home"
+        android:id="@+id/navigation_historial"
         android:icon="@drawable/ic_baseline_history_24"
-        android:title="@string/title_home" />
+        android:title="@string/title_historial" />
 
 </menu>

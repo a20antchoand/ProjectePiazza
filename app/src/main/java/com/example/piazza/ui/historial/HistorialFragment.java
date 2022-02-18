@@ -17,17 +17,15 @@ import com.example.testauth.databinding.FragmentHistorialBinding;
 
 public class HistorialFragment extends Fragment {
 
-    private HistorialViewModel historialViewModel;
     private FragmentHistorialBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        historialViewModel =
-                new ViewModelProvider(this).get(HistorialViewModel.class);
 
         binding = FragmentHistorialBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         return root;
+
     }
 
     @Override
