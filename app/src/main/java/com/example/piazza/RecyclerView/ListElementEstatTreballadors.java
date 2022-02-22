@@ -1,13 +1,15 @@
 package com.example.piazza.RecyclerView;
 
-public class ListElement {
+import java.io.Serializable;
+
+public class ListElementEstatTreballadors implements Serializable {
 
     String color;
     String nom;
     String hores;
     String estat;
 
-    public ListElement(String color, String nom, String hores, String estat) {
+    public ListElementEstatTreballadors(String color, String nom, String hores, String estat) {
         this.color = color;
         this.nom = nom;
         this.hores = hores;

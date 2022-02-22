@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-import com.example.piazza.RecyclerView.ListAdapter;
-import com.example.piazza.RecyclerView.ListElement;
+import com.example.piazza.RecyclerView.ListAdapterEstatTreballadors;
+import com.example.piazza.RecyclerView.ListElementEstatTreballadors;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentHistorialBinding;
 
@@ -23,7 +23,7 @@ public class HistorialFragment extends Fragment {
 
     private FragmentHistorialBinding binding;
     private View root;
-    private List<ListElement> elements;
+    private List<ListElementEstatTreballadors> elements;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -31,28 +31,7 @@ public class HistorialFragment extends Fragment {
         binding = FragmentHistorialBinding.inflate(inflater, container, false);
         root = binding.getRoot();
 
-        setup();
-
         return root;
-
-    }
-
-    public void setup() {
-        elements = new ArrayList<>();
-
-        elements.add(new ListElement("#123456","Toni","5:00","PENDENT"));
-        elements.add(new ListElement("#346456","Alia","5:00","PENDENT"));
-        elements.add(new ListElement("#978456","Paula","5:00","PENDENT"));
-        elements.add(new ListElement("#123532","Arnau","5:00","PENDENT"));
-        elements.add(new ListElement("#673452","Fati","5:00","PENDENT"));
-        elements.add(new ListElement("#578534","Ricard","5:00","PENDENT"));
-        elements.add(new ListElement("#892345","Jordi","5:00","PENDENT"));
-
-        ListAdapter listAdapter = new ListAdapter(elements, root.getContext());
-        RecyclerView recyclerView = root.findViewById(R.id.listRecyclerView);
-        recyclerView.setHasFixedSize(false);
-        recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
-        recyclerView.setAdapter(listAdapter);
 
     }
 

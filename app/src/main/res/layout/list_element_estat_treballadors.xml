@@ -76,7 +76,7 @@
                 android:layout_marginRight="6dp"
                 android:text="Pendent"
                 android:textSize="20dp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
         </RelativeLayout>
     </LinearLayout>

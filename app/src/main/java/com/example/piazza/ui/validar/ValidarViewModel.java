@@ -10,7 +10,7 @@ public class ValidarViewModel extends ViewModel {
 
     public ValidarViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is home fragment");
+        mText.setValue("Hores per validar");
     }
 
     public LiveData<String> getText() {
