@@ -43,7 +43,7 @@ public class AuthActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
 
-                    String email = ((EditText) findViewById(R.id.editTextEmail)).getText().toString() + "@gmail.com";
+                    String email = ((EditText) findViewById(R.id.editTextEmail)).getText().toString();
                     String password = ((EditText) findViewById(R.id.editTextPassword)).getText().toString();
 
                     //String email = "admin@gmail.com";

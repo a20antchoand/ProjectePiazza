@@ -23,7 +23,6 @@ public class HistorialFragment extends Fragment {
 
     private FragmentHistorialBinding binding;
     private View root;
-    private List<ListElementEstatTreballadors> elements;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {

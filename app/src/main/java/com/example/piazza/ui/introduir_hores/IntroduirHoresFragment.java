@@ -2,7 +2,6 @@ package com.example.piazza.ui.introduir_hores;
 
 import static com.google.firebase.crashlytics.internal.Logger.TAG;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,17 +15,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.piazza.Classes.Horario;
 import com.example.piazza.Classes.Registro;
 import com.example.piazza.Classes.Usuario;
-import com.example.piazza.Controladores.AuthActivity;
+import com.example.piazza.Modelo.UsuarioModelo;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentIntroduirHoresBinding;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.text.SimpleDateFormat;
@@ -44,10 +41,10 @@ public class IntroduirHoresFragment extends Fragment {
     Button iniciarJornadaBtn;
     Button acabarJornadaBtn;
 
+    UsuarioModelo jugadorModelo;
     DocumentSnapshot document;
-    FirebaseFirestore db;
-    FirebaseUser user;
-    Usuario usuarioApp;
+    static Usuario usuarioApp;
+    Horario horarioUsuaroi;
 
 
     private FragmentIntroduirHoresBinding binding;
@@ -63,7 +60,9 @@ public class IntroduirHoresFragment extends Fragment {
         return root;
     }
 
-
+    public static void setUsuarioApp(Usuario usuari) {
+        usuarioApp = usuari;
+    }
 
     public void setup () {
         iniciarTextView = root.findViewById(R.id.iniciarTextView);
@@ -73,16 +72,14 @@ public class IntroduirHoresFragment extends Fragment {
         iniciarJornadaBtn.setBackgroundColor(Color.GRAY);
         acabarJornadaBtn = root.findViewById(R.id.acabarJornada);
         acabarJornadaBtn.setBackgroundColor(Color.GRAY);
-        db = FirebaseFirestore.getInstance();
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        jugadorModelo = new UsuarioModelo();
+        horarioUsuaroi = new Horario(new Usuario(jugadorModelo.getUserFirebase().getEmail()), new Registro(0,0,0,0,0), new Registro(0,0,0,0,0));
+        usuarioApp = new Usuario(jugadorModelo.getUserFirebase().getEmail());
+
+        Registro registroEntrada;
+        Registro registroSalida;
 
         //((TextView) findViewById(R.id.contador)).setText(user.getEmail());
-
-        root.findViewById(R.id.logOutEmployee).setOnClickListener(view -> {
-
-            logOut();
-        });
-
 
         root.findViewById(R.id.resetTime).setOnClickListener(view -> {
 
@@ -99,9 +96,17 @@ public class IntroduirHoresFragment extends Fragment {
             acabarJornada(view);
         });
 
-        RecuperarUsuariBBDD();
+        RecuperarRegistroUsuariBBDD();
 
-        final DocumentReference docRef = db.collection("users").document(user.getEmail());
+        escoltarBBDD();
+
+        jugadorModelo.cargarDatosUsuario();
+
+    }
+
+    private void escoltarBBDD() {
+
+        final DocumentReference docRef = jugadorModelo.getDDBB().collection("horari").document(getFechaActual().getMes() + "_" + getFechaActual().getDia() + "_usuari_" + jugadorModelo.getUserFirebase().getEmail());
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,
@@ -114,7 +119,7 @@ public class IntroduirHoresFragment extends Fragment {
                 if (snapshot != null && snapshot.exists()) {
                     Log.d(TAG, "Current data: " + snapshot.getData());
 
-                    RecuperarUsuariBBDD();
+                    RecuperarRegistroUsuariBBDD();
 
                 } else {
                     Log.d(TAG, "Current data: null");
@@ -122,14 +127,13 @@ public class IntroduirHoresFragment extends Fragment {
             }
         });
 
-
     }
 
 
-    private void RecuperarUsuariBBDD() {
+    private void RecuperarRegistroUsuariBBDD() {
 
 
-        DocumentReference docRef = db.collection("users").document(Objects.requireNonNull(user.getEmail()));
+        DocumentReference docRef = jugadorModelo.getDDBB().collection("horari").document(Objects.requireNonNull(getFechaActual().getMes() + "_" + getFechaActual().getDia() + "_usuari_" + jugadorModelo.getUserFirebase().getEmail()));
         docRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 document = task.getResult();
@@ -139,11 +143,7 @@ public class IntroduirHoresFragment extends Fragment {
                     comprovarEntradaSortida();
                 } else {
                     Log.d(TAG, "No such document");
-
-                    usuarioApp = new Usuario(user.getEmail());
-                    GuardarUsuarioBBDD();
-                    iniciarJornadaBtn.setEnabled(true);
-                    iniciarJornadaBtn.setBackgroundColor(Color.GREEN);
+                    GuardarRegistroHorarioBBDD();
                 }
             } else {
                 Log.d(TAG, "get failed with ", task.getException());
@@ -152,13 +152,13 @@ public class IntroduirHoresFragment extends Fragment {
 
     }
 
-    private void GuardarUsuarioBBDD() {
-
-
-        db.collection("users").document(Objects.requireNonNull(user.getEmail()))
-                .set(usuarioApp)
+    private void GuardarRegistroHorarioBBDD() {
+        
+        jugadorModelo.getDDBB().collection("horari").document(Objects.requireNonNull(getFechaActual().getMes() + "_" + getFechaActual().getDia() + "_usuari_" + jugadorModelo.getUserFirebase().getEmail()))
+                .set(horarioUsuaroi)
                 .addOnSuccessListener(aVoid -> {
                     Log.d(TAG, "DocumentSnapshot successfully written!");
+
                 })
                 .addOnFailureListener(e -> {
                     Log.w(TAG, "Error writing document", e);
@@ -169,8 +169,8 @@ public class IntroduirHoresFragment extends Fragment {
 
     private void comprovarEntradaSortida() {
 
-        HashMap e = (HashMap) document.getData().get("registroEntrada");
-        HashMap s = (HashMap) document.getData().get("registroSalida");
+        HashMap e = (HashMap) document.getData().get("entrada");
+        HashMap s = (HashMap) document.getData().get("salida");
 
         long anioEntrada = Long.parseLong(String.valueOf(e.get("anio")));
         long mesEntrada = Long.parseLong(String.valueOf(e.get("mes")));
@@ -194,7 +194,7 @@ public class IntroduirHoresFragment extends Fragment {
             iniciarJornadaBtn.setBackgroundColor(Color.GRAY);
 
             entrada = new Registro(anioEntrada, mesEntrada, diaEntrada, horaEntrada, minutEntrada);
-
+            horarioUsuaroi.setEntrada(entrada);
             if (horaSortida != 0) {
 
                 changeTextTime(acabarTextView, horaSortida, minutSortida);
@@ -204,15 +204,12 @@ public class IntroduirHoresFragment extends Fragment {
 
                 salida = new Registro(anioSortida, mesSortida, diaSortida, horaSortida, minutSortida);
 
-                usuarioApp = new Usuario(user.getEmail(), entrada, salida);
+                horarioUsuaroi.setEntrada(entrada);
+                horarioUsuaroi.setSalida(salida);
 
                 calcularHores();
 
             } else {
-
-                salida = new Registro(0,0,0,0,0);
-
-                usuarioApp = new Usuario(user.getEmail(), entrada, salida);
 
                 acabarJornadaBtn.setEnabled(true);
                 acabarJornadaBtn.setBackgroundColor(Color.RED);
@@ -224,8 +221,6 @@ public class IntroduirHoresFragment extends Fragment {
         } else {
             iniciarJornadaBtn.setEnabled(true);
             iniciarJornadaBtn.setBackgroundColor(Color.GREEN);
-
-            usuarioApp = new Usuario(user.getEmail());
 
             changeTextTime(iniciarTextView, horaEntrada, minutEntrada);
             changeTextTime(acabarTextView, horaSortida, minutSortida);
@@ -254,11 +249,11 @@ public class IntroduirHoresFragment extends Fragment {
 
     public void iniciarJornada (View view) {
 
-        usuarioApp.setRegistroEntrada(getFechaActual());
+        horarioUsuaroi.setEntrada(getFechaActual());
 
-        GuardarUsuarioBBDD();
+        GuardarRegistroHorarioBBDD();
 
-        changeTextTime(iniciarTextView,usuarioApp.getRegistroEntrada().getHora(), usuarioApp.getRegistroEntrada().getMinut() );
+        changeTextTime(iniciarTextView,horarioUsuaroi.getEntrada().getHora(), horarioUsuaroi.getEntrada().getMinut() );
 
         iniciarJornadaBtn.setEnabled(false);
         iniciarJornadaBtn.setBackgroundColor(Color.GRAY);
@@ -270,11 +265,11 @@ public class IntroduirHoresFragment extends Fragment {
 
     public void acabarJornada (View view) {
 
-        usuarioApp.setRegistroSalida(getFechaActual());
+        horarioUsuaroi.setSalida(getFechaActual());
 
-        GuardarUsuarioBBDD();
+        GuardarRegistroHorarioBBDD();
 
-        changeTextTime(acabarTextView, usuarioApp.getRegistroSalida().getHora(), usuarioApp.getRegistroSalida().getMinut());
+        changeTextTime(acabarTextView, horarioUsuaroi.getSalida().getHora(), horarioUsuaroi.getSalida().getMinut());
 
         acabarJornadaBtn.setEnabled(false);
         acabarJornadaBtn.setBackgroundColor(Color.GRAY);
@@ -294,20 +289,25 @@ public class IntroduirHoresFragment extends Fragment {
         acabarJornadaBtn.setEnabled(false);
         acabarJornadaBtn.setBackgroundColor(Color.GRAY);
 
-        usuarioApp.setRegistroEntrada(resetFecha());
-        usuarioApp.setRegistroSalida(resetFecha());
+        horarioUsuaroi.setEntrada(resetFecha());
+        horarioUsuaroi.setSalida(resetFecha());
 
-        GuardarUsuarioBBDD();
+        GuardarRegistroHorarioBBDD();
 
     }
 
     private void calcularHores() {
 
-        long diaEntrada = usuarioApp.getRegistroEntrada().getDia();
-        long diaSalida = usuarioApp.getRegistroSalida().getDia();
+        long diaEntrada = horarioUsuaroi.getEntrada().getDia();
+        long diaSalida = horarioUsuaroi.getSalida().getDia();
 
-        long horasTotals = usuarioApp.getRegistroSalida().getHora() - usuarioApp.getRegistroEntrada().getHora();
-        long minutsTotals = usuarioApp.getRegistroSalida().getMinut() - usuarioApp.getRegistroEntrada().getMinut();
+        long horasTotals = horarioUsuaroi.getSalida().getHora() - horarioUsuaroi.getEntrada().getHora();
+        long minutsTotals;
+        if (horarioUsuaroi.getEntrada().getMinut() > horarioUsuaroi.getSalida().getMinut()) {
+            minutsTotals = (60 - horarioUsuaroi.getEntrada().getMinut()) + horarioUsuaroi.getSalida().getMinut();
+        } else {
+            minutsTotals = horarioUsuaroi.getSalida().getMinut() - horarioUsuaroi.getEntrada().getMinut();
+        }
 
         changeTextTime(resultat, horasTotals, minutsTotals);
 
@@ -320,16 +320,6 @@ public class IntroduirHoresFragment extends Fragment {
         else
             textView.setText(hora + ":" + minut);
     }
-
-
-    public void logOut() {
-        FirebaseAuth.getInstance().signOut();
-        Intent intent = new Intent(getActivity(), AuthActivity.class);
-        startActivity(intent);
-
-    }
-
-
 
     @Override
     public void onDestroyView() {

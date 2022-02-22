@@ -16,6 +16,14 @@ public class Registro {
         this.minut = minut;
     }
 
+    public void setRegistro (long anio, long mes, long dia, long hora, long minut) {
+        this.anio = anio;
+        this.mes = mes;
+        this.dia = dia;
+        this.hora = hora;
+        this.minut = minut;
+    }
+
     public long getAnio() {
         return anio;
     }

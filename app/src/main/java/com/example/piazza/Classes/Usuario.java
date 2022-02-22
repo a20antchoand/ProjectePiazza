@@ -2,39 +2,55 @@ package com.example.piazza.Classes;
 
 public class Usuario {
 
-    Registro registroEntrada;
-    Registro registroSalida;
     String email;
+    String telefono;
+    String nom;
+    String cognom;
+    String salario;
 
-    public Usuario(String email) {
+
+    public Usuario (String email) {
         this.email = email;
-        this.registroEntrada = new Registro(0,0,0,0,0);
-        this.registroSalida = new Registro(0,0,0,0,0);
     }
 
-    public Usuario (String email, Registro entrada, Registro sortida) {
-
+    public Usuario(String email, String nom, String cognom, String telefono, String salario) {
         this.email = email;
-
-        this.registroEntrada = entrada;
-        this.registroSalida = sortida;
-
+        this.telefono = telefono;
+        this.salario = salario;
+        this.nom = nom;
+        this.cognom = cognom;
     }
 
-    public Registro getRegistroEntrada() {
-        return registroEntrada;
+    public String getTelefono() {
+        return telefono;
     }
 
-    public void setRegistroEntrada(Registro registroEntrada) {
-        this.registroEntrada = registroEntrada;
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 
-    public Registro getRegistroSalida() {
-        return registroSalida;
+    public String getNom() {
+        return nom;
     }
 
-    public void setRegistroSalida(Registro registroSalida) {
-        this.registroSalida = registroSalida;
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public String getCognom() {
+        return cognom;
+    }
+
+    public void setCognom(String cognom) {
+        this.cognom = cognom;
+    }
+
+    public String getSalario() {
+        return salario;
+    }
+
+    public void setSalario(String salario) {
+        this.salario = salario;
     }
 
     public String getEmail() {

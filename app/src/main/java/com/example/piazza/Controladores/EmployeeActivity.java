@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import com.example.piazza.Classes.Usuario;
+import com.example.piazza.Modelo.UsuarioModelo;
 import com.example.testauth.R;
 
 import com.example.testauth.databinding.ActivityEmployeeBinding;
@@ -19,6 +21,7 @@ import androidx.navigation.ui.NavigationUI;
 public class EmployeeActivity extends AppCompatActivity {
 
     private ActivityEmployeeBinding binding;
+
 
 
     @Override
@@ -41,7 +44,6 @@ public class EmployeeActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
-
 
 
     }
