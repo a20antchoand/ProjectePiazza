@@ -9,7 +9,7 @@
     <string name="menu_historial">Historial</string>
 
     <string name="emptyTime">--:--</string>
-    <string name="slash">/</string>
+    <string name="slash">-</string>
     <string name="exit">exit</string>
 
     <string name="title_inici">Validar</string>

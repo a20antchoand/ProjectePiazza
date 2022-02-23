@@ -158,7 +158,6 @@ public class IntroduirHoresFragment extends Fragment {
                 .set(horarioUsuaroi)
                 .addOnSuccessListener(aVoid -> {
                     Log.d(TAG, "DocumentSnapshot successfully written!");
-
                 })
                 .addOnFailureListener(e -> {
                     Log.w(TAG, "Error writing document", e);
@@ -301,8 +300,15 @@ public class IntroduirHoresFragment extends Fragment {
         long diaEntrada = horarioUsuaroi.getEntrada().getDia();
         long diaSalida = horarioUsuaroi.getSalida().getDia();
 
-        long horasTotals = horarioUsuaroi.getSalida().getHora() - horarioUsuaroi.getEntrada().getHora();
+        long horasTotals;
         long minutsTotals;
+
+        if (diaSalida != diaSalida) {
+            horasTotals = (24 - horarioUsuaroi.getEntrada().getHora()) + horarioUsuaroi.getSalida().getHora();
+        } else {
+            horasTotals = horarioUsuaroi.getSalida().getHora() - horarioUsuaroi.getEntrada().getHora();
+        }
+
         if (horarioUsuaroi.getEntrada().getMinut() > horarioUsuaroi.getSalida().getMinut()) {
             minutsTotals = (60 - horarioUsuaroi.getEntrada().getMinut()) + horarioUsuaroi.getSalida().getMinut();
         } else {

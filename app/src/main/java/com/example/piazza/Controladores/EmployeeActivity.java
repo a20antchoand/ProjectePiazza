@@ -21,7 +21,7 @@ import androidx.navigation.ui.NavigationUI;
 public class EmployeeActivity extends AppCompatActivity {
 
     private ActivityEmployeeBinding binding;
-
+    Usuario usuario;
 
 
     @Override
@@ -45,8 +45,14 @@ public class EmployeeActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
+        setup();
 
     }
 
+    public void setup () {
+        usuario = UsuarioModelo.cargarDatosUsuario();
+
+        System.out.println("usuario:            " + usuario.toString());
+    }
 
 }

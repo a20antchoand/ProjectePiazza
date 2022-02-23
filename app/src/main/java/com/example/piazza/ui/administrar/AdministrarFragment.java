@@ -67,7 +67,7 @@ public class AdministrarFragment extends Fragment {
                                 Log.d(TAG, "createUserWithEmail:success");
                                 Toast.makeText(getActivity().getApplication(), "Authentication Successful.",
                                         Toast.LENGTH_SHORT).show();
-
+                                jugadorModelo.GuardarUsuarioBBDD(new Usuario(email, nom, cognom, telefon, salari));
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -75,7 +75,6 @@ public class AdministrarFragment extends Fragment {
                                         Toast.LENGTH_SHORT).show();
                             }
                         });
-                jugadorModelo.GuardarUsuarioBBDD(new Usuario(email, nom, cognom, telefon, salari));
 
             }
         });

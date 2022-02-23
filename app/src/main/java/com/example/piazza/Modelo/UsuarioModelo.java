@@ -22,6 +22,7 @@ public class UsuarioModelo {
     static DocumentSnapshot userDocument;
     static FirebaseFirestore DDBB;
     static FirebaseUser userFirebase;
+    static Usuario usuario;
 
     public UsuarioModelo() {
         this.DDBB = FirebaseFirestore.getInstance();
@@ -36,7 +37,7 @@ public class UsuarioModelo {
         return DDBB;
     }
 
-    public void cargarDatosUsuario() {
+    public static Usuario cargarDatosUsuario() {
 
         DocumentReference docRef = DDBB.collection("usuaris").document(Objects.requireNonNull(userFirebase.getEmail()));
         docRef.get().addOnCompleteListener(task -> {
@@ -56,9 +57,10 @@ public class UsuarioModelo {
             }
         });
 
+        return usuario;
     }
 
-    private void validarUsuario() {
+    private static void validarUsuario() {
         String email = (String) userDocument.getData().get("email");
         String nom = (String) userDocument.getData().get("nom");
         String cognom = (String) userDocument.getData().get("cognom");
@@ -66,10 +68,9 @@ public class UsuarioModelo {
         String salari = (String) userDocument.getData().get("salari");
 
         if (!((String) userDocument.getData().get("email")).isEmpty()) {
-            IntroduirHoresFragment.setUsuarioApp(new Usuario(email, nom, cognom, telefon, salari));
-            PerfilFragment.setUsuarioApp(new Usuario(email, nom, cognom, telefon, salari));
+            usuario = new Usuario(email, nom, cognom, telefon, salari);
         } else {
-            PerfilFragment.setUsuarioApp(new Usuario("a", "a", "a", "a", "a"));
+            usuario = new Usuario("a","a","a","a","a");
         }
     }
 
@@ -77,7 +78,7 @@ public class UsuarioModelo {
 
 
         DDBB.collection("usuaris").document(Objects.requireNonNull(usuario.getEmail()))
-                .set(new Usuario(usuario.getEmail(), usuario.getNom(), usuario.getCognom(), usuario.getTelefono(), usuario.getSalario()))
+                .set(usuario)
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
                 .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e));
 

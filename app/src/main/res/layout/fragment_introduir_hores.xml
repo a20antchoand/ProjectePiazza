@@ -12,13 +12,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="-16dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <View
             android:id="@+id/divider2"
             android:layout_width="match_parent"
             android:layout_height="5dp"
+            android:layout_marginTop="15dp"
             android:background="?android:attr/listDivider" />
 
         <androidx.legacy.widget.Space
@@ -38,19 +41,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="75dp"
                 android:text="@string/emptyTime"
-                android:textAlignment="center"
+                android:textAlignment="gravity"
                 android:textSize="50sp" />
 
-            <TextView
-                android:id="@+id/acabarTextView2"
-                android:layout_width="wrap_content"
-                android:layout_height="75dp"
-                android:layout_marginLeft="25dp"
-                android:layout_marginRight="25dp"
-                android:text="@string/slash"
-                android:textAlignment="center"
-                android:textSize="50sp"
-                app:autoSizeTextType="uniform" />
+            <Space
+                android:layout_width="75dp"
+                android:layout_height="1dp"/>
 
             <TextView
                 android:id="@+id/acabarTextView"
