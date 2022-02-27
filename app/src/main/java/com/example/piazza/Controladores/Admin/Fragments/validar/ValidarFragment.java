@@ -1,4 +1,4 @@
-package com.example.piazza.ui.validar;
+package com.example.piazza.Controladores.Admin.Fragments.validar;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.piazza.Controladores.EmployeeActivity;
+import com.example.piazza.Controladores.Employee.EmployeeActivity;
 import com.example.piazza.RecyclerView.ListAdapterEstatTreballadors;
 import com.example.piazza.RecyclerView.ListElementEstatTreballadors;
 import com.example.testauth.R;

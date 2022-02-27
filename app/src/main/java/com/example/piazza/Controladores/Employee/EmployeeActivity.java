@@ -1,11 +1,10 @@
-package com.example.piazza.Controladores;
+package com.example.piazza.Controladores.Employee;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
 import com.example.piazza.Classes.Usuario;
-import com.example.piazza.Modelo.UsuarioModelo;
 import com.example.testauth.R;
 
 import com.example.testauth.databinding.ActivityEmployeeBinding;
@@ -45,14 +44,7 @@ public class EmployeeActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
-        setup();
-
     }
 
-    public void setup () {
-        usuario = UsuarioModelo.cargarDatosUsuario();
-
-        System.out.println("usuario:            " + usuario.toString());
-    }
 
 }

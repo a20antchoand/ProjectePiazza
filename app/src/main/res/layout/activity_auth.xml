@@ -7,7 +7,7 @@
     android:layout_gravity="center"
     android:foregroundGravity="center_vertical|center_horizontal"
     android:soundEffectsEnabled="true"
-    tools:context="com.example.piazza.Controladores.AuthActivity">
+    tools:context="com.example.piazza.Controladores.Auth.AuthActivity">
 
     <ImageView
         android:id="@+id/imageView2"

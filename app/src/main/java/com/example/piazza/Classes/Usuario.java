@@ -13,6 +13,14 @@ public class Usuario {
         this.email = email;
     }
 
+    public Usuario (Usuario usuario) {
+        this.email = usuario.getEmail();
+        this.telefono = usuario.getTelefono();
+        this.salario = usuario.getSalario();
+        this.nom = usuario.getNom();
+        this.cognom = usuario.getCognom();
+    }
+
     public Usuario(String email, String nom, String cognom, String telefono, String salario) {
         this.email = email;
         this.telefono = telefono;

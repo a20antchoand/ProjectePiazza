@@ -1,4 +1,4 @@
-package com.example.piazza.ui.validar;
+package com.example.piazza.Controladores.Admin.Fragments.validar;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

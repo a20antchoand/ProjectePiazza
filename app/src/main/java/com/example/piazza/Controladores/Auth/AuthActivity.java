@@ -1,4 +1,4 @@
-package com.example.piazza.Controladores;
+package com.example.piazza.Controladores.Auth;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.piazza.Controladores.Admin.AdminActivity;
+import com.example.piazza.Controladores.Employee.EmployeeActivity;
+import com.example.piazza.FireBase.Session.AuthUserSession;
 import com.example.testauth.R;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -27,16 +30,27 @@ public class AuthActivity extends AppCompatActivity {
 
     public void setup() {
 
-
-
         Button logIn = (Button) findViewById(R.id.logIn);
 
+        /* ======================================
+         * Comprovamos si tiene el usuario sesión activa
+         * ======================================
+         * */
+
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+
             if (FirebaseAuth.getInstance().getCurrentUser().getEmail().contains("admin")) {
                 showHome();
             } else {
                 showEmployee();
             }
+
+        /*
+        * ======================================
+        * Comprovamos si el usuario inicia sesión.
+        * ======================================
+        * */
+
         } else {
 
             logIn.setOnClickListener(new View.OnClickListener() {
@@ -46,15 +60,17 @@ public class AuthActivity extends AppCompatActivity {
                     String email = ((EditText) findViewById(R.id.editTextEmail)).getText().toString();
                     String password = ((EditText) findViewById(R.id.editTextPassword)).getText().toString();
 
-                    //String email = "admin@gmail.com";
-                    //String password = "123456";
-
-                    //String email = "toni@gmail.com";
-                    //String password = "123456";
-
                     if (!email.equals("") && !password.equals("")) {
                         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
+
+                                /* ======================================
+                                 * Cargamos datos del usuario actual
+                                 * ======================================
+                                 * */
+
+                                AuthUserSession.cargarDatosUsuario(email);
+
                                 if (email.contains("admin"))
                                     showHome();
                                 else
@@ -82,14 +98,14 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     private void showHome () {
-
+        System.out.println(FirebaseAuth.getInstance().getCurrentUser().getEmail());
         Intent intent = new Intent(this, AdminActivity.class);
         startActivity(intent);
         finish();
     }
 
     private void showEmployee () {
-
+        System.out.println(FirebaseAuth.getInstance().getCurrentUser().getEmail());
         Intent intent = new Intent(this, EmployeeActivity.class);
         startActivity(intent);
         finish();

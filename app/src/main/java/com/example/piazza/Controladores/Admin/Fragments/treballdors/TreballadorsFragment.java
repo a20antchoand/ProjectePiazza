@@ -1,4 +1,4 @@
-package com.example.piazza.ui.treballdors;
+package com.example.piazza.Controladores.Admin.Fragments.treballdors;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

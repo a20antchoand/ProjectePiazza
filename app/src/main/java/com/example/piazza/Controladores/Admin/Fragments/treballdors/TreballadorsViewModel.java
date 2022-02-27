@@ -1,4 +1,4 @@
-package com.example.piazza.ui.treballdors;
+package com.example.piazza.Controladores.Admin.Fragments.treballdors;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

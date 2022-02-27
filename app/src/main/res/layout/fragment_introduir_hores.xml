@@ -5,7 +5,7 @@
     style="@style/AppTheme"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.piazza.Controladores.EmployeeActivity">
+    tools:context="com.example.piazza.Controladores.Employee.EmployeeActivity">
 
 
     <LinearLayout
@@ -84,8 +84,7 @@
                 android:id="@+id/iniciarJornada"
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
-                android:enabled="false"
-                android:hint="Iniciar"
+                android:enabled="true"
                 android:textColor="#000000"
                 android:textStyle="bold"
                 app:icon="@drawable/ic_baseline_play_arrow_24"
@@ -105,7 +104,6 @@
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:enabled="false"
-                android:hint="Acabar"
                 android:textColor="#000000"
                 android:textStyle="bold"
                 app:icon="@drawable/ic_baseline_stop_24"

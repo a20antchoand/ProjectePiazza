@@ -1,4 +1,4 @@
-package com.example.piazza.ui.perfil;
+package com.example.piazza.Controladores.Employee.Fragments.perfil;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,34 +11,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.piazza.Classes.Usuario;
-import com.example.piazza.Controladores.AuthActivity;
-import com.example.piazza.Modelo.UsuarioModelo;
-import com.example.piazza.RecyclerView.ListElementEstatTreballadors;
+import com.example.piazza.Controladores.Auth.AuthActivity;
+import com.example.piazza.FireBase.Session.AuthUserSession;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentPerfilBinding;
 import com.google.firebase.auth.FirebaseAuth;
-
-import java.util.List;
 
 public class PerfilFragment extends Fragment {
 
     private FragmentPerfilBinding binding;
     private View root;
-    UsuarioModelo usuarioModelo = new UsuarioModelo();
-    static Usuario usuarioApp;
+    Usuario currUser;
     TextView nom;
     TextView email;
     TextView salari;
     TextView telefon;
     TextView cognom;
-
-    public Usuario getUsuarioApp() {
-        return usuarioApp;
-    }
-
-    public static void setUsuarioApp(Usuario usuari) {
-        usuarioApp = usuari;
-    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -59,22 +47,25 @@ public class PerfilFragment extends Fragment {
         salari = root.findViewById(R.id.salari);
         telefon = root.findViewById(R.id.telefon);
         cognom = root.findViewById(R.id.cognom);
-        UsuarioModelo usuarioModelo = new UsuarioModelo();
-
 
         root.findViewById(R.id.logOutEmployee).setOnClickListener(view -> {
 
             logOut();
         });
 
-        usuarioModelo.cargarDatosUsuario();
-
         mostrarDatosPerfil();
+
     }
 
-    private void mostrarDatosPerfil() {
+    public void mostrarDatosPerfil() {
 
-        email.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        currUser = AuthUserSession.getUser();
+
+        email.setText(currUser.getEmail());
+        nom.setText(currUser.getNom());
+        cognom.setText(currUser.getCognom());
+        telefon.setText(currUser.getTelefono());
+        salari.setText(currUser.getSalario());
 
     }
 

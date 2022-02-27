@@ -1,15 +1,30 @@
 package com.example.piazza.Classes;
 
+import java.time.ZonedDateTime;
+
 public class Horario {
 
     Usuario usuario;
-    Registro entrada;
-    Registro salida;
+    ZonedDateTime entrada;
+    ZonedDateTime salida;
+    long totalMinutsTreballats;
 
-    public Horario(Usuario usuario, Registro entrada, Registro salida) {
+    public Horario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public Horario(Usuario usuario, ZonedDateTime entrada, ZonedDateTime salida) {
         this.usuario = usuario;
         this.entrada = entrada;
         this.salida = salida;
+    }
+
+    public long getTotalMinutsTreballats() {
+        return totalMinutsTreballats;
+    }
+
+    public void setTotalMinutsTreballats(long totalMinutsTreballats) {
+        this.totalMinutsTreballats = totalMinutsTreballats;
     }
 
     public Usuario getUsuario() {
@@ -20,19 +35,19 @@ public class Horario {
         this.usuario = usuario;
     }
 
-    public Registro getEntrada() {
+    public ZonedDateTime getEntrada() {
         return entrada;
     }
 
-    public void setEntrada(Registro entrada) {
+    public void setEntrada(ZonedDateTime entrada) {
         this.entrada = entrada;
     }
 
-    public Registro getSalida() {
+    public ZonedDateTime getSalida() {
         return salida;
     }
 
-    public void setSalida(Registro salida) {
+    public void setSalida(ZonedDateTime salida) {
         this.salida = salida;
     }
 }

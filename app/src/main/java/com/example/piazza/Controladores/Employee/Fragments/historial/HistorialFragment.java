@@ -1,4 +1,4 @@
-package com.example.piazza.ui.historial;
+package com.example.piazza.Controladores.Employee.Fragments.historial;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,17 +7,9 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 
-import com.example.piazza.RecyclerView.ListAdapterEstatTreballadors;
-import com.example.piazza.RecyclerView.ListElementEstatTreballadors;
-import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentHistorialBinding;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class HistorialFragment extends Fragment {
 

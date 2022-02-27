@@ -1,4 +1,4 @@
-package com.example.piazza.ui.administrar;
+package com.example.piazza.Controladores.Admin.Fragments.administrar;
 
 import static android.content.ContentValues.TAG;
 
@@ -15,8 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.piazza.Classes.Usuario;
-import com.example.piazza.Controladores.AuthActivity;
-import com.example.piazza.Modelo.UsuarioModelo;
+import com.example.piazza.Controladores.Auth.AuthActivity;
+import com.example.piazza.FireBase.Session.AuthUserSession;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentAdministrarBinding;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,7 +24,6 @@ import com.google.firebase.auth.FirebaseAuth;
 public class AdministrarFragment extends Fragment {
 
     private FragmentAdministrarBinding binding;
-    private UsuarioModelo jugadorModelo = new UsuarioModelo();
     View root;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -67,7 +66,7 @@ public class AdministrarFragment extends Fragment {
                                 Log.d(TAG, "createUserWithEmail:success");
                                 Toast.makeText(getActivity().getApplication(), "Authentication Successful.",
                                         Toast.LENGTH_SHORT).show();
-                                jugadorModelo.GuardarUsuarioBBDD(new Usuario(email, nom, cognom, telefon, salari));
+                                AuthUserSession.GuardarUsuarioBBDD(new Usuario(email, nom, cognom, telefon, salari));
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());

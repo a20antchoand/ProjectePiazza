@@ -1,4 +1,4 @@
-package com.example.piazza.Controladores;
+package com.example.piazza.Controladores.Admin;
 
 import android.content.Intent;
 import android.os.Bundle;
