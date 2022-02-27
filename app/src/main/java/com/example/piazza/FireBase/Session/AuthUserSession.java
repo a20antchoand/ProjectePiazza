@@ -3,8 +3,10 @@ package com.example.piazza.FireBase.Session;
 import static com.google.firebase.crashlytics.internal.Logger.TAG;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.piazza.Classes.Usuario;
+import com.example.piazza.Controladores.Employee.Fragments.introduir_hores.IntroduirHoresFragment;
 import com.google.errorprone.annotations.Var;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -67,7 +69,7 @@ public class AuthUserSession {
                     Log.d(TAG, "DocumentSnapshot data: " + userDocument.getData());
                     Map<String, Object> data = userDocument.getData();
                     setUser(new Usuario((String) data.get("email"), (String) data.get("nom"), (String) data.get("cognom"), (String) data.get("telefono"), (String) data.get("salario")));
-                    System.out.println("USUARI: " + user.getEmail());
+                    IntroduirHoresFragment.setUsuarioApp(getUser());
                 } else {
                     Log.d(TAG, "No such document - AUTHFIREBASE");
                 }

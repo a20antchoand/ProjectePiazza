@@ -75,9 +75,7 @@ public class IntroduirHoresFragment extends Fragment {
         iniciarJornadaBtn.setBackgroundColor(Color.GREEN);
         acabarJornadaBtn = root.findViewById(R.id.acabarJornada);
         acabarJornadaBtn.setBackgroundColor(Color.GRAY);
-        horarioUsuaroi = new Horario(AuthUserSession.getUser());
-
-        //((TextView) findViewById(R.id.contador)).setText(user.getEmail());
+        horarioUsuaroi = new Horario();
 
         root.findViewById(R.id.resetTime).setOnClickListener(view -> {
 
@@ -94,11 +92,9 @@ public class IntroduirHoresFragment extends Fragment {
             acabarJornada(view);
         });
 
-        //RecuperarRegistroUsuariBBDD();
+        RecuperarRegistroUsuariBBDD();
 
         escoltarBBDD();
-
-        usuarioApp = AuthUserSession.getUser();
 
     }
 
@@ -117,7 +113,7 @@ public class IntroduirHoresFragment extends Fragment {
                 if (snapshot != null && snapshot.exists()) {
                     Log.d(TAG, "Current data: " + snapshot.getData());
 
-                    //RecuperarRegistroUsuariBBDD();
+                    RecuperarRegistroUsuariBBDD();
 
                 } else {
                     Log.d(TAG, "Current data: null");
@@ -131,14 +127,14 @@ public class IntroduirHoresFragment extends Fragment {
     private void RecuperarRegistroUsuariBBDD() {
 
 
-        DocumentReference docRef = AuthUserSession.getDDBB().collection("horari").document(Objects.requireNonNull(getFechaActual().getYear() + "_" + getFechaActual().getMonthValue() + "_" + getFechaActual().getDayOfMonth() +  "_usuari_" + AuthUserSession.getUser().getEmail()));
+        DocumentReference docRef = AuthUserSession.getDDBB().collection("horari").document(Objects.requireNonNull(getFechaActual().getYear() + "_" + getFechaActual().getMonthValue() + "_" + getFechaActual().getDayOfMonth() +  "_usuari_" + FirebaseAuth.getInstance().getCurrentUser().getEmail()));
         docRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 document = task.getResult();
 
                 if (document.exists()) {
                     Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                    //comprovarEntradaSortida();
+                    comprovarEntradaSortida();
                 } else {
                     Log.d(TAG, "No such document");
                     GuardarRegistroBBDD();
@@ -152,7 +148,7 @@ public class IntroduirHoresFragment extends Fragment {
 
     private void GuardarRegistroBBDD() {
 
-        AuthUserSession.getDDBB().collection("horari").document(Objects.requireNonNull(getFechaActual().getYear() + "_" + getFechaActual().getMonthValue() + "_" + getFechaActual().getDayOfMonth() +  "_usuari_" + AuthUserSession.getUser().getEmail()))
+        AuthUserSession.getDDBB().collection("horari").document(Objects.requireNonNull(getFechaActual().getYear() + "_" + getFechaActual().getMonthValue() + "_" + getFechaActual().getDayOfMonth() +  "_usuari_" + FirebaseAuth.getInstance().getCurrentUser().getEmail()))
                 .set(horarioUsuaroi)
                 .addOnSuccessListener(aVoid -> {
                     Log.d(TAG, "DocumentSnapshot successfully written!");
@@ -164,34 +160,33 @@ public class IntroduirHoresFragment extends Fragment {
     }
 
 
-   /* private void comprovarEntradaSortida() {
+    private void comprovarEntradaSortida() {
 
-        HashMap e = (HashMap) document.getData().get("entrada");
-        HashMap s = (HashMap) document.getData().get("salida");
+        HashMap<String, Object> entrada = (HashMap<String, Object>) document.getData().get("entrada");
+        HashMap<String, Object> sortida = (HashMap<String, Object>) document.getData().get("salida");
 
+        System.out.println("======================================================================================");
+        System.out.println(entrada.get("minute"));
+        System.out.println("======================================================================================");
 
-        Registro entrada;
-        Registro salida;
+        long horaEntrada = (Long) entrada.get("hour");
+        long minutEntrada = (Long) entrada.get("minute");
 
-        if (horaEntrada != 0) {
+        long horaSortida = (Long) entrada.get("hour");
+        long minutSortida = (Long) entrada.get("minute");
+
+        if (horaEntrada != -1) {
 
             changeTextTime(iniciarTextView, horaEntrada, minutEntrada);
             iniciarJornadaBtn.setEnabled(false);
             iniciarJornadaBtn.setBackgroundColor(Color.GRAY);
 
-            horarioUsuaroi.setEntrada(entrada);
-            if (horaSortida != 0) {
+            if (horaSortida != -1) {
 
                 changeTextTime(acabarTextView, horaSortida, minutSortida);
 
                 acabarJornadaBtn.setEnabled(false);
                 acabarJornadaBtn.setBackgroundColor(Color.GRAY);
-
-
-                horarioUsuaroi.setEntrada(entrada);
-                horarioUsuaroi.setSalida(salida);
-
-                calcularHores();
 
             } else {
 
@@ -211,7 +206,7 @@ public class IntroduirHoresFragment extends Fragment {
         }
 
 
-    }*/
+    }
 
     public ZonedDateTime getFechaActual() {
 
@@ -286,7 +281,13 @@ public class IntroduirHoresFragment extends Fragment {
 
         changeTextTime(resultat, diffMinuts/60, diffMinuts%60);
 
+        horarioUsuaroi.setUsuario(usuarioApp);
         horarioUsuaroi.setTotalMinutsTreballats(diffMinuts);
+
+        System.out.println("Horario/Usuario:  " + horarioUsuaroi.getUsuario());
+        System.out.println("UsuarioAPP:  " + usuarioApp.getNom());
+
+        GuardarRegistroBBDD();
 
     }
 

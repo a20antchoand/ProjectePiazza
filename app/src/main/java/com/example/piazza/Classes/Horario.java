@@ -9,8 +9,7 @@ public class Horario {
     ZonedDateTime salida;
     long totalMinutsTreballats;
 
-    public Horario(Usuario usuario) {
-        this.usuario = usuario;
+    public Horario() {
     }
 
     public Horario(Usuario usuario, ZonedDateTime entrada, ZonedDateTime salida) {
