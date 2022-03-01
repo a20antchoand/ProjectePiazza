@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/navigation_inici"
-        android:name="com.example.piazza.Controladores.Admin.Fragments.validar.ValidarFragment"
+        android:name="com.example.piazza.controladores.admin.Fragments.validar.ValidarFragment"
         android:label="@string/title_inici"
         tools:layout="@layout/fragment_validar" />
 
     <fragment
         android:id="@+id/navigation_treballadors"
-        android:name="com.example.piazza.Controladores.Admin.Fragments.treballdors.TreballadorsFragment"
+        android:name="com.example.piazza.controladores.admin.Fragments.treballdors.TreballadorsFragment"
         android:label="@string/title_treballadors"
         tools:layout="@layout/fragment_treballadors" />
 
     <fragment
         android:id="@+id/navigation_administrar"
-        android:name="com.example.piazza.Controladores.Admin.Fragments.administrar.AdministrarFragment"
+        android:name="com.example.piazza.controladores.admin.Fragments.administrar.AdministrarFragment"
         android:label="@string/title_administrar"
         tools:layout="@layout/fragment_administrar" />
 </navigation>

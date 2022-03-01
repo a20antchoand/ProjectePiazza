@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/AppTheme"
-    tools:context="com.example.piazza.Controladores.Employee.EmployeeActivity">
+    tools:context="com.example.piazza.controladores.employee.EmployeeActivity">
 
 
     <TextView

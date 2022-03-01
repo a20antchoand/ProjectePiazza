@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.piazza.Controladores.Admin.Fragments.treballdors.TreballadorsFragment">
+    tools:context="com.example.piazza.controladores.admin.Fragments.treballdors.TreballadorsFragment">
 
     <TextView
         android:id="@+id/text_dashboard"
