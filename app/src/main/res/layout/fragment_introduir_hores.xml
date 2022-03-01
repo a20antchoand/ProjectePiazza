@@ -5,7 +5,7 @@
     style="@style/AppTheme"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.piazza.Controladores.Employee.EmployeeActivity">
+    tools:context="com.example.piazza.controladores.employee.EmployeeActivity">
 
 
     <LinearLayout
@@ -124,17 +124,6 @@
             android:gravity="center"
             android:text="@string/emptyTime"
             android:textSize="34sp" />
-
-        <Button
-            android:id="@+id/resetTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="25dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="25dp"
-            android:text="REINICIAR DADES"
-            android:textColor="#000000" />
 
     </LinearLayout>
 
