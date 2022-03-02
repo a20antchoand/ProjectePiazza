@@ -82,12 +82,12 @@
 
             <Button
                 android:id="@+id/iniciarJornada"
+                style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:enabled="true"
                 android:textColor="#000000"
                 android:textStyle="bold"
-                app:icon="@drawable/ic_baseline_play_arrow_24"
                 app:iconGravity="textEnd"
                 app:iconPadding="0dp"
                 app:iconSize="50dp"
@@ -100,7 +100,7 @@
 
             <Button
                 android:id="@+id/acabarJornada"
-                style="@style/AppTheme"
+                style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:enabled="false"

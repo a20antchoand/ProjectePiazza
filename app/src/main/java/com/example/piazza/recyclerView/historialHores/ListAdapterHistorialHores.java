@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -42,7 +41,7 @@ public class ListAdapterHistorialHores extends RecyclerView.Adapter<ListAdapterH
 
     @Override
     public ViewHolder onCreateViewHolder (ViewGroup parent, int ViewType) {
-        View view = mInflater.from(parent.getContext()).inflate(R.layout.list_element_estat_treballadors, null);
+        View view = mInflater.from(parent.getContext()).inflate(R.layout.list_element_historial_hores, null);
         return new ViewHolder(view);
     }
 
@@ -57,24 +56,23 @@ public class ListAdapterHistorialHores extends RecyclerView.Adapter<ListAdapterH
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView iconImage;
-        TextView nom, hores, estat;
+        TextView data, entrada, sortida, total;
         CardView cv;
 
         ViewHolder(View itemView) {
             super(itemView);
-            iconImage = itemView.findViewById(R.id.iconImageView);
-            nom = itemView.findViewById(R.id.nomUsuariTextView);
-            hores = itemView.findViewById(R.id.horesUsuariTextView);
-            estat = itemView.findViewById(R.id.estadoTextView);
+            total = itemView.findViewById(R.id.totalTextView);
+            data = itemView.findViewById(R.id.dataTextView);
+            entrada = itemView.findViewById(R.id.entradaTextView);
+            sortida = itemView.findViewById(R.id.sortidaTextView);
             cv = itemView.findViewById(R.id.cv);
         }
 
         void bindData (final ListElementHistorialHores item) {
-            iconImage.setColorFilter(Color.parseColor(item.getData()), PorterDuff.Mode.SRC_IN);
-            nom.setText(item.getEntrada());
-            hores.setText(item.getSortida());
-            estat.setText(item.getTotal());
+            total.setText(item.getTotal());
+            data.setText(item.getData());
+            entrada.setText(item.getEntrada());
+            sortida.setText(item.getSortida());
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

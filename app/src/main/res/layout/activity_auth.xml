@@ -39,6 +39,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
+            android:drawableStart="@drawable/ic_baseline_alternate_email_24"
+            android:drawablePadding="5dp"
             android:ems="10"
             android:hint="Email"
             android:inputType="textEmailAddress" />
@@ -53,6 +55,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
+            android:drawableStart="@drawable/ic_baseline_lock_24"
+            android:drawablePadding="5dp"
             android:ems="10"
             android:hint="Password"
             android:inputType="textPassword" />
@@ -76,13 +80,14 @@
 
         <Button
             android:id="@+id/logIn"
+            style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_weight="1"
-            android:elevation="100dp"
-            android:text="Acceder"
+            android:backgroundTint="#2196F3"
+            android:text="Login"
             android:textColor="#000000" />
 
 

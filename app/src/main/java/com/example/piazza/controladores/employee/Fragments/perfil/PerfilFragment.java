@@ -1,4 +1,4 @@
-package com.example.piazza.controladores.employee.Fragments.perfil;
+package com.example.piazza.controladores.employee.fragments.perfil;
 
 import android.content.Intent;
 import android.os.Bundle;

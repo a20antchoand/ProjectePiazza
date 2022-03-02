@@ -6,7 +6,7 @@
         <item name="colorPrimaryVariant">#00FFFFFF</item>
         <item name="colorOnPrimary">#4D7A76</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">#3E3E3E</item>
+        <item name="colorSecondary">#FFFFFF</item>
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">#253F51</item>
         <!-- Status bar color. -->
@@ -19,7 +19,4 @@
         <item name="windowNoTitle">false</item>
     </style>
 
-    <style name="Theme.TestAuth.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="Theme.TestAuth.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

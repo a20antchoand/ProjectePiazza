@@ -33,7 +33,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/nomUsuariTextView"
+                    android:id="@+id/dataTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="15dp"
@@ -44,7 +44,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/jhj"
+                    android:id="@+id/entradaTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
@@ -55,7 +55,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/jhj2"
+                    android:id="@+id/sortidaTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
@@ -66,7 +66,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/estadoTextView"
+                    android:id="@+id/totalTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"

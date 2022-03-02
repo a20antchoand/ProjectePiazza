@@ -22,7 +22,7 @@
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/drawable/side_nav_bar.xml" value="0.2796875" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/drawable/splashscreen.xml" value="0.19427083333333334" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/activity_admin.xml" value="0.1828125" />
-        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/activity_auth.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/activity_auth.xml" value="0.1871345029239766" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/activity_employee.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/activity_piazza_home.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/fragment_administrar.xml" value="0.2296875" />
@@ -33,6 +33,8 @@
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/fragment_validar.xml" value="0.2296875" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/list_element.xml" value="0.1" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/list_element_estat_treballadors.xml" value="0.1765625" />
+        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/list_element_historial_hores.xml" value="0.1" />
+        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/list_element_treballadors.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/menu/bottom_nav_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/menu/bottom_nav_menu_employee.xml" value="0.22" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.3828125" />
