@@ -5,7 +5,7 @@ import static com.google.firebase.crashlytics.internal.Logger.TAG;
 import android.util.Log;
 
 import com.example.piazza.classes.Usuario;
-import com.example.piazza.controladores.employee.Fragments.introduir_hores.IntroduirHoresFragment;
+import com.example.piazza.controladores.employee.fragments.introduir_hores.IntroduirHoresFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;

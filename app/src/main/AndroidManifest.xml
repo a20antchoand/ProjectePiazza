@@ -16,7 +16,8 @@
             android:label="@string/title_administrar"/>
         <activity
             android:name="com.example.piazza.controladores.employee.EmployeeActivity"
-            android:exported="true"/>
+            android:exported="true"
+            android:label="Treballadors"/>
         <activity
             android:name="com.example.piazza.controladores.auth.AuthActivity"
             android:exported="true"

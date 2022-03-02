@@ -39,7 +39,6 @@ public class AuthActivity extends AppCompatActivity {
 
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             AuthUserSession.cargarDatosUsuario(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-            System.out.println("USER: " + AuthUserSession.getUser());
             if (FirebaseAuth.getInstance().getCurrentUser().getEmail().contains("admin")) {
                 showHome();
             } else {
@@ -99,14 +98,12 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     private void showHome () {
-        System.out.println(FirebaseAuth.getInstance().getCurrentUser().getEmail());
         Intent intent = new Intent(this, AdminActivity.class);
         startActivity(intent);
         finish();
     }
 
     private void showEmployee () {
-        System.out.println(FirebaseAuth.getInstance().getCurrentUser().getEmail());
         Intent intent = new Intent(this, EmployeeActivity.class);
         startActivity(intent);
         finish();

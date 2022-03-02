@@ -4,15 +4,18 @@
     <item
         android:id="@+id/navigation_introduir_hores"
         android:icon="@drawable/ic_baseline_more_time_24"
+        android:iconTint="@color/black"
         android:title="@string/title_introduir_hores" />
     <item
         android:id="@+id/navigation_historial"
         android:icon="@drawable/ic_baseline_history_24"
+        android:iconTint="@color/black"
         android:title="@string/title_historial" />
 
     <item
         android:id="@+id/navigation_perfil"
         android:icon="@drawable/ic_baseline_person_24"
+        android:iconTint="@color/black"
         android:title="@string/title_perfil" />
 
 </menu>
