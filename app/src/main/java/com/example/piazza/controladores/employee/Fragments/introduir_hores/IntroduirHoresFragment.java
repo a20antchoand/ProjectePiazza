@@ -27,7 +27,6 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -130,7 +129,7 @@ public class IntroduirHoresFragment extends Fragment {
 
                 if (document.exists()) {
                     Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                    comprovarEntradaSortida();
+                    //comprovarEntradaSortida();
                 } else {
                     Log.d(TAG, "No such document");
                     GuardarRegistroBBDD();
@@ -167,19 +166,27 @@ public class IntroduirHoresFragment extends Fragment {
 
         if (entrada != null) {
 
-            dataEntrada = LocalDateTime.of(Math.toIntExact((Long) entrada.get("year")), Math.toIntExact((Long) entrada.get("monthValue")), Math.toIntExact((Long) entrada.get("dayOfMonth")), Math.toIntExact((Long) entrada.get("hour")) ,Math.toIntExact((Long) entrada.get("minute")));
+            horarioUsuaroi.setMinutEntrada(Math.toIntExact((Long) entrada.get("year")));
+            horarioUsuaroi.setMinutEntrada(Math.toIntExact((Long) entrada.get("monthValue")));
+            horarioUsuaroi.setMinutEntrada(Math.toIntExact((Long) entrada.get("dayOfMonth")));
+            horarioUsuaroi.setMinutEntrada(Math.toIntExact((Long) entrada.get("hour")));
+            horarioUsuaroi.setMinutEntrada(Math.toIntExact((Long) entrada.get("minute")));
 
-            System.out.println(dataEntrada);
-
-            changeTextTime(iniciarTextView, dataEntrada.getHour(), dataEntrada.getMinute());
+            changeTextTime(iniciarTextView, horarioUsuaroi.getHoraEntrada(), horarioUsuaroi.getMinutEntrada());
             iniciarJornadaBtn.setEnabled(false);
             iniciarJornadaBtn.setBackgroundColor(Color.GRAY);
 
             if (sortida != null) {
 
-                dataSortida = LocalDateTime.of(Math.toIntExact((Long) sortida.get("year")), Math.toIntExact((Long) sortida.get("monthValue")), Math.toIntExact((Long) sortida.get("dayOfMonth")), Math.toIntExact((Long) sortida.get("hour")) ,Math.toIntExact((Long) sortida.get("minute")));
+                horarioUsuaroi.setMinutSalida(Math.toIntExact((Long) sortida.get("year")));
+                horarioUsuaroi.setMinutSalida(Math.toIntExact((Long) sortida.get("monthValue")));
+                horarioUsuaroi.setMinutSalida(Math.toIntExact((Long) sortida.get("dayOfMonth")));
+                horarioUsuaroi.setMinutSalida(Math.toIntExact((Long) sortida.get("hour")));
+                horarioUsuaroi.setMinutSalida(Math.toIntExact((Long) sortida.get("minute")));
 
-                changeTextTime(acabarTextView, dataSortida.getHour(), dataSortida.getMinute());
+                changeTextTime(acabarTextView, horarioUsuaroi.getHoraSalida(), horarioUsuaroi.getMinutSalida());
+
+                calcularHores();
 
                 acabarJornadaBtn.setEnabled(false);
                 acabarJornadaBtn.setBackgroundColor(Color.GRAY);
@@ -204,6 +211,28 @@ public class IntroduirHoresFragment extends Fragment {
 
     }
 
+    public void getFechaActual(boolean entrada) {
+
+        ZoneId zoneId = ZoneId.of("Europe/Madrid");
+        ZonedDateTime zdt = ZonedDateTime.now(zoneId);
+        System.out.println(zdt);
+
+        if (entrada) {
+            horarioUsuaroi.setAnioEntrada(zdt.getYear());
+            horarioUsuaroi.setMesEntrada(zdt.getMonthValue());
+            horarioUsuaroi.setDiaEntrada(zdt.getDayOfMonth());
+            horarioUsuaroi.setHoraEntrada(zdt.getHour());
+            horarioUsuaroi.setMinutEntrada(zdt.getMinute());
+        } else {
+            horarioUsuaroi.setAnioSalida(zdt.getYear());
+            horarioUsuaroi.setMesSalida(zdt.getMonthValue());
+            horarioUsuaroi.setDiaSalida(zdt.getDayOfMonth());
+            horarioUsuaroi.setHoraSalida(zdt.getHour());
+            horarioUsuaroi.setMinutSalida(zdt.getMinute());
+        }
+
+    }
+
     public ZonedDateTime getFechaActual() {
 
         ZoneId zoneId = ZoneId.of("Europe/Madrid");
@@ -217,11 +246,11 @@ public class IntroduirHoresFragment extends Fragment {
 
     public void iniciarJornada (View view) {
 
-        horarioUsuaroi.setEntrada(getFechaActual());
+        getFechaActual(true);
 
         GuardarRegistroBBDD();
 
-        changeTextTime(iniciarTextView,horarioUsuaroi.getEntrada().getHour(), horarioUsuaroi.getEntrada().getMinute() );
+        changeTextTime(iniciarTextView,horarioUsuaroi.getHoraEntrada(), horarioUsuaroi.getMinutEntrada() );
 
         iniciarJornadaBtn.setEnabled(false);
         iniciarJornadaBtn.setBackgroundColor(Color.GRAY);
@@ -233,11 +262,13 @@ public class IntroduirHoresFragment extends Fragment {
 
     public void acabarJornada (View view) {
 
-        horarioUsuaroi.setSalida(getFechaActual());
+        getFechaActual(false);
+
+        System.out.println("Mes " + horarioUsuaroi.getMesSalida());
 
         GuardarRegistroBBDD();
 
-        changeTextTime(acabarTextView, horarioUsuaroi.getSalida().getHour(), horarioUsuaroi.getSalida().getMinute());
+        changeTextTime(acabarTextView, horarioUsuaroi.getHoraSalida(), horarioUsuaroi.getMinutSalida());
 
         acabarJornadaBtn.setEnabled(false);
         acabarJornadaBtn.setBackgroundColor(Color.GRAY);
@@ -249,7 +280,10 @@ public class IntroduirHoresFragment extends Fragment {
 
     private void calcularHores() {
 
-        Duration diff = Duration.between(horarioUsuaroi.getEntrada(), horarioUsuaroi.getSalida());
+        LocalDateTime entrada = formatarDateTime(horarioUsuaroi.getAnioEntrada(), horarioUsuaroi.getMesEntrada(), horarioUsuaroi.getDiaEntrada(), horarioUsuaroi.getHoraEntrada(), horarioUsuaroi.getMinutEntrada());
+        LocalDateTime sortida = formatarDateTime(horarioUsuaroi.getAnioSalida(), horarioUsuaroi.getMesSalida(), horarioUsuaroi.getDiaSalida(), horarioUsuaroi.getHoraSalida(), horarioUsuaroi.getMinutSalida());
+
+        Duration diff = Duration.between(entrada, sortida);
 
         long diffMinuts = diff.toMinutes();
 
@@ -262,6 +296,16 @@ public class IntroduirHoresFragment extends Fragment {
         System.out.println("UsuarioAPP:  " + usuarioApp.getNom());
 
         GuardarRegistroBBDD();
+
+    }
+
+    private LocalDateTime formatarDateTime(int anioEntrada, int mesEntrada, int diaEntrada, int horaEntrada, int minutEntrada) {
+
+        LocalDateTime dataEntrada;
+
+        dataEntrada = LocalDateTime.of(anioEntrada, mesEntrada, diaEntrada, horaEntrada, minutEntrada);
+
+        return dataEntrada;
 
     }
 
