@@ -5,17 +5,102 @@ import java.time.ZonedDateTime;
 public class Horario {
 
     Usuario usuario;
-    ZonedDateTime entrada;
-    ZonedDateTime salida;
+
+    int AnioEntrada;
+    int mesEntrada;
+    int diaEntrada;
+    int horaEntrada;
+    int minutEntrada;
+
+    int AnioSalida;
+    int mesSalida;
+    int diaSalida;
+    int horaSalida;
+    int minutSalida;
+
     long totalMinutsTreballats;
 
     public Horario() {
     }
 
-    public Horario(Usuario usuario, ZonedDateTime entrada, ZonedDateTime salida) {
-        this.usuario = usuario;
-        this.entrada = entrada;
-        this.salida = salida;
+    public int getAnioEntrada() {
+        return AnioEntrada;
+    }
+
+    public void setAnioEntrada(int anioEntrada) {
+        AnioEntrada = anioEntrada;
+    }
+
+    public int getMesEntrada() {
+        return mesEntrada;
+    }
+
+    public void setMesEntrada(int mesEntrada) {
+        this.mesEntrada = mesEntrada;
+    }
+
+    public int getDiaEntrada() {
+        return diaEntrada;
+    }
+
+    public void setDiaEntrada(int diaEntrada) {
+        this.diaEntrada = diaEntrada;
+    }
+
+    public int getHoraEntrada() {
+        return horaEntrada;
+    }
+
+    public void setHoraEntrada(int horaEntrada) {
+        this.horaEntrada = horaEntrada;
+    }
+
+    public int getMinutEntrada() {
+        return minutEntrada;
+    }
+
+    public void setMinutEntrada(int minutEntrada) {
+        this.minutEntrada = minutEntrada;
+    }
+
+    public int getAnioSalida() {
+        return AnioSalida;
+    }
+
+    public void setAnioSalida(int anioSalida) {
+        AnioSalida = anioSalida;
+    }
+
+    public int getMesSalida() {
+        return mesSalida;
+    }
+
+    public void setMesSalida(int mesSalida) {
+        this.mesSalida = mesSalida;
+    }
+
+    public int getDiaSalida() {
+        return diaSalida;
+    }
+
+    public void setDiaSalida(int diaSalida) {
+        this.diaSalida = diaSalida;
+    }
+
+    public int getHoraSalida() {
+        return horaSalida;
+    }
+
+    public void setHoraSalida(int horaSalida) {
+        this.horaSalida = horaSalida;
+    }
+
+    public int getMinutSalida() {
+        return minutSalida;
+    }
+
+    public void setMinutSalida(int minutSalida) {
+        this.minutSalida = minutSalida;
     }
 
     public long getTotalMinutsTreballats() {
@@ -34,19 +119,4 @@ public class Horario {
         this.usuario = usuario;
     }
 
-    public ZonedDateTime getEntrada() {
-        return entrada;
-    }
-
-    public void setEntrada(ZonedDateTime entrada) {
-        this.entrada = entrada;
-    }
-
-    public ZonedDateTime getSalida() {
-        return salida;
-    }
-
-    public void setSalida(ZonedDateTime salida) {
-        this.salida = salida;
-    }
 }
