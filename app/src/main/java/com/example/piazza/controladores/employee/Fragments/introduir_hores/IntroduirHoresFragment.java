@@ -129,7 +129,7 @@ public class IntroduirHoresFragment extends Fragment {
 
                 if (document.exists()) {
                     Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                    //comprovarEntradaSortida();
+                    comprovarEntradaSortida();
                 } else {
                     Log.d(TAG, "No such document");
                     GuardarRegistroBBDD();
@@ -157,36 +157,30 @@ public class IntroduirHoresFragment extends Fragment {
 
     private void comprovarEntradaSortida() {
 
-        HashMap<String, Object> entrada = (HashMap<String, Object>) document.getData().get("entrada");
-        HashMap<String, Object> sortida = (HashMap<String, Object>) document.getData().get("salida");
+        HashMap<String, Object> data = (HashMap<String, Object>) document.getData();
         System.out.println("USER: " + AuthUserSession.getUser());
 
-        LocalDateTime dataEntrada;
-        LocalDateTime dataSortida;
+        if ((long)data.get("horaEntrada") != -1) {
 
-        if (entrada != null) {
-
-            horarioUsuaroi.setMinutEntrada(Math.toIntExact((Long) entrada.get("year")));
-            horarioUsuaroi.setMinutEntrada(Math.toIntExact((Long) entrada.get("monthValue")));
-            horarioUsuaroi.setMinutEntrada(Math.toIntExact((Long) entrada.get("dayOfMonth")));
-            horarioUsuaroi.setMinutEntrada(Math.toIntExact((Long) entrada.get("hour")));
-            horarioUsuaroi.setMinutEntrada(Math.toIntExact((Long) entrada.get("minute")));
+            horarioUsuaroi.setAnioEntrada(Math.toIntExact((Long) data.get("anioEntrada")));
+            horarioUsuaroi.setMesEntrada(Math.toIntExact((Long) data.get("mesEntrada")));
+            horarioUsuaroi.setDiaEntrada(Math.toIntExact((Long) data.get("diaEntrada")));
+            horarioUsuaroi.setHoraEntrada(Math.toIntExact((Long) data.get("horaEntrada")));
+            horarioUsuaroi.setMinutEntrada(Math.toIntExact((Long) data.get("minutEntrada")));
 
             changeTextTime(iniciarTextView, horarioUsuaroi.getHoraEntrada(), horarioUsuaroi.getMinutEntrada());
             iniciarJornadaBtn.setEnabled(false);
             iniciarJornadaBtn.setBackgroundColor(Color.GRAY);
 
-            if (sortida != null) {
+            if ((long)data.get("anioSalida") != -1) {
 
-                horarioUsuaroi.setMinutSalida(Math.toIntExact((Long) sortida.get("year")));
-                horarioUsuaroi.setMinutSalida(Math.toIntExact((Long) sortida.get("monthValue")));
-                horarioUsuaroi.setMinutSalida(Math.toIntExact((Long) sortida.get("dayOfMonth")));
-                horarioUsuaroi.setMinutSalida(Math.toIntExact((Long) sortida.get("hour")));
-                horarioUsuaroi.setMinutSalida(Math.toIntExact((Long) sortida.get("minute")));
+                horarioUsuaroi.setAnioSalida(Math.toIntExact((Long) data.get("anioEntrada")));
+                horarioUsuaroi.setMesSalida(Math.toIntExact((Long) data.get("mesEntrada")));
+                horarioUsuaroi.setDiaSalida(Math.toIntExact((Long) data.get("diaEntrada")));
+                horarioUsuaroi.setHoraSalida(Math.toIntExact((Long) data.get("horaEntrada")));
+                horarioUsuaroi.setMinutSalida(Math.toIntExact((Long) data.get("minutEntrada")));
 
                 changeTextTime(acabarTextView, horarioUsuaroi.getHoraSalida(), horarioUsuaroi.getMinutSalida());
-
-                calcularHores();
 
                 acabarJornadaBtn.setEnabled(false);
                 acabarJornadaBtn.setBackgroundColor(Color.GRAY);
@@ -223,7 +217,7 @@ public class IntroduirHoresFragment extends Fragment {
             horarioUsuaroi.setDiaEntrada(zdt.getDayOfMonth());
             horarioUsuaroi.setHoraEntrada(zdt.getHour());
             horarioUsuaroi.setMinutEntrada(zdt.getMinute());
-        } else {
+        } else if (!entrada){
             horarioUsuaroi.setAnioSalida(zdt.getYear());
             horarioUsuaroi.setMesSalida(zdt.getMonthValue());
             horarioUsuaroi.setDiaSalida(zdt.getDayOfMonth());
@@ -258,13 +252,14 @@ public class IntroduirHoresFragment extends Fragment {
         acabarJornadaBtn.setEnabled(true);
         acabarJornadaBtn.setBackgroundColor(Color.RED);
 
+        System.out.println("iniciar" + iniciarTextView.getText());
+        System.out.println(acabarTextView.getText());
+
     }
 
     public void acabarJornada (View view) {
 
         getFechaActual(false);
-
-        System.out.println("Mes " + horarioUsuaroi.getMesSalida());
 
         GuardarRegistroBBDD();
 
@@ -273,8 +268,13 @@ public class IntroduirHoresFragment extends Fragment {
         acabarJornadaBtn.setEnabled(false);
         acabarJornadaBtn.setBackgroundColor(Color.GRAY);
 
+        System.out.println("PreCalcularHores" + iniciarTextView.getText());
+        System.out.println("PreCalcularHores" + acabarTextView.getText());
+
         calcularHores();
 
+        System.out.println("PostCalcularHores" + iniciarTextView.getText());
+        System.out.println("PostCalcularHores" + acabarTextView.getText());
     }
 
 

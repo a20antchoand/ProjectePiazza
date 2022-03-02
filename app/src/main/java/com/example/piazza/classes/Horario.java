@@ -1,18 +1,16 @@
 package com.example.piazza.classes;
 
-import java.time.ZonedDateTime;
-
 public class Horario {
 
     Usuario usuario;
 
-    int AnioEntrada;
+    int anioEntrada;
     int mesEntrada;
     int diaEntrada;
     int horaEntrada;
     int minutEntrada;
 
-    int AnioSalida;
+    int anioSalida;
     int mesSalida;
     int diaSalida;
     int horaSalida;
@@ -21,14 +19,24 @@ public class Horario {
     long totalMinutsTreballats;
 
     public Horario() {
+        anioEntrada = -1;
+        anioSalida = -1;
+        mesEntrada = -1;
+        mesSalida = -1;
+        diaEntrada = -1;
+        diaSalida = -1;
+        horaEntrada = -1;
+        horaSalida = -1;
+        minutEntrada = -1;
+        minutSalida = -1;
     }
 
     public int getAnioEntrada() {
-        return AnioEntrada;
+        return anioEntrada;
     }
 
     public void setAnioEntrada(int anioEntrada) {
-        AnioEntrada = anioEntrada;
+        this.anioEntrada = anioEntrada;
     }
 
     public int getMesEntrada() {
@@ -64,11 +72,11 @@ public class Horario {
     }
 
     public int getAnioSalida() {
-        return AnioSalida;
+        return anioSalida;
     }
 
     public void setAnioSalida(int anioSalida) {
-        AnioSalida = anioSalida;
+        this.anioSalida = anioSalida;
     }
 
     public int getMesSalida() {
