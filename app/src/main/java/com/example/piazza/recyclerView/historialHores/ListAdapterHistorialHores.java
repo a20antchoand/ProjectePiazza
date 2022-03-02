@@ -1,4 +1,4 @@
-package com.example.piazza.recyclerView;
+package com.example.piazza.recyclerView.historialHores;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -17,18 +17,18 @@ import com.example.testauth.R;
 
 import java.util.List;
 
-public class ListAdapterEstatTreballadors extends RecyclerView.Adapter<ListAdapterEstatTreballadors.ViewHolder> {
+public class ListAdapterHistorialHores extends RecyclerView.Adapter<ListAdapterHistorialHores.ViewHolder> {
 
-    private List<ListElementEstatTreballadors> mData;
+    private List<ListElementHistorialHores> mData;
     private LayoutInflater mInflater;
     private Context context;
-    final ListAdapterEstatTreballadors.onItemClickListener listener;
+    final onItemClickListener listener;
 
     public interface onItemClickListener {
-        void onItemClickListener(ListElementEstatTreballadors item);
+        void onItemClickListener(ListElementHistorialHores item);
     }
 
-    public ListAdapterEstatTreballadors(List<ListElementEstatTreballadors> itemList, Context context, ListAdapterEstatTreballadors.onItemClickListener listener) {
+    public ListAdapterHistorialHores(List<ListElementHistorialHores> itemList, Context context, onItemClickListener listener) {
         this.mInflater = LayoutInflater.from(context);
         this.context = context;
         this.mData = itemList;
@@ -41,18 +41,18 @@ public class ListAdapterEstatTreballadors extends RecyclerView.Adapter<ListAdapt
     }
 
     @Override
-    public ListAdapterEstatTreballadors.ViewHolder onCreateViewHolder (ViewGroup parent, int ViewType) {
+    public ViewHolder onCreateViewHolder (ViewGroup parent, int ViewType) {
         View view = mInflater.from(parent.getContext()).inflate(R.layout.list_element_estat_treballadors, null);
-        return new ListAdapterEstatTreballadors.ViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ListAdapterEstatTreballadors.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.cv.setAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_transition));
         holder.bindData(mData.get(position));
     }
 
-    public void setItems(List<ListElementEstatTreballadors> items) {
+    public void setItems(List<ListElementHistorialHores> items) {
         mData = items;
     }
 
@@ -70,11 +70,11 @@ public class ListAdapterEstatTreballadors extends RecyclerView.Adapter<ListAdapt
             cv = itemView.findViewById(R.id.cv);
         }
 
-        void bindData (final ListElementEstatTreballadors item) {
-            iconImage.setColorFilter(Color.parseColor(item.getColor()), PorterDuff.Mode.SRC_IN);
-            nom.setText(item.getNom());
-            hores.setText(item.getHores());
-            estat.setText(item.getEstat());
+        void bindData (final ListElementHistorialHores item) {
+            iconImage.setColorFilter(Color.parseColor(item.getData()), PorterDuff.Mode.SRC_IN);
+            nom.setText(item.getEntrada());
+            hores.setText(item.getSortida());
+            estat.setText(item.getTotal());
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

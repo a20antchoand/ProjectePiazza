@@ -16,8 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.piazza.controladores.employee.EmployeeActivity;
-import com.example.piazza.recyclerView.ListAdapterEstatTreballadors;
-import com.example.piazza.recyclerView.ListElementEstatTreballadors;
+import com.example.piazza.recyclerView.estatTreballadors.ListAdapterEstatTreballadors;
+import com.example.piazza.recyclerView.estatTreballadors.ListElementEstatTreballadors;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentValidarBinding;
 

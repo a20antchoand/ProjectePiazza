@@ -1,4 +1,4 @@
-package com.example.piazza.recyclerView;
+package com.example.piazza.recyclerView.estatTreballadors;
 
 import java.io.Serializable;
 
