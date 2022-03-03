@@ -1,4 +1,4 @@
-package com.example.piazza.controladores.admin.Fragments.administrar;
+package com.example.piazza.controladores.admin.fragments.administrar;
 
 import static android.content.ContentValues.TAG;
 

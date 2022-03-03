@@ -1,4 +1,4 @@
-package com.example.piazza.controladores.admin.Fragments.validar;
+package com.example.piazza.controladores.admin.fragments.validar;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,15 +27,12 @@ import java.util.List;
 
 public class ValidarFragment extends Fragment {
 
-    private ValidarViewModel homeViewModel;
     private FragmentValidarBinding binding;
     private View root;
     private List<ListElementEstatTreballadors> elements;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                new ViewModelProvider(this).get(ValidarViewModel.class);
 
         binding = FragmentValidarBinding.inflate(inflater, container, false);
         root = binding.getRoot();
@@ -48,30 +46,19 @@ public class ValidarFragment extends Fragment {
 
     public void setup() {
 
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
-
         elements = new ArrayList<>();
 
         elements.add(new ListElementEstatTreballadors("#123456","Toni","5:00","PENDENT"));
-        elements.add(new ListElementEstatTreballadors("#346456","Alia","5:00","PENDENT"));
+        elements.add(new ListElementEstatTreballadors("#346456","Alia","5:00","VALIDAT"));
         elements.add(new ListElementEstatTreballadors("#978456","Paula","5:00","PENDENT"));
-        elements.add(new ListElementEstatTreballadors("#123532","Arnau","5:00","PENDENT"));
+        elements.add(new ListElementEstatTreballadors("#123532","Arnau","5:00","VALIDAT"));
         elements.add(new ListElementEstatTreballadors("#673452","Fati","5:00","PENDENT"));
-        elements.add(new ListElementEstatTreballadors("#673452","Fati","5:00","PENDENT"));
-        elements.add(new ListElementEstatTreballadors("#673452","Fati","5:00","PENDENT"));
-        elements.add(new ListElementEstatTreballadors("#673452","Fati","5:00","PENDENT"));
-        elements.add(new ListElementEstatTreballadors("#673452","Toni","5:00","PENDENT"));
+
 
         ListAdapterEstatTreballadors listAdapter = new ListAdapterEstatTreballadors(elements, root.getContext(), new ListAdapterEstatTreballadors.onItemClickListener() {
             @Override
             public void onItemClickListener(ListElementEstatTreballadors item) {
-                moveToDescription();
+                moveToDescription(item);
             }
         });
         RecyclerView recyclerView = root.findViewById(R.id.listRecyclerView);
@@ -81,9 +68,9 @@ public class ValidarFragment extends Fragment {
 
     }
 
-    void moveToDescription() {
-        Intent intent = new Intent(getActivity().getApplication(), EmployeeActivity.class);
-        startActivity(intent);
+    void moveToDescription(ListElementEstatTreballadors item) {
+        System.out.println("Estat: "+ item.getEstat());
+
     }
 
     @Override
