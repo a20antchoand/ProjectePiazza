@@ -82,17 +82,13 @@
 
             <Button
                 android:id="@+id/iniciarJornada"
-                android:background="#10DA14"
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
+                android:background="@drawable/start_button"
                 android:enabled="true"
+                android:text="INICIAR"
                 android:textColor="#000000"
-                android:textStyle="bold"
-                app:iconGravity="textEnd"
-                app:iconPadding="0dp"
-                app:iconSize="50dp"
-                app:iconTint="#000000" />
-
+                android:textStyle="bold" />
 
             <androidx.legacy.widget.Space
                 android:layout_width="16dp"
@@ -100,18 +96,14 @@
 
             <Button
                 android:id="@+id/acabarJornada"
-                android:background="#DA1010"
-                style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
+                android:background="@drawable/end_button"
                 android:enabled="false"
+                android:text="ACABAR"
                 android:textColor="#000000"
-                android:textStyle="bold"
-                app:icon="@drawable/ic_baseline_stop_24"
-                app:iconGravity="textEnd"
-                app:iconPadding="0dp"
-                app:iconSize="50dp"
-                app:iconTint="#000000" />
+                android:textStyle="bold" />
+
         </LinearLayout>
 
         <TextView
@@ -125,6 +117,8 @@
             android:gravity="center"
             android:text="@string/emptyTime"
             android:textSize="34sp" />
+
+
 
     </LinearLayout>
 

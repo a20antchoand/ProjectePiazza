@@ -72,9 +72,7 @@ public class IntroduirHoresFragment extends Fragment {
         acabarTextView = root.findViewById(R.id.acabarTextView);
         resultat = root.findViewById(R.id.resultat);
         iniciarJornadaBtn = root.findViewById(R.id.iniciarJornada);
-        iniciarJornadaBtn.setBackgroundColor(Color.GREEN);
         acabarJornadaBtn = root.findViewById(R.id.acabarJornada);
-        acabarJornadaBtn.setBackgroundColor(Color.GRAY);
         horarioUsuario = new Horario();
 
         root.findViewById(R.id.iniciarJornada).setOnClickListener(view -> {
@@ -169,7 +167,6 @@ public class IntroduirHoresFragment extends Fragment {
 
             changeTextTime(iniciarTextView, horarioUsuario.getHoraEntrada(), horarioUsuario.getMinutEntrada());
             iniciarJornadaBtn.setEnabled(false);
-            iniciarJornadaBtn.setBackgroundColor(Color.GRAY);
 
             if ((long)data.get("horaSalida") != -1) {
 
@@ -182,14 +179,12 @@ public class IntroduirHoresFragment extends Fragment {
                 changeTextTime(acabarTextView, horarioUsuario.getHoraSalida(), horarioUsuario.getMinutSalida());
 
                 acabarJornadaBtn.setEnabled(false);
-                acabarJornadaBtn.setBackgroundColor(Color.GRAY);
 
                 calcularHores();
 
             } else {
 
                 acabarJornadaBtn.setEnabled(true);
-                acabarJornadaBtn.setBackgroundColor(Color.RED);
 
             }
 
@@ -197,7 +192,6 @@ public class IntroduirHoresFragment extends Fragment {
 
         } else {
             iniciarJornadaBtn.setEnabled(true);
-            iniciarJornadaBtn.setBackgroundColor(Color.GREEN);
 
             changeTextTime(iniciarTextView, 0, 0);
             changeTextTime(acabarTextView, 0, 0);
@@ -248,10 +242,8 @@ public class IntroduirHoresFragment extends Fragment {
         changeTextTime(iniciarTextView, horarioUsuario.getHoraEntrada(), horarioUsuario.getMinutEntrada() );
 
         iniciarJornadaBtn.setEnabled(false);
-        iniciarJornadaBtn.setBackgroundColor(Color.GRAY);
 
         acabarJornadaBtn.setEnabled(true);
-        acabarJornadaBtn.setBackgroundColor(Color.RED);
 
 
     }
@@ -267,7 +259,6 @@ public class IntroduirHoresFragment extends Fragment {
         changeTextTime(acabarTextView, horarioUsuario.getHoraSalida(), horarioUsuario.getMinutSalida());
 
         acabarJornadaBtn.setEnabled(false);
-        acabarJornadaBtn.setBackgroundColor(Color.GRAY);
 
         calcularHores();
 

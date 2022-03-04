@@ -68,7 +68,7 @@ public class AuthUserSession {
                     setUser(new Usuario((String) data.get("email"), (String) data.get("nom"), (String) data.get("cognom"), (String) data.get("telefono"), (String) data.get("salario")));
                     IntroduirHoresFragment.setUsuarioApp(getUser());
                 } else {
-                    Log.d(TAG, "No such document - AUTHFIREBASE");
+                    Log.d(TAG, "No se encuentra el usuario: " + email);
                 }
             } else {
                 Log.d(TAG, "get failed with ", task.getException());

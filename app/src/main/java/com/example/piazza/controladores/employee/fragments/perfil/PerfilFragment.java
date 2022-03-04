@@ -73,7 +73,6 @@ public class PerfilFragment extends Fragment {
         FirebaseAuth.getInstance().signOut();
         Intent intent = new Intent(getActivity(), AuthActivity.class);
         startActivity(intent);
-        onDestroyView();
     }
 
     @Override
