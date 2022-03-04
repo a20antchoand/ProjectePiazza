@@ -21,6 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:background="@color/white"
             android:padding="6dp">
 
             <LinearLayout
@@ -39,7 +40,7 @@
                     android:layout_marginEnd="15dp"
                     android:layout_marginBottom="2dp"
                     android:text="Data"
-                    android:textColor="@color/black"
+                    android:textColor="#494949"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
@@ -50,7 +51,7 @@
                     android:layout_marginEnd="5dp"
                     android:layout_marginBottom="2dp"
                     android:text="Entrada"
-                    android:textColor="@color/black"
+                    android:textColor="#494949"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
@@ -61,7 +62,7 @@
                     android:layout_marginBottom="2dp"
                     android:layout_weight="1"
                     android:text="sortida"
-                    android:textColor="@color/black"
+                    android:textColor="#494949"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
@@ -75,6 +76,7 @@
                     android:layout_marginEnd="6dp"
                     android:layout_marginRight="6dp"
                     android:text="total"
+                    android:textColor="#494949"
                     android:textSize="20dp"
                     android:textStyle="bold" />
 

@@ -21,7 +21,7 @@ public class AuthActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setTheme(R.style.AppTheme);
+        setTheme(R.style.Theme_TestAuth);
 
         setContentView(R.layout.activity_auth);
         setup();
