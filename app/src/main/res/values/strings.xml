@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">Piazza</string>
     <string name="title_activity_piazza_home">Piazza - Control Horari</string>
-    <string name="nav_header_subtitle">Email</string>
-    <string name="action_settings">Tancar sessió</string>
 
     <string name="menu_inici">Inici</string>
     <string name="menu_treballadors">Treballador</string>
@@ -10,12 +8,23 @@
 
     <string name="emptyTime">--:--</string>
     <string name="slash">-</string>
-    <string name="exit">exit</string>
 
+    <string name="email">Email</string>
+    <string name="contrasenya">Contrasenya</string>
     <string name="title_inici">Validar</string>
     <string name="title_treballadors">Treballadors</string>
     <string name="title_administrar">Administrar</string>
     <string name="title_historial">Historial</string>
     <string name="title_introduir_hores">Introduir Hores</string>
     <string name="title_perfil">Perfil</string>
+    <string name="nom_empleat">Nom empleat</string>
+    <string name="hores_mensuals">Hores mensuals</string>
+    <string name="sou">Sou</string>
+    <string name="login">Iniciar sessió</string>
+    <string name="logout">Tancar sessió</string>
+    <string name="alta">Donar d\'alta</string>
+    <string name="iniciar">INICIAR</string>
+    <string name="acabar">acabar</string>
+    <string name="subtitle_perfil">Aquest es el teu perfil</string>
+    <string name="title_validar">Validar hores</string>
 </resources>

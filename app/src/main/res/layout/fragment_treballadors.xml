@@ -11,7 +11,7 @@
         android:id="@+id/textHome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@string/title_treballadors"
         app:layout_constraintBottom_toTopOf="@+id/recyclerViewTreballadors"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

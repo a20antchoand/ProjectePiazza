@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Piazza</string>
+    <string name="title_activity_piazza_home">Piazza - Time control</string>
+
+    <string name="menu_inici">Home</string>
+    <string name="menu_treballadors">Workers</string>
+    <string name="menu_historial">History</string>
+
+    <string name="emptyTime">--:--</string>
+    <string name="slash">-</string>
+
+    <string name="email">Email</string>
+    <string name="contrasenya">Password</string>
+    <string name="title_inici">Validate</string>
+    <string name="title_treballadors">Workers</string>
+    <string name="title_administrar">Admin</string>
+    <string name="title_historial">History</string>
+    <string name="title_introduir_hores">Timer</string>
+    <string name="title_perfil">Profile</string>
+    <string name="nom_empleat">Name </string>
+    <string name="hores_mensuals">Monthly houres</string>
+    <string name="sou">Salary</string>
+    <string name="login">Log in</string>
+    <string name="logout">Log out</string>
+    <string name="alta">Register</string>
+    <string name="iniciar">START</string>
+    <string name="acabar">END</string>
+    <string name="subtitle_perfil">This is your profile</string>
+    <string name="title_validar">Validate houres</string>
+
+</resources>

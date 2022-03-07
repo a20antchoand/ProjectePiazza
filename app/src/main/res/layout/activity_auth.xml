@@ -43,7 +43,7 @@
             android:drawableStart="@drawable/ic_baseline_alternate_email_24"
             android:drawablePadding="5dp"
             android:ems="10"
-            android:hint="Email"
+            android:hint="@string/email"
             android:inputType="textEmailAddress" />
 
         <Space
@@ -59,7 +59,7 @@
             android:drawableStart="@drawable/ic_baseline_lock_24"
             android:drawablePadding="5dp"
             android:ems="10"
-            android:hint="Password"
+            android:hint="@string/contrasenya"
             android:inputType="textPassword" />
 
         <Space
@@ -88,7 +88,7 @@
             android:layout_marginRight="20dp"
             android:layout_weight="1"
             android:backgroundTint="#2196F3"
-            android:text="Login"
+            android:text="@string/login"
             android:textColor="#000000" />
 
 

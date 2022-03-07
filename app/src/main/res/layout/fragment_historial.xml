@@ -9,10 +9,10 @@
 
 
     <TextView
-        android:id="@+id/textHome"
+        android:id="@+id/treballadorsTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@string/title_historial"
         app:layout_constraintBottom_toTopOf="@+id/recyclerViewHistorial"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

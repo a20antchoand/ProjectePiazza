@@ -86,7 +86,7 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/start_button"
                 android:enabled="true"
-                android:text="INICIAR"
+                android:text="@string/iniciar"
                 android:textColor="#000000"
                 android:textStyle="bold" />
 
@@ -100,7 +100,7 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/end_button"
                 android:enabled="false"
-                android:text="ACABAR"
+                android:text="@string/acabar"
                 android:textColor="#000000"
                 android:textStyle="bold" />
 
