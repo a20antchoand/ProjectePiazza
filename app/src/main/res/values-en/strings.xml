@@ -29,5 +29,6 @@
     <string name="acabar">END</string>
     <string name="subtitle_perfil">This is your profile</string>
     <string name="title_validar">Validate houres</string>
+    <string name="recuperar_contrasenya">Forgot password?</string>
 
 </resources>

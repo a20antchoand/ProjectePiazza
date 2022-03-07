@@ -27,4 +27,6 @@
     <string name="acabar">acabar</string>
     <string name="subtitle_perfil">Aquest es el teu perfil</string>
     <string name="title_validar">Validar hores</string>
+    <string name="recuperar_contrasenya">Recuperar contrasenya?</string>
+
 </resources>
