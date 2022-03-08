@@ -4,18 +4,21 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.piazza.classes.Usuario;
+import com.example.piazza.controladores.auth.AuthActivity;
 import com.example.testauth.R;
 
 import com.example.testauth.databinding.ActivityEmployeeBinding;
 
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import androidx.appcompat.widget.ActionMenuView;
 import androidx.appcompat.widget.Toolbar;
@@ -51,28 +54,8 @@ public class EmployeeActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
-        setup();
-
     }
 
-    public void setup () {
-
-
-/*        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.ajustesLogOut) {
-                    System.out.println("Logout");
-                }
-
-                System.out.println("Logout");
-
-                return false;
-            }
-        });*/
-
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -87,10 +70,18 @@ public class EmployeeActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.ajustesLogOut:
-                System.out.println("LogOut");
+                logOut();
                 break;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void logOut() {
+        FirebaseAuth.getInstance().signOut();
+        Intent intent = new Intent(this, AuthActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
 }

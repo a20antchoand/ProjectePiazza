@@ -48,11 +48,6 @@ public class PerfilFragment extends Fragment {
         telefon = root.findViewById(R.id.telefon);
         cognom = root.findViewById(R.id.cognom);
 
-        root.findViewById(R.id.logOutEmployee).setOnClickListener(view -> {
-
-            logOut();
-        });
-
         mostrarDatosPerfil();
 
     }
@@ -67,12 +62,6 @@ public class PerfilFragment extends Fragment {
         telefon.setText(currUser.getTelefono());
         salari.setText(currUser.getSalario());
 
-    }
-
-    public void logOut() {
-        FirebaseAuth.getInstance().signOut();
-        Intent intent = new Intent(getActivity(), AuthActivity.class);
-        startActivity(intent);
     }
 
     @Override
