@@ -47,7 +47,7 @@
                 android:layout_toRightOf="@+id/iconImageView">
 
                 <TextView
-                    android:id="@+id/dataTextView"
+                    android:id="@+id/nomTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
@@ -66,7 +66,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/totalTextView"
+                android:id="@+id/souTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"

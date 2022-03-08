@@ -54,9 +54,8 @@ public class TreballadorsFragment extends Fragment {
         ListAdapterTreballadors listAdapter = new ListAdapterTreballadors(elements, root.getContext(), new ListAdapterTreballadors.onItemClickListener() {
             @Override
             public void onItemClickListener(ListElementTreballadors item) {
-                Toast.makeText(root.getContext(), "Hola " + item.getNom(), Toast.LENGTH_LONG).show();
 
-                moveToDescription(item);
+                showName(item);
             }
         });
         RecyclerView recyclerView = root.findViewById(R.id.recyclerViewTreballadors);
@@ -66,9 +65,10 @@ public class TreballadorsFragment extends Fragment {
 
     }
 
-    private void moveToDescription(ListElementTreballadors item) {
+    private void showName(ListElementTreballadors item) {
 
-        System.out.println("Treballador: "+ item.getNom());
+        Toast.makeText(root.getContext(), "Empleat:  " + item.getNom(), Toast.LENGTH_LONG).show();
+
     }
 
     @Override

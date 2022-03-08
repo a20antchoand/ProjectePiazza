@@ -47,24 +47,26 @@
                 android:layout_toRightOf="@+id/iconImageView">
 
             <TextView
-                android:id="@+id/dataTextView"
+                android:id="@+id/nomTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
                 android:textColor="@color/black"
+                android:text="@string/nom_empleat"
                 android:textSize="24sp"
                 android:textStyle="bold"/>
 
             <TextView
-                android:id="@+id/horesMensualsTextView"
+                android:id="@+id/totalTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@string/total"
                 android:textSize="18sp"/>
 
             </LinearLayout>
 
             <TextView
-                android:id="@+id/totalTextView"
+                android:id="@+id/estatTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -72,6 +74,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="6dp"
                 android:layout_marginRight="6dp"
+                android:text="@string/estat"
                 android:textSize="20dp"
                 android:textStyle="bold" />
 

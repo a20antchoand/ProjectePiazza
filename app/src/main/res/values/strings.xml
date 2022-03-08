@@ -28,5 +28,10 @@
     <string name="subtitle_perfil">Aquest es el teu perfil</string>
     <string name="title_validar">Validar hores</string>
     <string name="recuperar_contrasenya">Recuperar contrasenya?</string>
+    <string name="total">Total</string>
+    <string name="sortida">Sortida</string>
+    <string name="entrada">Entrada</string>
+    <string name="data">Data</string>
+    <string name="estat">Estat</string>
 
 </resources>

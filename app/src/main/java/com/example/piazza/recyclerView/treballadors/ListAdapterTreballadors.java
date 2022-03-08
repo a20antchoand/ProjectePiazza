@@ -42,7 +42,7 @@ public class ListAdapterTreballadors extends RecyclerView.Adapter<ListAdapterTre
 
     @Override
     public ViewHolder onCreateViewHolder (ViewGroup parent, int ViewType) {
-        View view = mInflater.from(parent.getContext()).inflate(R.layout.list_element_estat_treballadors, null);
+        View view = mInflater.from(parent.getContext()).inflate(R.layout.list_element_treballadors, null);
         return new ViewHolder(view);
     }
 
@@ -64,9 +64,9 @@ public class ListAdapterTreballadors extends RecyclerView.Adapter<ListAdapterTre
         ViewHolder(View itemView) {
             super(itemView);
             iconImage = itemView.findViewById(R.id.iconImageView);
-            nom = itemView.findViewById(R.id.dataTextView);
+            nom = itemView.findViewById(R.id.nomTextView);
             hores = itemView.findViewById(R.id.horesMensualsTextView);
-            sou = itemView.findViewById(R.id.totalTextView);
+            sou = itemView.findViewById(R.id.souTextView);
             cv = itemView.findViewById(R.id.cv);
         }
 

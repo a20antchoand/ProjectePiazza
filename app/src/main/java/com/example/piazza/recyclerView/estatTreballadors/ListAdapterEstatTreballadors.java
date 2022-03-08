@@ -64,9 +64,9 @@ public class ListAdapterEstatTreballadors extends RecyclerView.Adapter<ListAdapt
         ViewHolder(View itemView) {
             super(itemView);
             iconImage = itemView.findViewById(R.id.iconImageView);
-            nom = itemView.findViewById(R.id.dataTextView);
-            hores = itemView.findViewById(R.id.horesMensualsTextView);
-            estat = itemView.findViewById(R.id.totalTextView);
+            nom = itemView.findViewById(R.id.nomTextView);
+            hores = itemView.findViewById(R.id.totalTextView);
+            estat = itemView.findViewById(R.id.estatTextView);
             cv = itemView.findViewById(R.id.cv);
         }
 
