@@ -110,6 +110,9 @@ public class IntroduirHoresFragment extends Fragment {
 
                 } else {
                     Log.d(TAG, "Current data: null");
+
+
+
                 }
             }
         });
@@ -130,6 +133,9 @@ public class IntroduirHoresFragment extends Fragment {
                     comprovarEntradaSortida();
                 } else {
                     Log.d(TAG, "No such document");
+                    changeTextTime(iniciarTextView, 0,0);
+                    changeTextTime(acabarTextView, 0,0);
+                    changeTextTime(resultat, 0, 0);
                 }
             } else {
                 Log.d(TAG, "get failed with ", task.getException());
@@ -166,6 +172,7 @@ public class IntroduirHoresFragment extends Fragment {
 
             changeTextTime(iniciarTextView, horarioUsuario.getHoraEntrada(), horarioUsuario.getMinutEntrada());
             iniciarJornadaBtn.setEnabled(false);
+            iniciarJornadaBtn.setBackgroundResource(R.drawable.disabled_button);
 
             if ((long)data.get("horaSalida") != -1) {
 
@@ -178,12 +185,14 @@ public class IntroduirHoresFragment extends Fragment {
                 changeTextTime(acabarTextView, horarioUsuario.getHoraSalida(), horarioUsuario.getMinutSalida());
 
                 acabarJornadaBtn.setEnabled(false);
+                acabarJornadaBtn.setBackgroundResource(R.drawable.disabled_button);
 
                 calcularHores();
 
             } else {
 
                 acabarJornadaBtn.setEnabled(true);
+                acabarJornadaBtn.setBackgroundResource(R.drawable.end_effect);
 
             }
 
@@ -191,6 +200,7 @@ public class IntroduirHoresFragment extends Fragment {
 
         } else {
             iniciarJornadaBtn.setEnabled(true);
+            iniciarJornadaBtn.setBackgroundResource(R.drawable.start_effect);
 
             changeTextTime(iniciarTextView, 0, 0);
             changeTextTime(acabarTextView, 0, 0);
@@ -241,7 +251,7 @@ public class IntroduirHoresFragment extends Fragment {
         changeTextTime(iniciarTextView, horarioUsuario.getHoraEntrada(), horarioUsuario.getMinutEntrada() );
 
         iniciarJornadaBtn.setEnabled(false);
-
+        iniciarJornadaBtn.setBackgroundResource(R.drawable.disabled_button);
         acabarJornadaBtn.setEnabled(true);
 
 
@@ -258,6 +268,7 @@ public class IntroduirHoresFragment extends Fragment {
         changeTextTime(acabarTextView, horarioUsuario.getHoraSalida(), horarioUsuario.getMinutSalida());
 
         acabarJornadaBtn.setEnabled(false);
+        acabarJornadaBtn.setBackgroundResource(R.drawable.disabled_button);
 
         calcularHores();
 
