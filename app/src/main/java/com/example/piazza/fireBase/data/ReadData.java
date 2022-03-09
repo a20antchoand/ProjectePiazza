@@ -53,6 +53,7 @@ public class ReadData extends AuthUserSession {
 
     }
 
+
     public void getHistorialCurrUser(String collection) {
 
         getDDBB().collection(collection)
@@ -61,9 +62,9 @@ public class ReadData extends AuthUserSession {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+
                             for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                                 if (documentSnapshot.getId().contains(getUser().getEmail())) {
-
                                     int anioEntrada = documentSnapshot.getLong("anioEntrada").intValue();
                                     int mesEntrada = documentSnapshot.getLong("mesEntrada").intValue();
                                     int diaEntrada = documentSnapshot.getLong("diaEntrada").intValue();

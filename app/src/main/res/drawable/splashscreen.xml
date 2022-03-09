@@ -5,4 +5,5 @@
         <bitmap android:src="@mipmap/piazza_splash"
             android:gravity="center"/>
     </item>
+
 </layer-list>

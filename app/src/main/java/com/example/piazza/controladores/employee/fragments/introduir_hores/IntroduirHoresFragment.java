@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.piazza.classes.Horario;
 import com.example.piazza.classes.Usuario;
+import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentIntroduirHoresBinding;
