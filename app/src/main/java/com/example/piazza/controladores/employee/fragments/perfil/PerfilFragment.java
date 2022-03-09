@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +31,7 @@ public class PerfilFragment extends Fragment {
     private FragmentPerfilBinding binding;
     private View root;
     Usuario currUser;
-    TextView nom, email, salari, telefon, cognom;
+    EditText nom, email, salari, telefon, cognom;
     ImageView imatge;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
