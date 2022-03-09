@@ -3,46 +3,53 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/drawable/button_bg.xml" value="0.1" />
+        <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/drawable/end_button.xml" value="0.35208333333333336" />
         <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/drawable/ic_menu_camera.xml" value="0.35208333333333336" />
         <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/drawable/ic_menu_slideshow.xml" value="0.35208333333333336" />
+        <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/drawable/login_btn.xml" value="0.35208333333333336" />
+        <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/drawable/login_constraint.xml" value="0.17037037037037037" />
+        <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/drawable/rounded_logo.xml" value="0.35208333333333336" />
         <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/drawable/side_nav_bar.xml" value="0.35208333333333336" />
-        <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/layout/activity_employee.xml" value="0.3359375" />
+        <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/layout/activity_admin.xml" value="0.1618421052631579" />
+        <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/layout/activity_auth.xml" value="0.34444444444444444" />
+        <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/layout/activity_employee.xml" value="0.33" />
         <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/layout/activity_piazza_home.xml" value="0.1859375" />
         <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/layout/app_bar_piazza_home.xml" value="0.3364750235626767" />
         <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/layout/content_piazza_home.xml" value="0.1859375" />
+        <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/layout/fragment_administrar.xml" value="0.18" />
         <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/layout/fragment_historial.xml" value="0.26313405797101447" />
         <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/layout/fragment_home.xml" value="0.1859375" />
+        <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/layout/fragment_introduir_hores.xml" value="0.1" />
+        <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/layout/fragment_perfil.xml" value="0.3269927536231884" />
         <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/layout/fragment_treballadors.xml" value="0.26313405797101447" />
+        <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/layout/fragment_validar.xml" value="0.28289473684210525" />
+        <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/layout/list_element_historial_hores.xml" value="0.3269927536231884" />
+        <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/layout/list_element_treballadors.xml" value="0.3269927536231884" />
         <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/layout/nav_header_piazza_home.xml" value="0.1859375" />
         <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/menu/activity_main_drawer.xml" value="0.3359375" />
+        <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/menu/ajustes_menu.xml" value="0.28289473684210525" />
+        <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/menu/bottom_nav_menu.xml" value="0.3359375" />
         <entry key="../../../../../../../../../dades/dades/Toni/Soft/android/android-projects/ProjectePiazza/app/src/main/res/menu/piazza_home.xml" value="0.3359375" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.3828125" />
-        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/drawable/end_button.xml" value="0.1388888888888889" />
-        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.1388888888888889" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/drawable/ic_launcher_background.xml" value="0.3828125" />
-        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/drawable/ic_menu_camera.xml" value="0.1388888888888889" />
-        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/drawable/ic_menu_gallery.xml" value="0.1388888888888889" />
-        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/drawable/ic_menu_slideshow.xml" value="0.1388888888888889" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.3828125" />
-        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/drawable/rounded_btn.xml" value="0.1" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/drawable/side_nav_bar.xml" value="0.2796875" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/drawable/splashscreen.xml" value="0.19427083333333334" />
-        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/drawable/start_button.xml" value="0.1388888888888889" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/activity_admin.xml" value="0.1828125" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/activity_auth.xml" value="0.1871345029239766" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/activity_employee.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/activity_piazza_home.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/fragment_administrar.xml" value="0.2296875" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/fragment_historial.xml" value="0.22083333333333333" />
-        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/fragment_introduir_hores.xml" value="0.33" />
+        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/fragment_introduir_hores.xml" value="0.42803030303030304" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/fragment_perfil.xml" value="0.33" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/fragment_treballadors.xml" value="0.1" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/fragment_validar.xml" value="0.2296875" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/list_element.xml" value="0.1" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/list_element_estat_treballadors.xml" value="0.1765625" />
-        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/list_element_historial_hores.xml" value="0.33" />
+        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/list_element_historial_hores.xml" value="0.1" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/list_element_treballadors.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/switch_item.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/menu/bottom_nav_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/menu/bottom_nav_menu_employee.xml" value="0.22" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.3828125" />

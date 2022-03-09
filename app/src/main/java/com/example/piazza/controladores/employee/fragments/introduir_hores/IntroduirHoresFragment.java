@@ -130,7 +130,6 @@ public class IntroduirHoresFragment extends Fragment {
                     comprovarEntradaSortida();
                 } else {
                     Log.d(TAG, "No such document");
-                    GuardarRegistroBBDD();
                 }
             } else {
                 Log.d(TAG, "get failed with ", task.getException());
@@ -211,7 +210,7 @@ public class IntroduirHoresFragment extends Fragment {
             horarioUsuario.setDiaEntrada(zdt.getDayOfMonth());
             horarioUsuario.setHoraEntrada(zdt.getHour());
             horarioUsuario.setMinutEntrada(zdt.getMinute());
-        } else if (!entrada){
+        } else {
             horarioUsuario.setAnioSalida(zdt.getYear());
             horarioUsuario.setMesSalida(zdt.getMonthValue());
             horarioUsuario.setDiaSalida(zdt.getDayOfMonth());
