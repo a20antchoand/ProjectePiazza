@@ -22,11 +22,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ReadData extends AuthUserSession {
 
     DocumentSnapshot userDocument;
     List<ListElementHistorialHores> listElementHistorialHores = new ArrayList<>();
+    List<ListElementHistorialHores> listElementHistorialHoresOrdenat = new ArrayList<>();
 
     public void getOneDocument (String email) {
 
@@ -50,9 +53,7 @@ public class ReadData extends AuthUserSession {
 
     }
 
-    public void getAllDocumentFrom(String collection) {
-
-        System.out.println("here we are");
+    public void getHistorialCurrUser(String collection) {
 
         getDDBB().collection(collection)
                 .get()
@@ -82,10 +83,6 @@ public class ReadData extends AuthUserSession {
                             HistorialFragment.setElements(listElementHistorialHores);
 
                             System.out.println("Elements actualitzats");
-
-                            for (ListElementHistorialHores l : listElementHistorialHores) {
-                                System.out.println(l.getData());
-                            }
 
                         } else {
                             Log.d(TAG, "Error al recuperar varios documentos.");

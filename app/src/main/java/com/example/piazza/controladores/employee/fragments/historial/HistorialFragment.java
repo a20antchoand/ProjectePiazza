@@ -17,7 +17,6 @@ import com.example.piazza.recyclerView.historialHores.ListElementHistorialHores;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentHistorialBinding;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class HistorialFragment extends Fragment {
@@ -33,7 +32,7 @@ public class HistorialFragment extends Fragment {
 
         binding = FragmentHistorialBinding.inflate(inflater, container, false);
         root = binding.getRoot();
-        readData.getAllDocumentFrom("horari");
+        readData.getHistorialCurrUser("horari");
 
         return root;
 
