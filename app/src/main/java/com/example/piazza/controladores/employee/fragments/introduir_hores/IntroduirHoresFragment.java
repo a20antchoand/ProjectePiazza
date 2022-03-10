@@ -112,7 +112,7 @@ public class IntroduirHoresFragment extends Fragment {
                 } else {
                     Log.d(TAG, "Current data: null");
 
-
+                    comprovarEntradaSortida(false);
 
                 }
             }
@@ -131,7 +131,7 @@ public class IntroduirHoresFragment extends Fragment {
 
                 if (document.exists()) {
                     Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                    comprovarEntradaSortida();
+                    comprovarEntradaSortida(true);
                 } else {
                     Log.d(TAG, "No such document");
                     changeTextTime(iniciarTextView, 0,0);
@@ -159,56 +159,57 @@ public class IntroduirHoresFragment extends Fragment {
     }
 
 
-    private void comprovarEntradaSortida() {
+    private void comprovarEntradaSortida(boolean exist) {
 
         HashMap<String, Object> data = (HashMap<String, Object>) document.getData();
 
-        if ((long)data.get("horaEntrada") != -1) {
+        if (exist) {
+            if ((long) data.get("horaEntrada") != -1) {
 
-            horarioUsuario.setAnioEntrada(Math.toIntExact((Long) data.get("anioEntrada")));
-            horarioUsuario.setMesEntrada(Math.toIntExact((Long) data.get("mesEntrada")));
-            horarioUsuario.setDiaEntrada(Math.toIntExact((Long) data.get("diaEntrada")));
-            horarioUsuario.setHoraEntrada(Math.toIntExact((Long) data.get("horaEntrada")));
-            horarioUsuario.setMinutEntrada(Math.toIntExact((Long) data.get("minutEntrada")));
+                horarioUsuario.setAnioEntrada(Math.toIntExact((Long) data.get("anioEntrada")));
+                horarioUsuario.setMesEntrada(Math.toIntExact((Long) data.get("mesEntrada")));
+                horarioUsuario.setDiaEntrada(Math.toIntExact((Long) data.get("diaEntrada")));
+                horarioUsuario.setHoraEntrada(Math.toIntExact((Long) data.get("horaEntrada")));
+                horarioUsuario.setMinutEntrada(Math.toIntExact((Long) data.get("minutEntrada")));
 
-            changeTextTime(iniciarTextView, horarioUsuario.getHoraEntrada(), horarioUsuario.getMinutEntrada());
-            iniciarJornadaBtn.setEnabled(false);
-            iniciarJornadaBtn.setVisibility(View.GONE);
+                changeTextTime(iniciarTextView, horarioUsuario.getHoraEntrada(), horarioUsuario.getMinutEntrada());
+                iniciarJornadaBtn.setEnabled(false);
+                iniciarJornadaBtn.setVisibility(View.GONE);
 
-            if ((long)data.get("horaSalida") != -1) {
+                if ((long) data.get("horaSalida") != -1) {
 
-                horarioUsuario.setAnioSalida(Math.toIntExact((Long) data.get("anioSalida")));
-                horarioUsuario.setMesSalida(Math.toIntExact((Long) data.get("mesSalida")));
-                horarioUsuario.setDiaSalida(Math.toIntExact((Long) data.get("diaSalida")));
-                horarioUsuario.setHoraSalida(Math.toIntExact((Long) data.get("horaSalida")));
-                horarioUsuario.setMinutSalida(Math.toIntExact((Long) data.get("minutSalida")));
+                    horarioUsuario.setAnioSalida(Math.toIntExact((Long) data.get("anioSalida")));
+                    horarioUsuario.setMesSalida(Math.toIntExact((Long) data.get("mesSalida")));
+                    horarioUsuario.setDiaSalida(Math.toIntExact((Long) data.get("diaSalida")));
+                    horarioUsuario.setHoraSalida(Math.toIntExact((Long) data.get("horaSalida")));
+                    horarioUsuario.setMinutSalida(Math.toIntExact((Long) data.get("minutSalida")));
 
-                changeTextTime(acabarTextView, horarioUsuario.getHoraSalida(), horarioUsuario.getMinutSalida());
+                    changeTextTime(acabarTextView, horarioUsuario.getHoraSalida(), horarioUsuario.getMinutSalida());
 
-                acabarJornadaBtn.setEnabled(false);
-                acabarJornadaBtn.setVisibility(View.GONE);
+                    acabarJornadaBtn.setEnabled(false);
+                    acabarJornadaBtn.setVisibility(View.GONE);
 
+                    calcularHores();
 
+                } else {
 
-                calcularHores();
+                    acabarJornadaBtn.setEnabled(true);
+                    acabarJornadaBtn.setVisibility(View.VISIBLE);
 
-            } else {
+                }
 
-                acabarJornadaBtn.setEnabled(true);
-                acabarJornadaBtn.setVisibility(View.VISIBLE);
 
             }
-
-
-
         } else {
             iniciarJornadaBtn.setEnabled(true);
             iniciarJornadaBtn.setVisibility(View.VISIBLE);
 
             changeTextTime(iniciarTextView, 0, 0);
             changeTextTime(acabarTextView, 0, 0);
-        }
+            changeTextTime(resultat, 0, 0);
 
+            horarioUsuario = new Horario();
+        }
 
     }
 

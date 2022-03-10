@@ -22,6 +22,7 @@ import com.example.piazza.recyclerView.historialHores.ListElementHistorialHores;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentHistorialBinding;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -49,7 +50,10 @@ public class HistorialFragment extends Fragment {
 
     private void setup() {
 
-        readData.getHistorialCurrUser("horari", this::setElements);
+        Query query = AuthUserSession.getDDBB().collection("horari")
+                .orderBy("diaEntrada", Query.Direction.DESCENDING);
+
+        readData.getHistorialCurrUser( query, this::setElements);
 
     }
 

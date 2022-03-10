@@ -56,11 +56,9 @@ public class ReadData extends AuthUserSession {
     }
 
 
-    public void getHistorialCurrUser(String collection, OnCompleteListener<QuerySnapshot> action) {
+    public void getHistorialCurrUser(Query query, OnCompleteListener<QuerySnapshot> action) {
 
-        getDDBB().collection(collection)
-                .orderBy("diaEntrada", Query.Direction.DESCENDING)
-                .get()
+                query.get()
                 .addOnCompleteListener(action);
 
 
