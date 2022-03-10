@@ -6,6 +6,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.piazza.classes.Horario;
 import com.example.piazza.classes.Usuario;
 import com.example.piazza.controladores.employee.fragments.historial.HistorialFragment;
 import com.example.piazza.controladores.employee.fragments.introduir_hores.IntroduirHoresFragment;
@@ -15,6 +16,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -54,50 +56,20 @@ public class ReadData extends AuthUserSession {
     }
 
 
-    public void getHistorialCurrUser(String collection) {
+    public void getHistorialCurrUser(String collection, Query q, OnCompleteListener<QuerySnapshot> action) {
 
         getDDBB().collection(collection)
+                .orderBy("diaEntrada", Query.Direction.DESCENDING)
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-
-                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                if (documentSnapshot.getId().contains(getUser().getEmail())) {
-                                    int anioEntrada = documentSnapshot.getLong("anioEntrada").intValue();
-                                    int mesEntrada = documentSnapshot.getLong("mesEntrada").intValue();
-                                    int diaEntrada = documentSnapshot.getLong("diaEntrada").intValue();
-
-                                    int horaEntrada = documentSnapshot.getLong("horaEntrada").intValue();
-                                    int minutEntrada = documentSnapshot.getLong("minutEntrada").intValue();
-                                    int horaSortida = documentSnapshot.getLong("horaSalida").intValue();
-                                    int minutSortida = documentSnapshot.getLong("minutSalida").intValue();
-
-                                    int total = documentSnapshot.getLong("totalMinutsTreballats").intValue();
-
-                                    addListElementHistorial(anioEntrada, mesEntrada, diaEntrada, horaEntrada, minutEntrada, horaSortida, minutSortida, total);
-
-                                }
-                            }
-
-                            HistorialFragment.setElements(listElementHistorialHores);
-
-                            System.out.println("Elements actualitzats");
-
-                        } else {
-                            Log.d(TAG, "Error al recuperar varios documentos.");
-                        }
-                    }
-                });
+                .addOnCompleteListener(action);
 
 
     }
 
-    private void addListElementHistorial(int anioEntrada, int mesEntrada, int diaEntrada, int horaEntrada, int minutEntrada, int horaSortida, int minutSortida, int total) {
+    private void addListElementHistorial(Horario horario) {
 
-        String data = anioEntrada + "/" + mesEntrada + "/" + diaEntrada;
-        String entrada = horaEntrada + ":" + minutEntrada;
+        String data = horario.getAnioEntrada() + "/" + horario.getMesEntrada() + "/" + horario.getDiaEntrada();
+        String entrada = ho + ":" + minutEntrada;
         String sortida = horaSortida + ":" + minutSortida;
         String totalFinal = total/60 + ":" + total%60;
 
