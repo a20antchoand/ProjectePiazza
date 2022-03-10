@@ -9,16 +9,7 @@ public class Usuario {
     String salario;
 
 
-    public Usuario (String email) {
-        this.email = email;
-    }
-
-    public Usuario (Usuario usuario) {
-        this.email = usuario.getEmail();
-        this.telefono = usuario.getTelefono();
-        this.salario = usuario.getSalario();
-        this.nom = usuario.getNom();
-        this.cognom = usuario.getCognom();
+    public Usuario () {
     }
 
     public Usuario(String email, String nom, String cognom, String telefono, String salario) {

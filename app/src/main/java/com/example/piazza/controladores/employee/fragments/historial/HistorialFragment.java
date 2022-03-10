@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -31,7 +33,8 @@ public class HistorialFragment extends Fragment {
     private static final String TAG = "HistorialFragment: ";
     private FragmentHistorialBinding binding;
     private static View root;
-    ReadData readData = new ReadData();
+    private List<ListElementHistorialHores> listElements = new ArrayList<>();
+    private ReadData readData = new ReadData();
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -39,55 +42,27 @@ public class HistorialFragment extends Fragment {
 
         binding = FragmentHistorialBinding.inflate(inflater, container, false);
         root = binding.getRoot();
-        readData.getHistorialCurrUser("horari", this::setElements);
-
+        setup();
         return root;
 
     }
 
+    private void setup() {
 
-    /*
-    *
-    * new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
+        readData.getHistorialCurrUser("horari", this::setElements);
 
-                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                if (documentSnapshot.getId().contains(getUser().getEmail())) {
-                                    Horario horario = documentSnapshot.toObject(Horario.class);
-
-                                    addListElementHistorial(horario);
-
-                                }
-                            }
-
-                            HistorialFragment.setElements(listElementHistorialHores);
-
-                            System.out.println("Elements actualitzats");
-
-                        } else {
-                            Log.d(TAG, "Error al recuperar varios documentos.");
-                        }
-                    }
-    *
-    *
-    * */
-
+    }
 
 
     public void setElements(Task<QuerySnapshot> querySnapshotTask) {
-
-        List<ListElementHistorialHores> listElements = new ArrayList<>();
-
 
         if (querySnapshotTask.isSuccessful()) {
 
             for (QueryDocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
                 if (documentSnapshot.getId().contains(AuthUserSession.getUser().getEmail())) {
                     Horario horario = documentSnapshot.toObject(Horario.class);
-
-                    listElements.add(addListElementHistorial(horario));
+                    if (horario.getHoraSalida() != -1)
+                        listElements.add(addListElementHistorial(horario));
 
                 }
             }
@@ -98,41 +73,54 @@ public class HistorialFragment extends Fragment {
             Log.d(TAG, "Error al recuperar varios documentos.");
         }
 
-        ListAdapterHistorialHores listAdapter = new ListAdapterHistorialHores(listElements, root.getContext(), new ListAdapterHistorialHores.onItemClickListener() {
-            @Override
-            public void onItemClickListener(ListElementHistorialHores item) {
-                //moveToDescription(item);
-            }
-        });
-        RecyclerView recyclerView = root.findViewById(R.id.recyclerViewHistorial);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
-        recyclerView.setAdapter(listAdapter);
+        if (listElements.size() == 0){
+
+            binding.titolHistorial.setVisibility(View.VISIBLE);
+            binding.imatgeHistorial.setVisibility(View.VISIBLE);
+            binding.recyclerViewHistorial.setVisibility(View.GONE);
+
+        } else {
+
+            binding.titolHistorial.setVisibility(View.GONE);
+            binding.imatgeHistorial.setVisibility(View.GONE);
+            binding.recyclerViewHistorial.setVisibility(View.VISIBLE);
+
+            ListAdapterHistorialHores listAdapter = new ListAdapterHistorialHores(listElements, root.getContext(), new ListAdapterHistorialHores.onItemClickListener() {
+                @Override
+                public void onItemClickListener(ListElementHistorialHores item) {
+                    //moveToDescription(item);
+                }
+            });
+            RecyclerView recyclerView = root.findViewById(R.id.recyclerViewHistorial);
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+            recyclerView.setAdapter(listAdapter);
+        }
     }
 
     private ListElementHistorialHores addListElementHistorial(Horario horario) {
 
         String data = horario.getAnioEntrada() + "/" + horario.getMesEntrada() + "/" + horario.getDiaEntrada();
-        String entrada = horario.getHoraEntrada() + ":" + horario.getMinutEntrada();
-        String sortida = horaSortida + ":" + minutSortida;
-        String totalFinal = total/60 + ":" + total%60;
+        String entrada = horario.getHoraEntrada() + ":" + horario.getMinutEntrada() ;
+        String sortida = horario.getHoraSalida() + ":" + horario.getMinutSalida();
+        String totalFinal = horario.getTotalMinutsTreballats()/60 + ":" + horario.getTotalMinutsTreballats()%60;
 
-        if (minutEntrada < 10)
-            entrada = horaEntrada + ":0" + minutEntrada;
-        if (horaEntrada < 10)
-            entrada = "0" + horaEntrada + ":" + horaEntrada;
-        if (horaEntrada < 10 && minutEntrada < 10)
-            entrada = "0" + horaEntrada + ":0" + horaEntrada;
+        if (horario.getMinutEntrada() < 10)
+            entrada = horario.getHoraEntrada() + ":0" + horario.getMinutEntrada();
+        if (horario.getHoraEntrada() < 10)
+            entrada = "0" + horario.getHoraEntrada() + ":" + horario.getHoraEntrada();
+        if (horario.getHoraEntrada() < 10 && horario.getMinutEntrada() < 10)
+            entrada = "0" + horario.getHoraEntrada() + ":0" + horario.getHoraEntrada();
 
-        if (minutSortida < 10)
-            sortida = horaSortida + ":0" + minutSortida;
-        if (horaSortida < 10)
-            sortida = "0" + horaSortida + ":" + minutSortida;
-        if (horaSortida < 10 && minutSortida < 10)
-            sortida = "0" + horaSortida + ":0" + minutSortida;;
+        if (horario.getMinutSalida() < 10)
+            sortida = horario.getHoraSalida() + ":0" + horario.getMinutSalida();
+        if (horario.getHoraSalida() < 10)
+            sortida = "0" + horario.getHoraSalida() + ":" + horario.getMinutSalida();
+        if (horario.getHoraSalida() < 10 && horario.getMinutSalida() < 10)
+            sortida = "0" + horario.getHoraSalida() + ":0" + horario.getMinutSalida();;
 
-        if ((total % 60) < 10)
-            totalFinal = total/60 + ":0" + total%60;
+        if ((horario.getTotalMinutsTreballats() % 60) < 10)
+            totalFinal = horario.getTotalMinutsTreballats()/60 + ":0" + horario.getTotalMinutsTreballats()%60;
 
         return new ListElementHistorialHores(
                 data,

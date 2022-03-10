@@ -58,6 +58,7 @@ public class AuthUserSession {
     public static void cargarDatosUsuario(String email) {
 
         DocumentReference docRef = DDBB.collection("usuaris").document(Objects.requireNonNull(email));
+
         docRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 userDocument = task.getResult();

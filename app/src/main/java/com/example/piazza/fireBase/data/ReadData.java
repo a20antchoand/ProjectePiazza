@@ -56,7 +56,7 @@ public class ReadData extends AuthUserSession {
     }
 
 
-    public void getHistorialCurrUser(String collection, Query q, OnCompleteListener<QuerySnapshot> action) {
+    public void getHistorialCurrUser(String collection, OnCompleteListener<QuerySnapshot> action) {
 
         getDDBB().collection(collection)
                 .orderBy("diaEntrada", Query.Direction.DESCENDING)
@@ -66,36 +66,5 @@ public class ReadData extends AuthUserSession {
 
     }
 
-    private void addListElementHistorial(Horario horario) {
-
-        String data = horario.getAnioEntrada() + "/" + horario.getMesEntrada() + "/" + horario.getDiaEntrada();
-        String entrada = ho + ":" + minutEntrada;
-        String sortida = horaSortida + ":" + minutSortida;
-        String totalFinal = total/60 + ":" + total%60;
-
-        if (minutEntrada < 10)
-            entrada = horaEntrada + ":0" + minutEntrada;
-        if (horaEntrada < 10)
-            entrada = "0" + horaEntrada + ":" + horaEntrada;
-        if (horaEntrada < 10 && minutEntrada < 10)
-            entrada = "0" + horaEntrada + ":0" + horaEntrada;
-
-        if (minutSortida < 10)
-            sortida = horaSortida + ":0" + minutSortida;
-        if (horaSortida < 10)
-            sortida = "0" + horaSortida + ":" + minutSortida;
-        if (horaSortida < 10 && minutSortida < 10)
-            sortida = "0" + horaSortida + ":0" + minutSortida;;
-
-        if ((total % 60) < 10)
-            totalFinal = total/60 + ":0" + total%60;
-
-        listElementHistorialHores.add(new ListElementHistorialHores(
-                data,
-                entrada + "  ",
-                sortida,
-                totalFinal));
-
-    }
 
 }

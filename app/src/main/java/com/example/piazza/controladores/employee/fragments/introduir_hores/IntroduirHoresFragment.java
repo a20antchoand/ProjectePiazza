@@ -173,7 +173,7 @@ public class IntroduirHoresFragment extends Fragment {
 
             changeTextTime(iniciarTextView, horarioUsuario.getHoraEntrada(), horarioUsuario.getMinutEntrada());
             iniciarJornadaBtn.setEnabled(false);
-            iniciarJornadaBtn.setBackgroundResource(R.drawable.disabled_button);
+            iniciarJornadaBtn.setVisibility(View.GONE);
 
             if ((long)data.get("horaSalida") != -1) {
 
@@ -186,14 +186,16 @@ public class IntroduirHoresFragment extends Fragment {
                 changeTextTime(acabarTextView, horarioUsuario.getHoraSalida(), horarioUsuario.getMinutSalida());
 
                 acabarJornadaBtn.setEnabled(false);
-                acabarJornadaBtn.setBackgroundResource(R.drawable.disabled_button);
+                acabarJornadaBtn.setVisibility(View.GONE);
+
+
 
                 calcularHores();
 
             } else {
 
                 acabarJornadaBtn.setEnabled(true);
-                acabarJornadaBtn.setBackgroundResource(R.drawable.end_effect);
+                acabarJornadaBtn.setVisibility(View.VISIBLE);
 
             }
 
@@ -201,7 +203,7 @@ public class IntroduirHoresFragment extends Fragment {
 
         } else {
             iniciarJornadaBtn.setEnabled(true);
-            iniciarJornadaBtn.setBackgroundResource(R.drawable.start_effect);
+            iniciarJornadaBtn.setVisibility(View.VISIBLE);
 
             changeTextTime(iniciarTextView, 0, 0);
             changeTextTime(acabarTextView, 0, 0);
@@ -252,7 +254,7 @@ public class IntroduirHoresFragment extends Fragment {
         changeTextTime(iniciarTextView, horarioUsuario.getHoraEntrada(), horarioUsuario.getMinutEntrada() );
 
         iniciarJornadaBtn.setEnabled(false);
-        iniciarJornadaBtn.setBackgroundResource(R.drawable.disabled_button);
+        iniciarJornadaBtn.setVisibility(View.GONE);
         acabarJornadaBtn.setEnabled(true);
 
 
@@ -269,7 +271,7 @@ public class IntroduirHoresFragment extends Fragment {
         changeTextTime(acabarTextView, horarioUsuario.getHoraSalida(), horarioUsuario.getMinutSalida());
 
         acabarJornadaBtn.setEnabled(false);
-        acabarJornadaBtn.setBackgroundResource(R.drawable.disabled_button);
+        acabarJornadaBtn.setVisibility(View.GONE);
 
         calcularHores();
 
