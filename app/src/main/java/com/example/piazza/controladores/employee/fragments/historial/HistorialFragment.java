@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.example.piazza.classes.Horario;
+import com.example.piazza.controladores.employee.fragments.introduir_hores.IntroduirHoresFragment;
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.piazza.recyclerView.historialHores.ListAdapterHistorialHores;
@@ -29,13 +30,12 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HistorialFragment extends Fragment {
+public class HistorialFragment extends Fragment implements ReadData, AuthUserSession{
 
     private static final String TAG = "HistorialFragment: ";
     private FragmentHistorialBinding binding;
     private static View root;
     private List<ListElementHistorialHores> listElements = new ArrayList<>();
-    private ReadData readData = new ReadData();
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -50,10 +50,10 @@ public class HistorialFragment extends Fragment {
 
     private void setup() {
 
-        Query query = AuthUserSession.getDDBB().collection("horari")
+        Query query = DDBB.collection("horari")
                 .orderBy("diaEntrada", Query.Direction.DESCENDING);
 
-        readData.getHistorialCurrUser( query, this::setElements);
+        getHistorialCurrUser( query, this::setElements);
 
     }
 
@@ -63,7 +63,7 @@ public class HistorialFragment extends Fragment {
         if (querySnapshotTask.isSuccessful()) {
 
             for (QueryDocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
-                if (documentSnapshot.getId().contains(AuthUserSession.getUser().getEmail())) {
+                if (documentSnapshot.getId().contains(IntroduirHoresFragment.usuarioApp.getUid())) {
                     Horario horario = documentSnapshot.toObject(Horario.class);
                     if (horario.getHoraSalida() != -1)
                         listElements.add(addListElementHistorial(horario));

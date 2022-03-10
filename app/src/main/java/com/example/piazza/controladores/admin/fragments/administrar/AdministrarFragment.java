@@ -20,8 +20,9 @@ import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentAdministrarBinding;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
-public class AdministrarFragment extends Fragment {
+public class AdministrarFragment extends Fragment implements AuthUserSession{
 
     private FragmentAdministrarBinding binding;
     View root;
@@ -44,25 +45,32 @@ public class AdministrarFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                String email = String.valueOf(((TextView) root.findViewById(R.id.editTextEmail)).getText());
-                String nom = String.valueOf(((TextView) root.findViewById(R.id.editTextNom)).getText());
-                String cognom = String.valueOf(((TextView) root.findViewById(R.id.editTextCognom)).getText());
-                String telefon = String.valueOf(((TextView) root.findViewById(R.id.editTextTelefon)).getText());
-                String salari = String.valueOf(((TextView) root.findViewById(R.id.editTextSalari)).getText());
+                String email = ((TextView) root.findViewById(R.id.editTextEmail)).getText().toString();
+                String nom = ((TextView) root.findViewById(R.id.editTextNom)).getText().toString();
+                String cognom = ((TextView) root.findViewById(R.id.editTextCognom)).getText().toString();
+                String telefon = ((TextView) root.findViewById(R.id.editTextTelefon)).getText().toString();
+                String salari = ((TextView) root.findViewById(R.id.editTextSalari)).getText().toString();
+
+                FirebaseUser user =  FirebaseAuth.getInstance().getCurrentUser();
 
                 FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, "123456")
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "createUserWithEmail:success");
-                                Toast.makeText(getActivity().getApplication(), "Authentication Successful.",
+                                Toast.makeText(getActivity().getApplication(), "Usuario dado de alta correctamente.",
                                         Toast.LENGTH_SHORT).show();
-                                AuthUserSession.GuardarUsuarioBBDD(new Usuario(email, nom, cognom, telefon, salari));
+
+                                GuardarUsuarioBBDD(new Usuario(task.getResult().getUser().getUid(), email, nom, cognom, telefon, salari));
+
+
+
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                Toast.makeText(getActivity().getApplication(), "Authentication failed.",
+                                Toast.makeText(getActivity().getApplication(), "No se a podido dar de alta al usuario.",
                                         Toast.LENGTH_SHORT).show();
+
                             }
                         });
 

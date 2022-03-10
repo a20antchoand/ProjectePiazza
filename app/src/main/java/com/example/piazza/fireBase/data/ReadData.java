@@ -27,36 +27,17 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ReadData extends AuthUserSession {
+public interface ReadData {
 
-    DocumentSnapshot userDocument;
-    List<ListElementHistorialHores> listElementHistorialHores = new ArrayList<>();
-    List<ListElementHistorialHores> listElementHistorialHoresOrdenat = new ArrayList<>();
+    default void getOneDocument(DocumentReference docRef, OnCompleteListener<DocumentSnapshot> action) {
 
-    public void getOneDocument (String email) {
-
-        DocumentReference docRef = getDDBB().collection("usuaris").document(Objects.requireNonNull(email));
-        docRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                userDocument = task.getResult();
-
-                if (userDocument.exists()) {
-                    Log.d(TAG, "DocumentSnapshot data: " + userDocument.getData());
-                    Map<String, Object> data = userDocument.getData();
-                    setUser(new Usuario((String) data.get("email"), (String) data.get("nom"), (String) data.get("cognom"), (String) data.get("telefono"), (String) data.get("salario")));
-                    IntroduirHoresFragment.setUsuarioApp(getUser());
-                } else {
-                    Log.d(TAG, "No se encuentra el usuario: " + email);
-                }
-            } else {
-                Log.d(TAG, "get failed with ", task.getException());
-            }
-        });
+        docRef.get().
+                addOnCompleteListener(action);
 
     }
 
 
-    public void getHistorialCurrUser(Query query, OnCompleteListener<QuerySnapshot> action) {
+    default void getHistorialCurrUser(Query query, OnCompleteListener<QuerySnapshot> action) {
 
                 query.get()
                 .addOnCompleteListener(action);

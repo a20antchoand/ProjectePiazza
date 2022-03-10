@@ -8,20 +8,32 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.example.piazza.classes.Usuario;
 import com.example.piazza.controladores.admin.AdminActivity;
 import com.example.piazza.controladores.employee.EmployeeActivity;
+import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
-public class AuthActivity extends AppCompatActivity {
+import java.util.Objects;
 
+public class AuthActivity extends AppCompatActivity implements ReadData, AuthUserSession{
+
+    Button logIn;
+    Usuario usuarioApp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setTheme(R.style.Theme_TestAuth_NoActionBar);
 
         setContentView(R.layout.activity_auth);
         setup();
@@ -30,68 +42,61 @@ public class AuthActivity extends AppCompatActivity {
 
     public void setup() {
 
-        Button logIn = (Button) findViewById(R.id.logIn);
+        logIn = (Button) findViewById(R.id.logIn);
 
-        /* ======================================
-         * Comprovamos si tiene el usuario sesión activa
-         * ======================================
-         * */
+        logIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            AuthUserSession.cargarDatosUsuario(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-            if (FirebaseAuth.getInstance().getCurrentUser().getEmail().contains("admin")) {
-                showHome();
-            } else {
-                showEmployee();
+                String email = ((EditText) findViewById(R.id.editTextEmail)).getText().toString();
+                String password = ((EditText) findViewById(R.id.editTextPassword)).getText().toString();
+
+                if (!email.equals("") && !password.equals("")) {
+
+                    FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+
+                            /* ======================================
+                             * Cargamos datos del usuario actual
+                             * ======================================
+                             * */
+
+                            DocumentReference query = DDBB.collection("usuaris")
+                                    .document(Objects.requireNonNull(task.getResult().getUser().getUid()));
+
+                            System.out.println(task.getResult().getUser().getUid());
+
+                            getOneDocument(query, this::validarLogin);
+
+                            DDBB.collection("usuaris").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getUid()));
+
+                        } else {
+                            showAlert("El usuario o la contrasenya no són correctes.");
+                        }
+                    });
+                }
             }
 
-        /*
-        * ======================================
-        * Comprovamos si el usuario inicia sesión.
-        * ======================================
-        * */
-
-        } else {
-
-            logIn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    String email = ((EditText) findViewById(R.id.editTextEmail)).getText().toString();
-                    String password = ((EditText) findViewById(R.id.editTextPassword)).getText().toString();
-
-                    if (!email.equals("") && !password.equals("")) {
-                        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-
-                                /* ======================================
-                                 * Cargamos datos del usuario actual
-                                 * ======================================
-                                 * */
-
-                                AuthUserSession.cargarDatosUsuario(email);
-
-                                if (email.contains("admin"))
-                                    showHome();
-                                else
-                                    showEmployee();
-                            } else {
-                                showAlert();
-                            }
-                        });
-                    }
+            private void validarLogin(Task<DocumentSnapshot> DocumentSnapshotTask) {
+                if (DocumentSnapshotTask.getResult().getData() != null && DocumentSnapshotTask.getResult().getString("email").contains("admin")) {
+                    showHome();
+                } else if (DocumentSnapshotTask.getResult().getData() != null) {
+                    showEmployee();
+                } else {
+                   showAlert("No estas registrat a la piazza.");
                 }
-            });
+            }
 
-        }
 
+        });
     }
 
 
-    private void showAlert() {
+
+    private void showAlert(String msg) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Error");
-        builder.setMessage("El usuario o la contraseña no son correctos.");
+        builder.setMessage(msg);
         builder.setPositiveButton("Aceptar", null);
         AlertDialog alerta = builder.create();
         alerta.show();

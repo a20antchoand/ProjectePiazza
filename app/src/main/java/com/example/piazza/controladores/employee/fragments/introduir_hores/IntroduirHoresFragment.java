@@ -2,6 +2,7 @@ package com.example.piazza.controladores.employee.fragments.introduir_hores;
 
 import static com.google.firebase.crashlytics.internal.Logger.TAG;
 
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +23,7 @@ import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentIntroduirHoresBinding;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -34,7 +37,7 @@ import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class IntroduirHoresFragment extends Fragment {
+public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
 
 
     TextView iniciarTextView;
@@ -44,7 +47,7 @@ public class IntroduirHoresFragment extends Fragment {
     Button acabarJornadaBtn;
 
     DocumentSnapshot document;
-    static Usuario usuarioApp;
+    public static Usuario usuarioApp;
     Horario horarioUsuario;
 
 
@@ -61,19 +64,16 @@ public class IntroduirHoresFragment extends Fragment {
         return root;
     }
 
-    public static void setUsuarioApp(Usuario usuari) {
-        usuarioApp = usuari;
-    }
-
     public void setup () {
 
-        AuthUserSession.cargarDatosUsuario(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        DocumentReference docRef = DDBB.collection("usuaris").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getUid()));
+        cargarDatosUsuario(docRef, this::getUsuari);
 
-        iniciarTextView = root.findViewById(R.id.iniciarTextView);
-        acabarTextView = root.findViewById(R.id.acabarTextView);
-        resultat = root.findViewById(R.id.resultat);
-        iniciarJornadaBtn = root.findViewById(R.id.iniciarJornada);
-        acabarJornadaBtn = root.findViewById(R.id.acabarJornada);
+        iniciarTextView = binding.iniciarTextView;
+        acabarTextView = binding.acabarTextView;
+        resultat =binding.resultat;
+        iniciarJornadaBtn = binding.iniciarJornada;
+        acabarJornadaBtn =binding.acabarJornada;
         horarioUsuario = new Horario();
 
         root.findViewById(R.id.iniciarJornada).setOnClickListener(view -> {
@@ -92,9 +92,18 @@ public class IntroduirHoresFragment extends Fragment {
 
     }
 
+    private void getUsuari(Task<DocumentSnapshot> documentSnapshotTask) {
+
+        usuarioApp = documentSnapshotTask.getResult().toObject(Usuario.class);
+
+        Toast.makeText(getContext(), usuarioApp.getUid(), Toast.LENGTH_SHORT).show();
+
+    }
+
+
     private void escoltarBBDD() {
 
-        final DocumentReference docRef = AuthUserSession.getDDBB().collection("horari").document(getFechaActual().getYear() + "_" + getFechaActual().getMonthValue() + "_" + getFechaActual().getDayOfMonth() +  "_usuari_" + FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        final DocumentReference docRef = DDBB.collection("horari").document(getFechaActual().getYear() + "_" + getFechaActual().getMonthValue() + "_" + getFechaActual().getDayOfMonth() +  "_" + FirebaseAuth.getInstance().getCurrentUser().getUid());
         docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,
@@ -124,7 +133,7 @@ public class IntroduirHoresFragment extends Fragment {
     private void RecuperarRegistroUsuariBBDD() {
 
 
-        DocumentReference docRef = AuthUserSession.getDDBB().collection("horari").document(Objects.requireNonNull(getFechaActual().getYear() + "_" + getFechaActual().getMonthValue() + "_" + getFechaActual().getDayOfMonth() +  "_usuari_" + FirebaseAuth.getInstance().getCurrentUser().getEmail()));
+        DocumentReference docRef = DDBB.collection("horari").document(Objects.requireNonNull(getFechaActual().getYear() + "_" + getFechaActual().getMonthValue() + "_" + getFechaActual().getDayOfMonth() +  "_" + FirebaseAuth.getInstance().getCurrentUser().getUid()));
         docRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 document = task.getResult();
@@ -147,7 +156,7 @@ public class IntroduirHoresFragment extends Fragment {
 
     private void GuardarRegistroBBDD() {
 
-        AuthUserSession.getDDBB().collection("horari").document(Objects.requireNonNull(getFechaActual().getYear() + "_" + getFechaActual().getMonthValue() + "_" + getFechaActual().getDayOfMonth() +  "_usuari_" + FirebaseAuth.getInstance().getCurrentUser().getEmail()))
+        DDBB.collection("horari").document(Objects.requireNonNull(getFechaActual().getYear() + "_" + getFechaActual().getMonthValue() + "_" + getFechaActual().getDayOfMonth() +  "_" + FirebaseAuth.getInstance().getCurrentUser().getUid()))
                 .set(horarioUsuario)
                 .addOnSuccessListener(aVoid -> {
                     Log.d(TAG, "DocumentSnapshot successfully written!");
@@ -210,6 +219,15 @@ public class IntroduirHoresFragment extends Fragment {
 
             horarioUsuario = new Horario();
         }
+
+        mostrarPantalla();
+
+    }
+
+    private void mostrarPantalla() {
+
+        binding.progressBarIntroduirHores.setVisibility(View.GONE);
+        binding.introduirHoresLinearLayout.setVisibility(View.VISIBLE);
 
     }
 

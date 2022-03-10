@@ -2,6 +2,7 @@ package com.example.piazza.classes;
 
 public class Usuario {
 
+    String uid;
     String email;
     String telefono;
     String nom;
@@ -12,12 +13,21 @@ public class Usuario {
     public Usuario () {
     }
 
-    public Usuario(String email, String nom, String cognom, String telefono, String salario) {
+    public Usuario(String uid, String email, String nom, String cognom, String telefono, String salario) {
+        this.uid = uid;
         this.email = email;
         this.telefono = telefono;
         this.salario = salario;
         this.nom = nom;
         this.cognom = cognom;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getTelefono() {

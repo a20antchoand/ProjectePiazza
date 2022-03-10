@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.piazza.classes.Usuario;
 import com.example.piazza.controladores.auth.AuthActivity;
+import com.example.piazza.controladores.employee.fragments.introduir_hores.IntroduirHoresFragment;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentPerfilBinding;
@@ -26,7 +27,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-public class PerfilFragment extends Fragment {
+public class PerfilFragment extends Fragment implements AuthUserSession{
 
     private FragmentPerfilBinding binding;
     private View root;
@@ -63,7 +64,7 @@ public class PerfilFragment extends Fragment {
 
     public void mostrarDatosPerfil() {
 
-        currUser = AuthUserSession.getUser();
+        currUser = IntroduirHoresFragment.usuarioApp;
 
         email.setText(currUser.getEmail());
         nom.setText(currUser.getNom());
