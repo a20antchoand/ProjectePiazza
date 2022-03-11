@@ -47,7 +47,6 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
     Button acabarJornadaBtn;
 
     DocumentSnapshot document;
-    public static Usuario usuarioApp;
     Horario horarioUsuario;
 
 
@@ -65,9 +64,6 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
     }
 
     public void setup () {
-
-        DocumentReference docRef = DDBB.collection("usuaris").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getUid()));
-        cargarDatosUsuario(docRef, this::getUsuari);
 
         iniciarTextView = binding.iniciarTextView;
         acabarTextView = binding.acabarTextView;
@@ -91,14 +87,6 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
         escoltarBBDD();
 
         System.out.println("INTRODUIR_HORES: " + userAuth.getEmail());
-
-    }
-
-    private void getUsuari(Task<DocumentSnapshot> documentSnapshotTask) {
-
-        usuarioApp = documentSnapshotTask.getResult().toObject(Usuario.class);
-
-        Toast.makeText(getContext(), usuarioApp.getUid(), Toast.LENGTH_SHORT).show();
 
     }
 
@@ -310,7 +298,7 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
 
         changeTextTime(resultat, diffMinuts/60, diffMinuts%60);
 
-        horarioUsuario.setUsuario(usuarioApp);
+        horarioUsuario.setUsuario(userAuth);
         horarioUsuario.setTotalMinutsTreballats(diffMinuts);
 
         GuardarRegistroBBDD();

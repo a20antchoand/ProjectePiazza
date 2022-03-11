@@ -68,10 +68,12 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
 
     public void setElements(Task<QuerySnapshot> querySnapshotTask) {
 
-        if (querySnapshotTask.isSuccessful()) {
+        if (querySnapshotTask.isSuccessful() && !querySnapshotTask.getResult().isEmpty()) {
 
             for (QueryDocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
                 Usuario usuari = documentSnapshot.toObject(Usuario.class);
+
+                System.out.println(usuari.getEmail());
 
                 if (!usuari.getEmail().contains("admin"))
                     listElements.add(addListElementHistorial(usuari));
@@ -88,7 +90,7 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
         ListAdapterTreballadors listAdapter = new ListAdapterTreballadors(listElements, root.getContext(), new ListAdapterTreballadors.onItemClickListener() {
             @Override
             public void onItemClickListener(ListElementTreballadors item) throws FirebaseAuthException {
-                DDBB.collection("usuaris").document(item.getUid()).delete();
+                Toast.makeText(getActivity().getApplicationContext(), item.getNom(), Toast.LENGTH_SHORT).show();
             }
         });
         RecyclerView recyclerView = root.findViewById(R.id.recyclerViewTreballadors);

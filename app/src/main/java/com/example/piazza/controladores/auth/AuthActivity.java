@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.piazza.classes.Usuario;
@@ -30,7 +31,10 @@ import java.util.Objects;
 public class AuthActivity extends AppCompatActivity implements ReadData, AuthUserSession{
 
     Button logIn;
+    ProgressBar pb;
     Usuario usuarioApp;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +47,7 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
     public void setup() {
 
         logIn = (Button) findViewById(R.id.logIn);
+        pb = (ProgressBar) findViewById(R.id.pbLogin);
 
         logIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,7 +65,7 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
                              * Cargamos datos del usuario actual
                              * ======================================
                              * */
-
+                            pb.setVisibility(View.VISIBLE);
                             DocumentReference query = DDBB.collection("usuaris")
                                     .document(Objects.requireNonNull(task.getResult().getUser().getUid()));
 

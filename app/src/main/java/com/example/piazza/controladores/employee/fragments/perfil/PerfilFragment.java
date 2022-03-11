@@ -31,8 +31,6 @@ public class PerfilFragment extends Fragment implements AuthUserSession{
 
     private FragmentPerfilBinding binding;
     private View root;
-    Usuario currUser;
-    EditText nom, email, salari, telefon, cognom;
     ImageView imatge;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -49,14 +47,6 @@ public class PerfilFragment extends Fragment implements AuthUserSession{
 
     private void setup() {
 
-        nom = root.findViewById(R.id.nom);
-        email = root.findViewById(R.id.email);
-        salari = root.findViewById(R.id.salari);
-        telefon = root.findViewById(R.id.telefon);
-        cognom = root.findViewById(R.id.cognom);
-        imatge = root.findViewById(R.id.imatgePerfil);
-
-
         mostrarDatosPerfil();
 
 
@@ -64,13 +54,11 @@ public class PerfilFragment extends Fragment implements AuthUserSession{
 
     public void mostrarDatosPerfil() {
 
-        currUser = IntroduirHoresFragment.usuarioApp;
-
-        email.setText(currUser.getEmail());
-        nom.setText(currUser.getNom());
-        cognom.setText(currUser.getCognom());
-        telefon.setText(currUser.getTelefono());
-        salari.setText(currUser.getSalario());
+        binding.email.setText(userAuth.getEmail());
+        binding.nom.setText(userAuth.getNom());
+        binding.cognom.setText(userAuth.getCognom());
+        binding.telefon.setText(userAuth.getTelefono());
+        binding.salari.setText(userAuth.getSalario());
 
     }
 
