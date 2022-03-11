@@ -1,6 +1,7 @@
 package com.example.piazza.controladores.admin.fragments.treballdors;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,20 +16,34 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.piazza.classes.Horario;
+import com.example.piazza.classes.Usuario;
+import com.example.piazza.controladores.auth.AuthActivity;
+import com.example.piazza.controladores.employee.fragments.introduir_hores.IntroduirHoresFragment;
+import com.example.piazza.fireBase.data.ReadData;
+import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.piazza.recyclerView.estatTreballadors.ListAdapterEstatTreballadors;
 import com.example.piazza.recyclerView.estatTreballadors.ListElementEstatTreballadors;
+import com.example.piazza.recyclerView.historialHores.ListAdapterHistorialHores;
+import com.example.piazza.recyclerView.historialHores.ListElementHistorialHores;
 import com.example.piazza.recyclerView.treballadors.ListAdapterTreballadors;
 import com.example.piazza.recyclerView.treballadors.ListElementTreballadors;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentTreballadorsBinding;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.collection.LLRBNode;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TreballadorsFragment extends Fragment {
+public class TreballadorsFragment extends Fragment implements ReadData, AuthUserSession {
 
+    private static final String TAG = "TREBALLADORS_FRAGMENT: ";
     private FragmentTreballadorsBinding binding;
-    private List<ListElementTreballadors> elements;
+    private List<ListElementTreballadors> listElements = new ArrayList<>();
     private View root;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -43,25 +58,56 @@ public class TreballadorsFragment extends Fragment {
 
     public void setup() {
 
-        elements = new ArrayList<>();
+        Query query = DDBB.collection("usuaris");
 
-        elements.add(new ListElementTreballadors("#123456","Toni","60h","350"));
-        elements.add(new ListElementTreballadors("#346456","Alia","80h","650"));
-        elements.add(new ListElementTreballadors("#978456","Paula","60h","650"));
-        elements.add(new ListElementTreballadors("#123532","Arnau","80h","350"));
-        elements.add(new ListElementTreballadors("#673452","Fati","40h","B"));
+        getMultipldeDocuments( query, this::setElements);
 
-        ListAdapterTreballadors listAdapter = new ListAdapterTreballadors(elements, root.getContext(), new ListAdapterTreballadors.onItemClickListener() {
+    }
+
+    public void setElements(Task<QuerySnapshot> querySnapshotTask) {
+
+        if (querySnapshotTask.isSuccessful()) {
+
+            for (QueryDocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
+                if (documentSnapshot.getId().contains(IntroduirHoresFragment.usuarioApp.getUid())) {
+                    Usuario usuario = documentSnapshot.toObject(Usuario.class);
+                    listElements.add(addListElementHistorial(usuario));
+
+                }
+            }
+
+            System.out.println("Elements actualitzats");
+
+        } else {
+            Log.d(TAG, "Error al recuperar varios documentos.");
+        }
+
+
+        ListAdapterTreballadors listAdapter = new ListAdapterTreballadors(listElements, root.getContext(), new ListAdapterTreballadors.onItemClickListener() {
             @Override
             public void onItemClickListener(ListElementTreballadors item) {
-
-                showName(item);
+                //moveToDescription(item);
             }
         });
         RecyclerView recyclerView = root.findViewById(R.id.recyclerViewTreballadors);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
         recyclerView.setAdapter(listAdapter);
+
+    }
+
+    private ListElementTreballadors addListElementHistorial(Usuario usuario) {
+
+        String color = LLRBNode.Color.RED;
+        String nom = usuario.getNom();
+        String hores = usuario.getTelefono();
+        String sou = usuario.getSalario();
+
+        return new ListElementTreballadors(
+                color,
+                nom ,
+                hores,
+                sou);
 
     }
 

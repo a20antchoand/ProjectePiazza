@@ -37,13 +37,14 @@ public interface ReadData {
     }
 
 
-    default void getHistorialCurrUser(Query query, OnCompleteListener<QuerySnapshot> action) {
+    default void getMultipldeDocuments(Query query, OnCompleteListener<QuerySnapshot> action) {
 
                 query.get()
                 .addOnCompleteListener(action);
 
 
     }
+
 
 
 }

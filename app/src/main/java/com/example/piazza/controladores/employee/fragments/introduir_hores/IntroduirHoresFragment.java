@@ -90,6 +90,8 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
 
         escoltarBBDD();
 
+        System.out.println("INTRODUIR_HORES: " + userAuth.getEmail());
+
     }
 
     private void getUsuari(Task<DocumentSnapshot> documentSnapshotTask) {

@@ -19,8 +19,10 @@ import com.example.piazza.controladores.auth.AuthActivity;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentAdministrarBinding;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 
 public class AdministrarFragment extends Fragment implements AuthUserSession{
 
@@ -41,6 +43,8 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
 
     private void setup() {
 
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
         binding.alta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,7 +55,7 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
                 String telefon = ((TextView) root.findViewById(R.id.editTextTelefon)).getText().toString();
                 String salari = ((TextView) root.findViewById(R.id.editTextSalari)).getText().toString();
 
-                FirebaseUser user =  FirebaseAuth.getInstance().getCurrentUser();
+
 
                 FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, "123456")
                         .addOnCompleteListener(task -> {
@@ -63,8 +67,6 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
 
                                 GuardarUsuarioBBDD(new Usuario(task.getResult().getUser().getUid(), email, nom, cognom, telefon, salari));
 
-
-
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -74,8 +76,11 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
                             }
                         });
 
+                FirebaseAuth.getInstance().signOut();
+
             }
         });
+
 
     }
 

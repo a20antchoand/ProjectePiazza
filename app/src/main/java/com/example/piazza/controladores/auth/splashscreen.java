@@ -23,7 +23,7 @@ import java.util.Objects;
 public class splashscreen extends Activity implements ReadData, AuthUserSession {
 
     private ProgressBar mProgress;
-    Usuario usuario = null;
+    Usuario user = null;
 
 
     @Override
@@ -31,30 +31,12 @@ public class splashscreen extends Activity implements ReadData, AuthUserSession 
         super.onCreate(savedInstanceState);
         // Show the splash screen
         setContentView(R.layout.splashscreen);
-        mProgress = (ProgressBar) findViewById(R.id.progressBar);
 
         // Start lengthy operation in a background thread
-        new Thread(new Runnable() {
-            public void run() {
-                doWork();
-                startApp();
-            }
-        }).start();
+        setup();
     }
 
-    private void doWork() {
-        for (int progress=0; progress<=100; progress+=1) {
-            try {
-                Thread.sleep(20);
-                mProgress.setProgress(progress);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void startApp() {
-
+    private void setup() {
 
         /* ======================================
          * Comprovamos si tiene el usuario sesión activa
@@ -69,6 +51,7 @@ public class splashscreen extends Activity implements ReadData, AuthUserSession 
                     .document(Objects.requireNonNull(user.getUid()));
 
             getOneDocument(query, this::validarLogin);
+
         } else {
             startActivity(new Intent(splashscreen.this, AuthActivity.class));
         }
@@ -85,9 +68,13 @@ public class splashscreen extends Activity implements ReadData, AuthUserSession 
 
             System.out.println(DocumentSnapshotTask.getResult().getData());
 
-            usuario = DocumentSnapshotTask.getResult().toObject(Usuario.class);
+            user = DocumentSnapshotTask.getResult().toObject(Usuario.class);
 
-            if (usuario.getEmail().contains("admin")) {
+            guardarDatosGlobalesJugador();
+
+            System.out.println(userAuth.getEmail());
+
+            if (userAuth.getEmail().contains("admin")) {
                 intent = new Intent(splashscreen.this, AdminActivity.class);
             } else {
                 intent = new Intent(splashscreen.this, EmployeeActivity.class);
@@ -97,6 +84,17 @@ public class splashscreen extends Activity implements ReadData, AuthUserSession 
         }
         startActivity(intent);
         finish();
+
+    }
+
+    private void guardarDatosGlobalesJugador() {
+
+        userAuth.setNom(user.getNom());
+        userAuth.setUid(user.getUid());
+        userAuth.setEmail(user.getEmail());
+        userAuth.setCognom(user.getCognom());
+        userAuth.setSalario(user.getSalario());
+        userAuth.setTelefono(user.getTelefono());
 
     }
 

@@ -19,7 +19,7 @@ import java.util.Objects;
 public interface AuthUserSession {
 
     FirebaseFirestore DDBB = FirebaseFirestore.getInstance();
-
+    Usuario userAuth = new Usuario();
 
     default void cargarDatosUsuario(DocumentReference docRef, OnCompleteListener<DocumentSnapshot> action) {
 

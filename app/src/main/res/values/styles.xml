@@ -9,6 +9,7 @@
 
 
     <style name="SplashTheme" parent="AppTheme">
+        <item name="background">@drawable/splashscreen</item>
         <item name="android:windowFullscreen">true</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
