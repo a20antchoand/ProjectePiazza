@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.example.piazza.classes.Usuario;
 import com.example.piazza.controladores.admin.AdminActivity;
@@ -20,7 +19,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.Objects;
 
-public class splashscreen extends Activity implements ReadData, AuthUserSession {
+public class SplashScreen extends Activity implements ReadData, AuthUserSession {
 
     private ProgressBar mProgress;
     Usuario user = null;
@@ -53,7 +52,7 @@ public class splashscreen extends Activity implements ReadData, AuthUserSession 
             getOneDocument(query, this::validarLogin);
 
         } else {
-            startActivity(new Intent(splashscreen.this, AuthActivity.class));
+            startActivity(new Intent(SplashScreen.this, AuthActivity.class));
         }
 
 
@@ -72,15 +71,13 @@ public class splashscreen extends Activity implements ReadData, AuthUserSession 
 
             guardarDatosGlobalesJugador();
 
-            System.out.println(userAuth.getEmail());
-
             if (userAuth.getEmail().contains("admin")) {
-                intent = new Intent(splashscreen.this, AdminActivity.class);
+                intent = new Intent(SplashScreen.this, AdminActivity.class);
             } else {
-                intent = new Intent(splashscreen.this, EmployeeActivity.class);
+                intent = new Intent(SplashScreen.this, EmployeeActivity.class);
             }
         } else {
-            intent = new Intent(splashscreen.this, AuthActivity.class);
+            intent = new Intent(SplashScreen.this, AuthActivity.class);
         }
         startActivity(intent);
         finish();

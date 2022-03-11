@@ -14,6 +14,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.testauth.R;
+import com.google.firebase.auth.FirebaseAuthException;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class ListAdapterTreballadors extends RecyclerView.Adapter<ListAdapterTre
     final onItemClickListener listener;
 
     public interface onItemClickListener {
-        void onItemClickListener(ListElementTreballadors item);
+        void onItemClickListener(ListElementTreballadors item) throws FirebaseAuthException;
     }
 
     public ListAdapterTreballadors(List<ListElementTreballadors> itemList, Context context, onItemClickListener listener) {
@@ -78,7 +79,11 @@ public class ListAdapterTreballadors extends RecyclerView.Adapter<ListAdapterTre
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.onItemClickListener(item);
+                    try {
+                        listener.onItemClickListener(item);
+                    } catch (FirebaseAuthException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
         }

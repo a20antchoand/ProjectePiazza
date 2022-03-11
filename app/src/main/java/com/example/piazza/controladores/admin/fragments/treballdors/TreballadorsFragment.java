@@ -31,6 +31,8 @@ import com.example.piazza.recyclerView.treballadors.ListElementTreballadors;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentTreballadorsBinding;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.database.collection.LLRBNode;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -69,11 +71,11 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
         if (querySnapshotTask.isSuccessful()) {
 
             for (QueryDocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
-                if (documentSnapshot.getId().contains(IntroduirHoresFragment.usuarioApp.getUid())) {
-                    Usuario usuario = documentSnapshot.toObject(Usuario.class);
-                    listElements.add(addListElementHistorial(usuario));
+                Usuario usuari = documentSnapshot.toObject(Usuario.class);
 
-                }
+                if (!usuari.getEmail().contains("admin"))
+                    listElements.add(addListElementHistorial(usuari));
+
             }
 
             System.out.println("Elements actualitzats");
@@ -85,8 +87,8 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
 
         ListAdapterTreballadors listAdapter = new ListAdapterTreballadors(listElements, root.getContext(), new ListAdapterTreballadors.onItemClickListener() {
             @Override
-            public void onItemClickListener(ListElementTreballadors item) {
-                //moveToDescription(item);
+            public void onItemClickListener(ListElementTreballadors item) throws FirebaseAuthException {
+                DDBB.collection("usuaris").document(item.getUid()).delete();
             }
         });
         RecyclerView recyclerView = root.findViewById(R.id.recyclerViewTreballadors);
@@ -98,16 +100,18 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
 
     private ListElementTreballadors addListElementHistorial(Usuario usuario) {
 
-        String color = LLRBNode.Color.RED;
+        String color = "#123456";
         String nom = usuario.getNom();
         String hores = usuario.getTelefono();
         String sou = usuario.getSalario();
+        String uid = usuario.getUid();
 
         return new ListElementTreballadors(
                 color,
                 nom ,
                 hores,
-                sou);
+                sou,
+                uid);
 
     }
 

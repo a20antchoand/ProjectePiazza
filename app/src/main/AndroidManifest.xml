@@ -27,7 +27,7 @@
             android:label="Auth"
             android:theme="@style/Theme.TestAuth.NoActionBar"/>
         <activity
-            android:name="com.example.piazza.controladores.auth.splashscreen"
+            android:name="com.example.piazza.controladores.auth.SplashScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

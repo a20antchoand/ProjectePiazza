@@ -83,6 +83,7 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
                 } else if (DocumentSnapshotTask.getResult().getData() != null) {
                     showEmployee();
                 } else {
+                    System.out.println(DocumentSnapshotTask.getResult().getString("uid"));
                    showAlert("No estas registrat a la piazza.");
                 }
             }

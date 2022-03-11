@@ -4,16 +4,18 @@ import java.io.Serializable;
 
 public class ListElementTreballadors implements Serializable {
 
+    String uid;
     String color;
     String nom;
     String hores;
     String sou;
 
-    public ListElementTreballadors(String color, String nom, String hores, String sou) {
+    public ListElementTreballadors(String color, String nom, String hores, String sou, String uid) {
         this.color = color;
         this.nom = nom;
         this.hores = hores;
         this.sou = sou;
+        this.uid = uid;
     }
 
     public String getColor() {
@@ -46,5 +48,13 @@ public class ListElementTreballadors implements Serializable {
 
     public void setSou(String sou) {
         this.sou = sou;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }
