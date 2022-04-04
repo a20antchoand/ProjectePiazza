@@ -2,7 +2,6 @@ package com.example.piazza.controladores.admin.fragments.administrar;
 
 import static android.content.ContentValues.TAG;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,14 +14,11 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.piazza.classes.Usuario;
-import com.example.piazza.controladores.auth.AuthActivity;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentAdministrarBinding;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GetTokenResult;
 
 public class AdministrarFragment extends Fragment implements AuthUserSession{
 
@@ -53,7 +49,7 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
                 String nom = ((TextView) root.findViewById(R.id.editTextNom)).getText().toString();
                 String cognom = ((TextView) root.findViewById(R.id.editTextCognom)).getText().toString();
                 String telefon = ((TextView) root.findViewById(R.id.editTextTelefon)).getText().toString();
-                String salari = ((TextView) root.findViewById(R.id.editTextSalari)).getText().toString();
+                String rol = ((TextView) root.findViewById(R.id.editTextRol)).getText().toString();
 
 
 
@@ -65,7 +61,7 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
                                 Toast.makeText(getActivity().getApplication(), "Usuario dado de alta correctamente.",
                                         Toast.LENGTH_SHORT).show();
 
-                                GuardarUsuarioBBDD(new Usuario(task.getResult().getUser().getUid(), email, nom, cognom, telefon, salari));
+                                GuardarUsuarioBBDD(new Usuario(task.getResult().getUser().getUid(), email, nom, cognom, telefon, rol));
 
                             } else {
                                 // If sign in fails, display a message to the user.

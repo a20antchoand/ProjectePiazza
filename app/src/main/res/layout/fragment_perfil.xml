@@ -34,8 +34,8 @@
                 android:id="@+id/textView4"
                 android:layout_width="65dp"
                 android:layout_height="wrap_content"
-                android:text="E-Mail"
-                android:textAlignment="center" />
+                android:text="@string/email_perfil"
+                android:textAlignment="textStart" />
 
             <EditText
                 android:id="@+id/email"
@@ -61,8 +61,8 @@
                 android:id="@+id/textView5"
                 android:layout_width="65dp"
                 android:layout_height="wrap_content"
-                android:text="Nom"
-                android:textAlignment="center" />
+                android:text="@string/nom_perfil"
+                android:textAlignment="textStart" />
 
             <EditText
                 android:id="@+id/nom"
@@ -88,8 +88,8 @@
                 android:id="@+id/textView6"
                 android:layout_width="65dp"
                 android:layout_height="wrap_content"
-                android:text="Cognom"
-                android:textAlignment="center" />
+                android:text="@string/cognom_perfil"
+                android:textAlignment="textStart" />
 
             <EditText
                 android:id="@+id/cognom"
@@ -115,8 +115,8 @@
                 android:id="@+id/textView7"
                 android:layout_width="65dp"
                 android:layout_height="wrap_content"
-                android:text="Telefon"
-                android:textAlignment="center" />
+                android:text="@string/telefon_perfil"
+                android:textAlignment="textStart" />
 
             <EditText
                 android:id="@+id/telefon"
@@ -142,8 +142,8 @@
                 android:id="@+id/textView8"
                 android:layout_width="65dp"
                 android:layout_height="wrap_content"
-                android:text="Salari"
-                android:textAlignment="center" />
+                android:text="@string/salari_perfil"
+                android:textAlignment="textStart" />
 
             <EditText
                 android:id="@+id/salari"

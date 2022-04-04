@@ -34,4 +34,12 @@
     <string name="data">Data</string>
     <string name="estat">Estat</string>
 
+    <string name="email_perfil">EMAIL</string>
+    <string name="nom_perfil">NOM</string>
+    <string name="cognom_perfil">COGNOM</string>
+    <string name="telefon_perfil">TELEFON</string>
+    <string name="salari_perfil">SALARI</string>
+
+
+
 </resources>

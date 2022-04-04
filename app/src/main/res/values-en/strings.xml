@@ -30,5 +30,16 @@
     <string name="subtitle_perfil">This is your profile</string>
     <string name="title_validar">Validate houres</string>
     <string name="recuperar_contrasenya">Forgot password?</string>
+    <string name="total">Total</string>
+    <string name="sortida">Exit</string>
+    <string name="entrada">Enter</string>
+    <string name="data">Date</string>
+    <string name="estat">Status</string>
+
+    <string name="email_perfil">EMAIL</string>
+    <string name="nom_perfil">NAME</string>
+    <string name="cognom_perfil">2 NAME</string>
+    <string name="telefon_perfil">PHONE</string>
+    <string name="salari_perfil">SALARy</string>
 
 </resources>

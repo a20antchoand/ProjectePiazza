@@ -78,12 +78,12 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
             }
 
             private void validarLogin(Task<DocumentSnapshot> DocumentSnapshotTask) {
-                if (DocumentSnapshotTask.getResult().getData() != null && DocumentSnapshotTask.getResult().getString("email").contains("admin")) {
+                if (DocumentSnapshotTask.getResult().getData() != null && DocumentSnapshotTask.getResult().getString("rol").equals("admin")) {
                     showHome();
-                } else if (DocumentSnapshotTask.getResult().getData() != null) {
+                } else if (DocumentSnapshotTask.getResult().getData() != null && DocumentSnapshotTask.getResult().getString("rol").equals("treballador")) {
                     showEmployee();
                 } else {
-                    System.out.println(DocumentSnapshotTask.getResult().getString("uid"));
+                   System.out.println(DocumentSnapshotTask.getResult().getString("uid"));
                    showAlert("No estas registrat a la piazza.");
                 }
             }

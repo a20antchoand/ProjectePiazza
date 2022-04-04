@@ -91,13 +91,13 @@
             android:layout_height="16dp" />
 
         <EditText
-            android:id="@+id/editTextSalari"
+            android:id="@+id/editTextRol"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:background="@drawable/edit_text_bg"
             android:ems="10"
-            android:hint="Salari"
+            android:hint="Rol"
             android:inputType="text" />
 
         <Space
