@@ -71,10 +71,12 @@ public class SplashScreen extends Activity implements ReadData, AuthUserSession 
 
             guardarDatosGlobalesJugador();
 
-            if (userAuth.getEmail().contains("admin")) {
+            if (userAuth.getRol().equals("admin")) {
                 intent = new Intent(SplashScreen.this, AdminActivity.class);
-            } else {
+            } else if (userAuth.getRol().equals("treballador")) {
                 intent = new Intent(SplashScreen.this, EmployeeActivity.class);
+            } else {
+                intent = new Intent(SplashScreen.this, AuthActivity.class);
             }
         } else {
             intent = new Intent(SplashScreen.this, AuthActivity.class);
@@ -90,7 +92,7 @@ public class SplashScreen extends Activity implements ReadData, AuthUserSession 
         userAuth.setUid(user.getUid());
         userAuth.setEmail(user.getEmail());
         userAuth.setCognom(user.getCognom());
-        userAuth.setSalario(user.getSalario());
+        userAuth.setRol(user.getRol());
         userAuth.setTelefono(user.getTelefono());
 
     }
