@@ -7,23 +7,12 @@
     android:layout_height="match_parent"
     tools:context="com.example.piazza.controladores.employee.EmployeeActivity">
 
-
-    <ProgressBar
-        android:id="@+id/progressBarIntroduirHores"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <LinearLayout
         android:id="@+id/introduirHoresLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +22,7 @@
             android:id="@+id/divider2"
             android:layout_width="match_parent"
             android:layout_height="5dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="75dp"
             android:background="?dividerColor" />
 
         <androidx.legacy.widget.Space

@@ -7,17 +7,17 @@ public class Usuario {
     String telefono;
     String nom;
     String cognom;
-    String salario;
+    String rol;
 
 
     public Usuario () {
     }
 
-    public Usuario(String uid, String email, String nom, String cognom, String telefono, String salario) {
+    public Usuario(String uid, String email, String nom, String cognom, String telefono, String rol) {
         this.uid = uid;
         this.email = email;
         this.telefono = telefono;
-        this.salario = salario;
+        this.rol = rol;
         this.nom = nom;
         this.cognom = cognom;
     }
@@ -54,12 +54,12 @@ public class Usuario {
         this.cognom = cognom;
     }
 
-    public String getSalario() {
-        return salario;
+    public String getRol() {
+        return rol;
     }
 
-    public void setSalario(String salario) {
-        this.salario = salario;
+    public void setRol(String rol) {
+        this.rol = rol;
     }
 
     public String getEmail() {

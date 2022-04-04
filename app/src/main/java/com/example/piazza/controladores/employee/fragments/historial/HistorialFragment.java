@@ -53,7 +53,7 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
         Query query = DDBB.collection("horari")
                 .orderBy("diaEntrada", Query.Direction.DESCENDING);
 
-        getMultipldeDocuments( query, this::setElements);
+        getMultipldeDocuments(query, this::setElements);
 
     }
 

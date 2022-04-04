@@ -210,16 +210,9 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
             horarioUsuario = new Horario();
         }
 
-        mostrarPantalla();
-
     }
 
-    private void mostrarPantalla() {
 
-        binding.progressBarIntroduirHores.setVisibility(View.GONE);
-        binding.introduirHoresLinearLayout.setVisibility(View.VISIBLE);
-
-    }
 
     public void getFechaActual(boolean entrada) {
 
