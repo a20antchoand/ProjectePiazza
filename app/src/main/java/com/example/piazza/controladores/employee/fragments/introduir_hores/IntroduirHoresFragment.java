@@ -2,8 +2,7 @@ package com.example.piazza.controladores.employee.fragments.introduir_hores;
 
 import static com.google.firebase.crashlytics.internal.Logger.TAG;
 
-import android.content.res.Resources;
-import android.graphics.Color;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,10 +15,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.example.piazza.classes.Horario;
 import com.example.piazza.classes.Usuario;
-import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentIntroduirHoresBinding;
@@ -37,11 +36,14 @@ import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Objects;
 
+import com.example.piazza.commons.OnSwipeTouchListener;
+
 public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
 
 
     TextView iniciarTextView;
     TextView acabarTextView;
+    TextView benvinguda;
     TextView resultat;
     Button iniciarJornadaBtn;
     Button acabarJornadaBtn;
@@ -66,6 +68,20 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
 
     public void setup () {
 
+        root.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
+            @Override
+            public void onSwipeLeft() {
+                super.onSwipeRight();
+                Navigation.findNavController(root).navigate(R.id.action_navigation_introduir_hores_to_navigation_historial);
+            }
+
+            @Override
+            public void onSwipeRight() {
+                super.onSwipeRight();
+                Navigation.findNavController(root).navigate(R.id.action_navigation_introduir_hores_to_navigation_perfil);
+            }
+        });
+
         DocumentReference docRef = DDBB.collection("usuaris").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getUid()));
         cargarDatosUsuario(docRef, this::getUsuari);
 
@@ -74,7 +90,10 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
         resultat =binding.resultat;
         iniciarJornadaBtn = binding.iniciarJornada;
         acabarJornadaBtn =binding.acabarJornada;
+        benvinguda = binding.benvingudaIntoduirHores;
         horarioUsuario = new Horario();
+
+        benvinguda.setText("Hola, " + userAuth.getNom().substring(0, 1).toUpperCase() + userAuth.getNom().substring(1));
 
         root.findViewById(R.id.iniciarJornada).setOnClickListener(view -> {
 
@@ -97,8 +116,6 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
     private void getUsuari(Task<DocumentSnapshot> documentSnapshotTask) {
 
         usuarioApp = documentSnapshotTask.getResult().toObject(Usuario.class);
-
-        Toast.makeText(getContext(), usuarioApp.getUid(), Toast.LENGTH_SHORT).show();
 
     }
 

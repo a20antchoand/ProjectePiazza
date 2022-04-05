@@ -9,8 +9,10 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.example.piazza.classes.Usuario;
+import com.example.piazza.commons.OnSwipeTouchListener;
 import com.example.piazza.controladores.employee.fragments.introduir_hores.IntroduirHoresFragment;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
@@ -37,6 +39,19 @@ public class PerfilFragment extends Fragment implements AuthUserSession{
     }
 
     private void setup() {
+
+        root.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
+            @Override
+            public void onSwipeLeft() {
+                super.onSwipeRight();
+                Navigation.findNavController(root).navigate(R.id.action_navigation_perfil_to_navigation_introduir_hores);
+            }
+            @Override
+            public void onSwipeRight() {
+                super.onSwipeRight();
+                Navigation.findNavController(root).navigate(R.id.action_navigation_perfil_to_navigation_historial);
+            }
+        });
 
         nom = root.findViewById(R.id.nom);
         email = root.findViewById(R.id.email);

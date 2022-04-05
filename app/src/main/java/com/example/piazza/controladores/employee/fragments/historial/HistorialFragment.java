@@ -7,14 +7,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.example.piazza.classes.Horario;
+import com.example.piazza.commons.OnSwipeTouchListener;
 import com.example.piazza.controladores.employee.fragments.introduir_hores.IntroduirHoresFragment;
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.session.AuthUserSession;
@@ -43,12 +46,26 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
 
         binding = FragmentHistorialBinding.inflate(inflater, container, false);
         root = binding.getRoot();
-        setup();
-        return root;
 
+        setup();
+
+        return root;
     }
 
     private void setup() {
+
+        binding.recyclerViewHistorial.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
+            @Override
+            public void onSwipeLeft() {
+                super.onSwipeRight();
+                Navigation.findNavController(root).navigate(R.id.action_navigation_historial_to_navigation_perfil);
+            }
+            @Override
+            public void onSwipeRight() {
+                super.onSwipeRight();
+                Navigation.findNavController(root).navigate(R.id.action_navigation_historial_to_navigation_introduir_hores);
+            }
+        });
 
         Query query = DDBB.collection("horari")
                 .orderBy("diaEntrada", Query.Direction.DESCENDING);

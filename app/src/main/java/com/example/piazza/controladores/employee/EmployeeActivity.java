@@ -45,8 +45,7 @@ public class EmployeeActivity extends AppCompatActivity {
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_introduir_hores, R.id.navigation_historial, R.id.navigation_perfil)
                 .build();
@@ -59,7 +58,6 @@ public class EmployeeActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.ajustes_menu, menu);
         return true;
     }

@@ -13,10 +13,12 @@
         tools:layout="@layout/fragment_introduir_hores" >
         <action
             android:id="@+id/action_navigation_introduir_hores_to_navigation_historial"
-            app:destination="@id/navigation_historial" />
+            app:destination="@id/navigation_historial"
+            app:enterAnim="@android:anim/slide_in_left" />
         <action
             android:id="@+id/action_navigation_introduir_hores_to_navigation_perfil"
-            app:destination="@id/navigation_perfil" />
+            app:destination="@id/navigation_perfil"
+            app:enterAnim="@android:anim/slide_in_left" />
     </fragment>
 
 
@@ -27,7 +29,12 @@
         tools:layout="@layout/fragment_historial" >
         <action
             android:id="@+id/action_navigation_historial_to_navigation_introduir_hores"
-            app:destination="@id/navigation_introduir_hores" />
+            app:destination="@id/navigation_introduir_hores"
+            app:enterAnim="@android:anim/slide_in_left" />
+        <action
+            android:id="@+id/action_navigation_historial_to_navigation_perfil"
+            app:destination="@id/navigation_perfil"
+            app:enterAnim="@android:anim/slide_out_right" />
     </fragment>
 
 
@@ -39,6 +46,14 @@
         <action
             android:id="@+id/action_navigation_historial_to_navigation_introduir_hores"
             app:destination="@id/navigation_introduir_hores" />
+        <action
+            android:id="@+id/action_navigation_perfil_to_navigation_introduir_hores"
+            app:destination="@id/navigation_introduir_hores"
+            app:enterAnim="@android:anim/slide_in_left" />
+        <action
+            android:id="@+id/action_navigation_perfil_to_navigation_historial"
+            app:destination="@id/navigation_historial"
+            app:enterAnim="@android:anim/slide_in_left" />
     </fragment>
 
 </navigation>

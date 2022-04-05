@@ -15,20 +15,18 @@
 
         <activity
             android:name="com.example.piazza.controladores.admin.AdminActivity"
-            android:exported="false"
-            android:label="@string/title_administrar"/>
+            android:exported="false"/>
         <activity
             android:name="com.example.piazza.controladores.employee.EmployeeActivity"
-            android:exported="true"
-            android:label="Treballadors"/>
+            android:exported="true"/>
         <activity
             android:name="com.example.piazza.controladores.auth.AuthActivity"
             android:exported="true"
-            android:label="Auth"
             android:theme="@style/Theme.TestAuth.NoActionBar"/>
         <activity
             android:name="com.example.piazza.controladores.auth.SplashScreen"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.TestAuth.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
