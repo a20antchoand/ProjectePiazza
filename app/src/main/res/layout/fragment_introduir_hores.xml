@@ -91,7 +91,7 @@
                             android:id="@+id/totalTempsTreballat"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="8h 42m"
+                            android:text="0h 0m"
                             android:textColor="#000000"
                             android:textSize="34sp" />
                     </LinearLayout>

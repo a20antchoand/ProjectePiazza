@@ -32,7 +32,7 @@
         <action
             android:id="@+id/action_navigation_historial_to_navigation_perfil"
             app:destination="@id/navigation_perfil"
-            app:enterAnim="@android:anim/slide_out_right" />
+            app:enterAnim="@android:anim/slide_in_left" />
     </fragment>
 
 
@@ -41,16 +41,14 @@
         android:name="com.example.piazza.controladores.employee.fragments.perfil.PerfilFragment"
         tools:layout="@layout/fragment_perfil" >
         <action
-            android:id="@+id/action_navigation_historial_to_navigation_introduir_hores"
-            app:destination="@id/navigation_introduir_hores" />
-        <action
             android:id="@+id/action_navigation_perfil_to_navigation_introduir_hores"
-            app:destination="@id/navigation_introduir_hores"
-            app:enterAnim="@android:anim/slide_in_left" />
+            app:enterAnim="@android:anim/slide_in_left"
+            app:destination="@id/navigation_introduir_hores" />
         <action
             android:id="@+id/action_navigation_perfil_to_navigation_historial"
             app:destination="@id/navigation_historial"
             app:enterAnim="@android:anim/slide_in_left" />
+
     </fragment>
 
 </navigation>

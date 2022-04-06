@@ -40,19 +40,6 @@ public class PerfilFragment extends Fragment implements AuthUserSession{
 
     private void setup() {
 
-        root.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
-            @Override
-            public void onSwipeLeft() {
-                super.onSwipeRight();
-                Navigation.findNavController(root).navigate(R.id.action_navigation_perfil_to_navigation_introduir_hores);
-            }
-            @Override
-            public void onSwipeRight() {
-                super.onSwipeRight();
-                Navigation.findNavController(root).navigate(R.id.action_navigation_perfil_to_navigation_historial);
-            }
-        });
-
         nom = root.findViewById(R.id.nom);
         email = root.findViewById(R.id.email);
         salari = root.findViewById(R.id.salari);

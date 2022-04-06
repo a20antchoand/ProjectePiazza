@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.piazza.classes.Usuario;
 import com.example.piazza.controladores.auth.AuthActivity;
+import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
 
 import com.example.testauth.databinding.ActivityEmployeeBinding;
@@ -30,11 +31,9 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-public class EmployeeActivity extends AppCompatActivity {
+public class EmployeeActivity extends AppCompatActivity implements AuthUserSession {
 
     private ActivityEmployeeBinding binding;
-    Usuario usuario;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

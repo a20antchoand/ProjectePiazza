@@ -54,19 +54,6 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
 
     private void setup() {
 
-        binding.recyclerViewHistorial.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
-            @Override
-            public void onSwipeLeft() {
-                super.onSwipeRight();
-                Navigation.findNavController(root).navigate(R.id.action_navigation_historial_to_navigation_perfil);
-            }
-            @Override
-            public void onSwipeRight() {
-                super.onSwipeRight();
-                Navigation.findNavController(root).navigate(R.id.action_navigation_historial_to_navigation_introduir_hores);
-            }
-        });
-
         Query query = DDBB.collection("horari")
                 .orderBy("diaEntrada", Query.Direction.DESCENDING);
 
@@ -116,6 +103,7 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
             recyclerView.setAdapter(listAdapter);
+
         }
     }
 

@@ -10,8 +10,10 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.piazza.commons.OnSwipeTouchListener;
 import com.example.testauth.R;
 
 import java.util.List;
@@ -79,6 +81,7 @@ public class ListAdapterHistorialHores extends RecyclerView.Adapter<ListAdapterH
                     listener.onItemClickListener(item);
                 }
             });
+
         }
     }
 
