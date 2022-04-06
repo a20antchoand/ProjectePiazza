@@ -9,10 +9,8 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 
 import com.example.piazza.classes.Usuario;
-import com.example.piazza.commons.OnSwipeTouchListener;
 import com.example.piazza.controladores.employee.fragments.introduir_hores.IntroduirHoresFragment;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
@@ -23,7 +21,7 @@ public class PerfilFragment extends Fragment implements AuthUserSession{
     private FragmentPerfilBinding binding;
     private View root;
     Usuario currUser;
-    EditText nom, email, salari, telefon, cognom;
+    EditText nom, email, rol, telefon, cognom;
     ImageView imatge;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -42,7 +40,7 @@ public class PerfilFragment extends Fragment implements AuthUserSession{
 
         nom = root.findViewById(R.id.nom);
         email = root.findViewById(R.id.email);
-        salari = root.findViewById(R.id.salari);
+        rol = root.findViewById(R.id.rol);
         telefon = root.findViewById(R.id.telefon);
         cognom = root.findViewById(R.id.cognom);
         imatge = root.findViewById(R.id.imatgePerfil);
@@ -61,7 +59,7 @@ public class PerfilFragment extends Fragment implements AuthUserSession{
         nom.setText(currUser.getNom());
         cognom.setText(currUser.getCognom());
         telefon.setText(currUser.getTelefono());
-        salari.setText(currUser.getRol());
+        rol.setText(currUser.getRol());
 
     }
 
