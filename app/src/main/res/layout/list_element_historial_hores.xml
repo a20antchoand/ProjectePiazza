@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center|top"
     android:animateLayoutChanges="true"
-    app:cardCornerRadius="28dp"
+    app:cardCornerRadius="8dp"
     app:cardElevation="4dp"
     app:cardUseCompatPadding="true">
 

@@ -9,8 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,12 +41,11 @@ import com.example.piazza.commons.OnSwipeTouchListener;
 public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
 
 
-    TextView iniciarTextView;
-    TextView acabarTextView;
+
     TextView benvinguda;
-    TextView resultat;
     Button iniciarJornadaBtn;
     Button acabarJornadaBtn;
+    LinearLayout butons;
 
     DocumentSnapshot document;
     public static Usuario usuarioApp;
@@ -85,12 +84,10 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
         DocumentReference docRef = DDBB.collection("usuaris").document(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser().getUid()));
         cargarDatosUsuario(docRef, this::getUsuari);
 
-        iniciarTextView = binding.iniciarTextView;
-        acabarTextView = binding.acabarTextView;
-        resultat =binding.resultat;
         iniciarJornadaBtn = binding.iniciarJornada;
         acabarJornadaBtn =binding.acabarJornada;
         benvinguda = binding.benvingudaIntoduirHores;
+        butons = binding.butonsLayout;
         horarioUsuario = new Horario();
 
         benvinguda.setText("Hola, " + userAuth.getNom().substring(0, 1).toUpperCase() + userAuth.getNom().substring(1));
@@ -162,9 +159,7 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
                     comprovarEntradaSortida(true);
                 } else {
                     Log.d(TAG, "No such document");
-                    changeTextTime(iniciarTextView, 0,0);
-                    changeTextTime(acabarTextView, 0,0);
-                    changeTextTime(resultat, 0, 0);
+                    changeTextTimeResultat(binding.totalTempsTreballat, 0, 0);
                 }
             } else {
                 Log.d(TAG, "get failed with ", task.getException());
@@ -200,7 +195,6 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
                 horarioUsuario.setHoraEntrada(Math.toIntExact((Long) data.get("horaEntrada")));
                 horarioUsuario.setMinutEntrada(Math.toIntExact((Long) data.get("minutEntrada")));
 
-                changeTextTime(iniciarTextView, horarioUsuario.getHoraEntrada(), horarioUsuario.getMinutEntrada());
                 iniciarJornadaBtn.setEnabled(false);
                 iniciarJornadaBtn.setVisibility(View.GONE);
 
@@ -212,10 +206,11 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
                     horarioUsuario.setHoraSalida(Math.toIntExact((Long) data.get("horaSalida")));
                     horarioUsuario.setMinutSalida(Math.toIntExact((Long) data.get("minutSalida")));
 
-                    changeTextTime(acabarTextView, horarioUsuario.getHoraSalida(), horarioUsuario.getMinutSalida());
 
                     acabarJornadaBtn.setEnabled(false);
                     acabarJornadaBtn.setVisibility(View.GONE);
+                    butons.setVisibility(View.GONE);
+
 
                     calcularHores();
 
@@ -223,6 +218,7 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
 
                     acabarJornadaBtn.setEnabled(true);
                     acabarJornadaBtn.setVisibility(View.VISIBLE);
+                    butons.setVisibility(View.VISIBLE);
 
                 }
 
@@ -231,10 +227,9 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
         } else {
             iniciarJornadaBtn.setEnabled(true);
             iniciarJornadaBtn.setVisibility(View.VISIBLE);
+            butons.setVisibility(View.VISIBLE);
 
-            changeTextTime(iniciarTextView, 0, 0);
-            changeTextTime(acabarTextView, 0, 0);
-            changeTextTime(resultat, 0, 0);
+            changeTextTimeResultat(binding.totalTempsTreballat, 0, 0);
 
             horarioUsuario = new Horario();
         }
@@ -260,8 +255,6 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
             horarioUsuario.setDiaSalida(zdt.getDayOfMonth());
             horarioUsuario.setHoraSalida(zdt.getHour());
             horarioUsuario.setMinutSalida(zdt.getMinute());
-
-            System.out.println("Antes de guardar: " + horarioUsuario.getMinutSalida());
         }
 
     }
@@ -282,8 +275,6 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
 
         GuardarRegistroBBDD();
 
-        changeTextTime(iniciarTextView, horarioUsuario.getHoraEntrada(), horarioUsuario.getMinutEntrada() );
-
         iniciarJornadaBtn.setEnabled(false);
         iniciarJornadaBtn.setVisibility(View.GONE);
         acabarJornadaBtn.setEnabled(true);
@@ -297,14 +288,12 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
 
         GuardarRegistroBBDD();
 
-        System.out.println("Despues de guardar: " + horarioUsuario.getMinutSalida());
-
-        changeTextTime(acabarTextView, horarioUsuario.getHoraSalida(), horarioUsuario.getMinutSalida());
-
         acabarJornadaBtn.setEnabled(false);
         acabarJornadaBtn.setVisibility(View.GONE);
 
         calcularHores();
+
+        butons.setVisibility(View.GONE);
 
     }
 
@@ -318,7 +307,7 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
 
         long diffMinuts = diff.toMinutes();
 
-        changeTextTime(resultat, diffMinuts/60, diffMinuts%60);
+        changeTextTimeResultat(binding.totalTempsTreballat, diffMinuts/60, diffMinuts%60);
 
         horarioUsuario.setUsuario(usuarioApp);
         horarioUsuario.setTotalMinutsTreballats(diffMinuts);
@@ -338,11 +327,11 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
     }
 
 
-    public void changeTextTime (TextView textView, long hora, long minut) {
+    public void changeTextTimeResultat (TextView textView, long hora, long minut) {
         if (minut < 10)
-            textView.setText(hora + ":0" + minut);
+            textView.setText(hora + "h 0" + minut + "m");
         else
-            textView.setText(hora + ":" + minut);
+            textView.setText(hora + "h " + minut + "m");
     }
 
     @Override

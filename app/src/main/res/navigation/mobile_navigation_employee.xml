@@ -9,7 +9,6 @@
     <fragment
         android:id="@+id/navigation_introduir_hores"
         android:name="com.example.piazza.controladores.employee.fragments.introduir_hores.IntroduirHoresFragment"
-        android:label="@string/title_introduir_hores"
         tools:layout="@layout/fragment_introduir_hores" >
         <action
             android:id="@+id/action_navigation_introduir_hores_to_navigation_historial"
@@ -25,7 +24,6 @@
     <fragment
         android:id="@+id/navigation_historial"
         android:name="com.example.piazza.controladores.employee.fragments.historial.HistorialFragment"
-        android:label="@string/title_historial"
         tools:layout="@layout/fragment_historial" >
         <action
             android:id="@+id/action_navigation_historial_to_navigation_introduir_hores"
@@ -41,7 +39,6 @@
     <fragment
         android:id="@+id/navigation_perfil"
         android:name="com.example.piazza.controladores.employee.fragments.perfil.PerfilFragment"
-        android:label="@string/title_perfil"
         tools:layout="@layout/fragment_perfil" >
         <action
             android:id="@+id/action_navigation_historial_to_navigation_introduir_hores"
