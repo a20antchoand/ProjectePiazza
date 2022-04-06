@@ -112,7 +112,7 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
         String data = horario.getAnioEntrada() + "/" + horario.getMesEntrada() + "/" + horario.getDiaEntrada();
         String entrada = horario.getHoraEntrada() + ":" + horario.getMinutEntrada() ;
         String sortida = horario.getHoraSalida() + ":" + horario.getMinutSalida();
-        String totalFinal = horario.getTotalMinutsTreballats()/60 + ":" + horario.getTotalMinutsTreballats()%60;
+        String totalFinal = horario.getTotalMinutsTreballats()/60 + "h " + horario.getTotalMinutsTreballats()%60 + "m";
 
         if (horario.getMinutEntrada() < 10)
             entrada = horario.getHoraEntrada() + ":0" + horario.getMinutEntrada();
@@ -129,7 +129,7 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
             sortida = "0" + horario.getHoraSalida() + ":0" + horario.getMinutSalida();;
 
         if ((horario.getTotalMinutsTreballats() % 60) < 10)
-            totalFinal = horario.getTotalMinutsTreballats()/60 + ":0" + horario.getTotalMinutsTreballats()%60;
+            totalFinal = horario.getTotalMinutsTreballats()/60 + "h 0" + horario.getTotalMinutsTreballats()%60 + "m";
 
         return new ListElementHistorialHores(
                 data,
