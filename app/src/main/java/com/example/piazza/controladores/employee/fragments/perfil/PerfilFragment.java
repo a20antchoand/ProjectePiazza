@@ -53,13 +53,11 @@ public class PerfilFragment extends Fragment implements AuthUserSession{
 
     public void mostrarDatosPerfil() {
 
-        currUser = IntroduirHoresFragment.usuarioApp;
-
-        email.setText(currUser.getEmail());
-        nom.setText(currUser.getNom());
-        cognom.setText(currUser.getCognom());
-        telefon.setText(currUser.getTelefono());
-        rol.setText(currUser.getRol());
+        email.setText(userAuth.getEmail());
+        nom.setText(userAuth.getNom());
+        cognom.setText(userAuth.getCognom());
+        telefon.setText(userAuth.getTelefono());
+        rol.setText(userAuth.getRol());
 
     }
 

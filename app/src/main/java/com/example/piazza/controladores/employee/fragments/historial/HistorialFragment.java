@@ -117,9 +117,9 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
         if (horario.getMinutEntrada() < 10)
             entrada = horario.getHoraEntrada() + ":0" + horario.getMinutEntrada();
         if (horario.getHoraEntrada() < 10)
-            entrada = "0" + horario.getHoraEntrada() + ":" + horario.getHoraEntrada();
+            entrada = "0" + horario.getHoraEntrada() + ":" + horario.getMinutEntrada();
         if (horario.getHoraEntrada() < 10 && horario.getMinutEntrada() < 10)
-            entrada = "0" + horario.getHoraEntrada() + ":0" + horario.getHoraEntrada();
+            entrada = "0" + horario.getHoraEntrada() + ":0" + horario.getMinutEntrada();
 
         if (horario.getMinutSalida() < 10)
             sortida = horario.getHoraSalida() + ":0" + horario.getMinutSalida();
