@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -43,7 +44,7 @@ import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Objects;
 
-import com.example.piazza.commons.OnSwipeTouchListener;
+import com.example.piazza.commons.getCurrTimeGMT;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -62,6 +63,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, AuthUs
     Horario horarioUsuario;
 
     public static int numeroDocument = 0;
+    public static ZonedDateTime zdt;
     private FragmentIntroduirHoresBinding binding;
     private View root;
 
@@ -276,8 +278,13 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, AuthUs
 
     public void getFechaActual(boolean entrada) {
 
-        ZoneId zoneId = ZoneId.of("Europe/Madrid");
-        ZonedDateTime zdt = ZonedDateTime.now(zoneId);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        Toast.makeText(getContext(), "HORA: "+zdt, Toast.LENGTH_SHORT).show();
 
         if (entrada) {
             horarioUsuario.setAnioEntrada(zdt.getYear());
@@ -285,12 +292,6 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, AuthUs
             horarioUsuario.setDiaEntrada(zdt.getDayOfMonth());
             horarioUsuario.setHoraEntrada(zdt.getHour());
             horarioUsuario.setMinutEntrada(zdt.getMinute());
-
-            horarioUsuario.setAnioSalida(-1);
-            horarioUsuario.setMesSalida(-1);
-            horarioUsuario.setDiaSalida(-1);
-            horarioUsuario.setHoraSalida(-1);
-            horarioUsuario.setMinutSalida(-1);
 
         } else {
             horarioUsuario.setAnioSalida(zdt.getYear());
@@ -304,14 +305,15 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, AuthUs
 
     public static ZonedDateTime getFechaActual() {
 
-        ZoneId zoneId = ZoneId.of("Europe/Madrid");
-        ZonedDateTime zdt = ZonedDateTime.now(zoneId);
+        new getCurrTimeGMT().execute();
 
         return zdt;
 
     }
 
     public void iniciarJornada (View view) {
+
+        new getCurrTimeGMT().execute();
 
         getFechaActual(true);
 
@@ -326,10 +328,11 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, AuthUs
 
     public void acabarJornada (View view) {
 
+        new getCurrTimeGMT().execute();
+
         getFechaActual(false);
 
         GuardarRegistroBBDD(false);
-
 
         acabarJornadaBtn.setEnabled(false);
         acabarJornadaBtn.setVisibility(View.GONE);

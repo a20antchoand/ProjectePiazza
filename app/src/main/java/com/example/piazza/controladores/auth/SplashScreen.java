@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.piazza.classes.Usuario;
 import com.example.piazza.controladores.admin.AdminActivity;
@@ -20,6 +21,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import com.example.piazza.commons.getCurrTimeGMT;
+
 import java.util.Objects;
 
 public class SplashScreen extends Activity implements ReadData, AuthUserSession {
@@ -32,7 +35,6 @@ public class SplashScreen extends Activity implements ReadData, AuthUserSession 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Show the splash screen
-
         // Start lengthy operation in a background thread
         setup();
     }
@@ -43,6 +45,7 @@ public class SplashScreen extends Activity implements ReadData, AuthUserSession 
          * Comprovamos si tiene el usuario sesión activa
          * ======================================
          * */
+        new getCurrTimeGMT().execute();
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -86,7 +89,8 @@ public class SplashScreen extends Activity implements ReadData, AuthUserSession 
         Intent intent = null;
 
         for (DocumentSnapshot d : querySnapshotTask.getResult()) {
-            if (d.getId().contains(userAuth.getUid()) && Integer.parseInt(d.get("diaEntrada").toString()) == IntroduirHoresFragment.getFechaActual().getDayOfMonth()) {
+
+            if (d.getId().contains(userAuth.getUid()) && Integer.parseInt(d.get("diaEntrada").toString()) == IntroduirHoresFragment.zdt.getDayOfMonth()) {
                 IntroduirHoresFragment.numeroDocument++;
                 System.out.println(IntroduirHoresFragment.numeroDocument);
             }
