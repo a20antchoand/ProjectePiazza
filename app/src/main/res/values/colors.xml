@@ -8,7 +8,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="colorPrimary">#FF9800</color>
+    <color name="start_btn">#AEED8C</color>
+    <color name="end_btn">#DA9090</color>
+
+
+    <color name="colorPrimary">#FFC46D</color>
     <color name="colorPrimaryDark">#BD7901</color>
     <color name="colorAccent">#656565</color>
 

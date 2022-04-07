@@ -2,7 +2,6 @@ package com.example.piazza.controladores.employee.fragments.introduir_hores;
 
 import static com.google.firebase.crashlytics.internal.Logger.TAG;
 
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,15 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.piazza.classes.Horario;
-import com.example.piazza.classes.Usuario;
+import com.example.piazza.commons.getCurrTimeGMT;
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
@@ -27,36 +26,37 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
-public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
+public class IntroduirHoresFragment extends Fragment implements ReadData, AuthUserSession{
 
-
-    TextView iniciarTextView;
-    TextView acabarTextView;
-    TextView resultat;
+    TextView benvinguda;
     Button iniciarJornadaBtn;
     Button acabarJornadaBtn;
+    LinearLayout butons;
 
     DocumentSnapshot document;
     Horario horarioUsuario;
 
+    Query query = DDBB.collection("horari")
+            .orderBy("diaEntrada", Query.Direction.DESCENDING);
+
+    public static int numeroDocument = 0;
 
     private FragmentIntroduirHoresBinding binding;
-    private View root;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentIntroduirHoresBinding.inflate(inflater, container, false);
-        root = binding.getRoot();
+        View root = binding.getRoot();
 
         setup();
 
@@ -65,77 +65,73 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
 
     public void setup () {
 
-        iniciarTextView = binding.iniciarTextView;
-        acabarTextView = binding.acabarTextView;
-        resultat =binding.resultat;
+        System.out.println("INICI DOCUMENTS: " + numeroDocument);
+
         iniciarJornadaBtn = binding.iniciarJornada;
         acabarJornadaBtn =binding.acabarJornada;
+        benvinguda = binding.benvingudaIntoduirHores;
+        butons = binding.butonsLayout;
         horarioUsuario = new Horario();
 
-        root.findViewById(R.id.iniciarJornada).setOnClickListener(view -> {
+        benvinguda.setText("Hola, " + userAuth.getNom().substring(0, 1).toUpperCase() + userAuth.getNom().substring(1));
 
-            iniciarJornada(view);
-        });
+        binding.iniciarJornada.setOnClickListener(this::iniciarJornada);
 
-        root.findViewById(R.id.acabarJornada).setOnClickListener(view -> {
-
-            acabarJornada(view);
-        });
+       binding.acabarJornada.setOnClickListener(this::acabarJornada);
 
         RecuperarRegistroUsuariBBDD();
 
         escoltarBBDD();
 
-        System.out.println("INTRODUIR_HORES: " + userAuth.getEmail());
+        getMultipldeDocuments(query, this::totalMinutsDiaris);
+
 
     }
 
-
     private void escoltarBBDD() {
 
-        final DocumentReference docRef = DDBB.collection("horari").document(getFechaActual().getYear() + "_" + getFechaActual().getMonthValue() + "_" + getFechaActual().getDayOfMonth() +  "_" + FirebaseAuth.getInstance().getCurrentUser().getUid());
-        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot snapshot,
-                                @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Log.w(TAG, "Listen failed.", e);
-                    return;
-                }
+        final DocumentReference docRef = DDBB.collection("horari").document(getCurrTimeGMT.zdt.getYear() + "_" + getCurrTimeGMT.zdt.getMonthValue() + "_" + getCurrTimeGMT.zdt.getDayOfMonth() +  "_" + Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid() + "_" + numeroDocument);
+        docRef.addSnapshotListener((snapshot, e) -> {
+            if (e != null) {
+                Log.w(TAG, "Listen failed.", e);
+                return;
+            }
 
-                if (snapshot != null && snapshot.exists()) {
-                    Log.d(TAG, "Current data: " + snapshot.getData());
+            if (snapshot != null && snapshot.exists()) {
+                Log.d(TAG, "Current data: " + snapshot.getData());
 
-                    RecuperarRegistroUsuariBBDD();
+                System.out.println(" esc NUMERO DE DOCUMENT: " + numeroDocument);
 
-                } else {
-                    Log.d(TAG, "Current data: null");
+                RecuperarRegistroUsuariBBDD();
 
-                    comprovarEntradaSortida(false);
+            } else {
+                Log.d(TAG, "Current data: null");
 
-                }
+                comprovarEntradaSortida(false);
+
             }
         });
 
     }
 
-
     private void RecuperarRegistroUsuariBBDD() {
 
+        System.out.println(" rec NUMERO DE DOCUMENT: " + numeroDocument);
 
-        DocumentReference docRef = DDBB.collection("horari").document(Objects.requireNonNull(getFechaActual().getYear() + "_" + getFechaActual().getMonthValue() + "_" + getFechaActual().getDayOfMonth() +  "_" + FirebaseAuth.getInstance().getCurrentUser().getUid()));
+        DocumentReference docRef = DDBB.collection("horari").document(getCurrTimeGMT.zdt.getYear() + "_" + getCurrTimeGMT.zdt.getMonthValue() + "_" + getCurrTimeGMT.zdt.getDayOfMonth() +  "_" + Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid() + "_" + numeroDocument);
         docRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 document = task.getResult();
 
+                System.out.println();
+
                 if (document.exists()) {
+                    Log.d(TAG, "DocumentSnapshot data: " + document.getId());
                     Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                     comprovarEntradaSortida(true);
                 } else {
                     Log.d(TAG, "No such document");
-                    changeTextTime(iniciarTextView, 0,0);
-                    changeTextTime(acabarTextView, 0,0);
-                    changeTextTime(resultat, 0, 0);
+                    changeTextTimeResultat(binding.totalTempsTreballat, 0, 0);
                 }
             } else {
                 Log.d(TAG, "get failed with ", task.getException());
@@ -144,25 +140,47 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
 
     }
 
-    private void GuardarRegistroBBDD() {
+    private void GuardarRegistroBBDD(boolean iniciar) {
 
-        DDBB.collection("horari").document(Objects.requireNonNull(getFechaActual().getYear() + "_" + getFechaActual().getMonthValue() + "_" + getFechaActual().getDayOfMonth() +  "_" + FirebaseAuth.getInstance().getCurrentUser().getUid()))
-                .set(horarioUsuario)
-                .addOnSuccessListener(aVoid -> {
-                    Log.d(TAG, "DocumentSnapshot successfully written!");
-                })
-                .addOnFailureListener(e -> {
-                    Log.w(TAG, "Error writing document", e);
-                });
+        if (iniciar) {
+            DDBB.collection("horari").get().addOnSuccessListener(
+                    queryDocumentSnapshots -> {
+
+                        numeroDocument = 1;
+
+                        for (DocumentSnapshot d : queryDocumentSnapshots) {
+
+                            if (d.getId().contains(userAuth.getUid()))
+                                if (Integer.parseInt(Objects.requireNonNull(d.get("diaEntrada")).toString()) == getCurrTimeGMT.zdt.getDayOfMonth()) {
+                                    System.out.println(d.get("diaEntrada") +"-->"+getCurrTimeGMT.zdt.getDayOfMonth());
+                                    numeroDocument = numeroDocument + 1;
+                                }
+
+
+                        }
+
+                        DDBB.collection("horari").document(getCurrTimeGMT.zdt.getYear() + "_" + getCurrTimeGMT.zdt.getMonthValue() + "_" + getCurrTimeGMT.zdt.getDayOfMonth() +  "_" + Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid() + "_" + numeroDocument)
+                                .set(horarioUsuario)
+                                .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
+                                .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e)
+                                );
+
+                    }).addOnFailureListener(e -> numeroDocument = 1);
+        } else
+            DDBB.collection("horari").document(getCurrTimeGMT.zdt.getYear() + "_" + getCurrTimeGMT.zdt.getMonthValue() + "_" + getCurrTimeGMT.zdt.getDayOfMonth() + "_" + Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid() + "_" + numeroDocument)
+                    .set(horarioUsuario)
+                    .addOnSuccessListener(aVoid -> Log.d(TAG, "DocumentSnapshot successfully written!"))
+                    .addOnFailureListener(e -> Log.w(TAG, "Error writing document", e)
+                    );
 
     }
 
-
     private void comprovarEntradaSortida(boolean exist) {
 
-        HashMap<String, Object> data = (HashMap<String, Object>) document.getData();
-
         if (exist) {
+
+            HashMap<String, Object> data = (HashMap<String, Object>) document.getData();
+
             if ((long) data.get("horaEntrada") != -1) {
 
                 horarioUsuario.setAnioEntrada(Math.toIntExact((Long) data.get("anioEntrada")));
@@ -171,11 +189,12 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
                 horarioUsuario.setHoraEntrada(Math.toIntExact((Long) data.get("horaEntrada")));
                 horarioUsuario.setMinutEntrada(Math.toIntExact((Long) data.get("minutEntrada")));
 
-                changeTextTime(iniciarTextView, horarioUsuario.getHoraEntrada(), horarioUsuario.getMinutEntrada());
                 iniciarJornadaBtn.setEnabled(false);
                 iniciarJornadaBtn.setVisibility(View.GONE);
 
                 if ((long) data.get("horaSalida") != -1) {
+
+                    System.out.println(data.get("horaSalida"));
 
                     horarioUsuario.setAnioSalida(Math.toIntExact((Long) data.get("anioSalida")));
                     horarioUsuario.setMesSalida(Math.toIntExact((Long) data.get("mesSalida")));
@@ -183,10 +202,12 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
                     horarioUsuario.setHoraSalida(Math.toIntExact((Long) data.get("horaSalida")));
                     horarioUsuario.setMinutSalida(Math.toIntExact((Long) data.get("minutSalida")));
 
-                    changeTextTime(acabarTextView, horarioUsuario.getHoraSalida(), horarioUsuario.getMinutSalida());
 
                     acabarJornadaBtn.setEnabled(false);
                     acabarJornadaBtn.setVisibility(View.GONE);
+                    iniciarJornadaBtn.setEnabled(true);
+                    iniciarJornadaBtn.setVisibility(View.VISIBLE);
+
 
                     calcularHores();
 
@@ -194,6 +215,8 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
 
                     acabarJornadaBtn.setEnabled(true);
                     acabarJornadaBtn.setVisibility(View.VISIBLE);
+                    iniciarJornadaBtn.setEnabled(false);
+                    iniciarJornadaBtn.setVisibility(View.GONE);
 
                 }
 
@@ -203,62 +226,59 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
             iniciarJornadaBtn.setEnabled(true);
             iniciarJornadaBtn.setVisibility(View.VISIBLE);
 
-            changeTextTime(iniciarTextView, 0, 0);
-            changeTextTime(acabarTextView, 0, 0);
-            changeTextTime(resultat, 0, 0);
+            changeTextTimeResultat(binding.totalTempsTreballat, 0, 0);
 
             horarioUsuario = new Horario();
         }
 
     }
 
-
-
     public void getFechaActual(boolean entrada) {
 
-        ZoneId zoneId = ZoneId.of("Europe/Madrid");
-        ZonedDateTime zdt = ZonedDateTime.now(zoneId);
+        String s;
+        try {
+            s = new getCurrTimeGMT().execute().get();
+            getCurrTimeGMT.zdt = getCurrTimeGMT.getZoneDateTime(s);
+            Toast.makeText(getContext(), "HORA: "+getCurrTimeGMT.zdt, Toast.LENGTH_SHORT).show();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "HORA: FUCK", Toast.LENGTH_SHORT).show();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
 
         if (entrada) {
-            horarioUsuario.setAnioEntrada(zdt.getYear());
-            horarioUsuario.setMesEntrada(zdt.getMonthValue());
-            horarioUsuario.setDiaEntrada(zdt.getDayOfMonth());
-            horarioUsuario.setHoraEntrada(zdt.getHour());
-            horarioUsuario.setMinutEntrada(zdt.getMinute());
-        } else {
-            horarioUsuario.setAnioSalida(zdt.getYear());
-            horarioUsuario.setMesSalida(zdt.getMonthValue());
-            horarioUsuario.setDiaSalida(zdt.getDayOfMonth());
-            horarioUsuario.setHoraSalida(zdt.getHour());
-            horarioUsuario.setMinutSalida(zdt.getMinute());
+            horarioUsuario.setAnioEntrada(getCurrTimeGMT.zdt.getYear());
+            horarioUsuario.setMesEntrada(getCurrTimeGMT.zdt.getMonthValue());
+            horarioUsuario.setDiaEntrada(getCurrTimeGMT.zdt.getDayOfMonth());
+            horarioUsuario.setHoraEntrada(getCurrTimeGMT.zdt.getHour());
+            horarioUsuario.setMinutEntrada(getCurrTimeGMT.zdt.getMinute());
 
-            System.out.println("Antes de guardar: " + horarioUsuario.getMinutSalida());
+        } else {
+            horarioUsuario.setAnioSalida(getCurrTimeGMT.zdt.getYear());
+            horarioUsuario.setMesSalida(getCurrTimeGMT.zdt.getMonthValue());
+            horarioUsuario.setDiaSalida(getCurrTimeGMT.zdt.getDayOfMonth());
+            horarioUsuario.setHoraSalida(getCurrTimeGMT.zdt.getHour());
+            horarioUsuario.setMinutSalida(getCurrTimeGMT.zdt.getMinute());
         }
 
     }
 
-    public ZonedDateTime getFechaActual() {
-
-        ZoneId zoneId = ZoneId.of("Europe/Madrid");
-        ZonedDateTime zdt = ZonedDateTime.now(zoneId);
-
-        return zdt;
-
-    }
-
-
     public void iniciarJornada (View view) {
+
+        horarioUsuario = new Horario();
 
         getFechaActual(true);
 
-        GuardarRegistroBBDD();
+        GuardarRegistroBBDD(true);
 
-        changeTextTime(iniciarTextView, horarioUsuario.getHoraEntrada(), horarioUsuario.getMinutEntrada() );
+        mostrarEstado(true);
 
         iniciarJornadaBtn.setEnabled(false);
         iniciarJornadaBtn.setVisibility(View.GONE);
         acabarJornadaBtn.setEnabled(true);
-
+        acabarJornadaBtn.setVisibility(View.VISIBLE);
 
     }
 
@@ -266,19 +286,34 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
 
         getFechaActual(false);
 
-        GuardarRegistroBBDD();
+        GuardarRegistroBBDD(false);
 
-        System.out.println("Despues de guardar: " + horarioUsuario.getMinutSalida());
-
-        changeTextTime(acabarTextView, horarioUsuario.getHoraSalida(), horarioUsuario.getMinutSalida());
+        mostrarEstado(false);
 
         acabarJornadaBtn.setEnabled(false);
         acabarJornadaBtn.setVisibility(View.GONE);
+        iniciarJornadaBtn.setEnabled(true);
+        iniciarJornadaBtn.setVisibility(View.VISIBLE);
 
         calcularHores();
 
     }
 
+    private void mostrarEstado(boolean inici) {
+
+        TextView textView = new TextView(getContext());
+        textView.setPadding(15,15,15,15);
+        textView.setBackground(getResources().getDrawable(R.drawable.edit_text_bg));
+
+        if (inici) {
+            textView.setText(getCurrTimeGMT.zdt.getHour() + ":" + getCurrTimeGMT.zdt.getMinute() + ":" + getCurrTimeGMT.zdt.getSecond() + ": Has entrat a treballar.");
+        } else {
+            textView.setText(getCurrTimeGMT.zdt.getHour() + ":" + getCurrTimeGMT.zdt.getMinute() + ":" + getCurrTimeGMT.zdt.getSecond() + ": Has sortit de treballar.");
+        }
+
+        binding.historicDiari.addView(textView);
+
+    }
 
     private void calcularHores() {
 
@@ -289,12 +324,36 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
 
         long diffMinuts = diff.toMinutes();
 
-        changeTextTime(resultat, diffMinuts/60, diffMinuts%60);
+        getMultipldeDocuments(query, this::totalMinutsDiaris);
 
         horarioUsuario.setUsuario(userAuth);
         horarioUsuario.setTotalMinutsTreballats(diffMinuts);
 
-        GuardarRegistroBBDD();
+        GuardarRegistroBBDD(false);
+
+    }
+
+    public void totalMinutsDiaris(Task<QuerySnapshot> querySnapshotTask) {
+
+        if (querySnapshotTask.isSuccessful()) {
+
+            int totalTempsTreballat = 0;
+
+            for (QueryDocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
+                if (documentSnapshot.getId().contains(userAuth.getUid())) {
+                    Horario horario = documentSnapshot.toObject(Horario.class);
+                    if (horario.getDiaEntrada() == getCurrTimeGMT.zdt.getDayOfMonth() && horario.getHoraSalida() != -1) {
+                        totalTempsTreballat += horario.getTotalMinutsTreballats();
+                    }
+
+                }
+            }
+
+            changeTextTimeResultat(binding.totalTempsTreballat, totalTempsTreballat/60, totalTempsTreballat%60);
+
+        } else {
+            Log.d(TAG, "Error al recuperar varios documentos.");
+        }
 
     }
 
@@ -308,17 +367,12 @@ public class IntroduirHoresFragment extends Fragment implements AuthUserSession{
 
     }
 
-
-    public void changeTextTime (TextView textView, long hora, long minut) {
+    public void changeTextTimeResultat (TextView textView, long hora, long minut) {
         if (minut < 10)
-            textView.setText(hora + ":0" + minut);
+            textView.setText(hora + "h 0" + minut + "m");
         else
-            textView.setText(hora + ":" + minut);
+            textView.setText(hora + "h " + minut + "m");
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
+
 }

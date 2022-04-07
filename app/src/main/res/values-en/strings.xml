@@ -38,8 +38,8 @@
 
     <string name="email_perfil">EMAIL</string>
     <string name="nom_perfil">NAME</string>
-    <string name="cognom_perfil">2 NAME</string>
+    <string name="cognom_perfil">SECOND NAME</string>
     <string name="telefon_perfil">PHONE</string>
-    <string name="salari_perfil">SALARy</string>
+    <string name="rol_perfil">ROL</string>
 
 </resources>

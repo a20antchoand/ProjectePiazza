@@ -7,14 +7,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.example.piazza.classes.Horario;
+import com.example.piazza.commons.OnSwipeTouchListener;
 import com.example.piazza.controladores.employee.fragments.introduir_hores.IntroduirHoresFragment;
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.session.AuthUserSession;
@@ -43,9 +46,10 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
 
         binding = FragmentHistorialBinding.inflate(inflater, container, false);
         root = binding.getRoot();
-        setup();
-        return root;
 
+        setup();
+
+        return root;
     }
 
     private void setup() {
@@ -99,6 +103,7 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
             recyclerView.setAdapter(listAdapter);
+
         }
     }
 
@@ -107,14 +112,14 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
         String data = horario.getAnioEntrada() + "/" + horario.getMesEntrada() + "/" + horario.getDiaEntrada();
         String entrada = horario.getHoraEntrada() + ":" + horario.getMinutEntrada() ;
         String sortida = horario.getHoraSalida() + ":" + horario.getMinutSalida();
-        String totalFinal = horario.getTotalMinutsTreballats()/60 + ":" + horario.getTotalMinutsTreballats()%60;
+        String totalFinal = horario.getTotalMinutsTreballats()/60 + "h " + horario.getTotalMinutsTreballats()%60 + "m";
 
         if (horario.getMinutEntrada() < 10)
             entrada = horario.getHoraEntrada() + ":0" + horario.getMinutEntrada();
         if (horario.getHoraEntrada() < 10)
-            entrada = "0" + horario.getHoraEntrada() + ":" + horario.getHoraEntrada();
+            entrada = "0" + horario.getHoraEntrada() + ":" + horario.getMinutEntrada();
         if (horario.getHoraEntrada() < 10 && horario.getMinutEntrada() < 10)
-            entrada = "0" + horario.getHoraEntrada() + ":0" + horario.getHoraEntrada();
+            entrada = "0" + horario.getHoraEntrada() + ":0" + horario.getMinutEntrada();
 
         if (horario.getMinutSalida() < 10)
             sortida = horario.getHoraSalida() + ":0" + horario.getMinutSalida();
@@ -124,7 +129,7 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
             sortida = "0" + horario.getHoraSalida() + ":0" + horario.getMinutSalida();;
 
         if ((horario.getTotalMinutsTreballats() % 60) < 10)
-            totalFinal = horario.getTotalMinutsTreballats()/60 + ":0" + horario.getTotalMinutsTreballats()%60;
+            totalFinal = horario.getTotalMinutsTreballats()/60 + "h 0" + horario.getTotalMinutsTreballats()%60 + "m";
 
         return new ListElementHistorialHores(
                 data,

@@ -6,12 +6,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Layout;
+import android.text.SpannableString;
+import android.text.style.AlignmentSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.piazza.classes.Usuario;
 import com.example.piazza.controladores.auth.AuthActivity;
+import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
 
 import com.example.testauth.databinding.ActivityEmployeeBinding;
@@ -27,11 +31,9 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-public class EmployeeActivity extends AppCompatActivity {
+public class EmployeeActivity extends AppCompatActivity implements AuthUserSession {
 
     private ActivityEmployeeBinding binding;
-    Usuario usuario;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +45,10 @@ public class EmployeeActivity extends AppCompatActivity {
 
         setContentView(binding.getRoot());
 
-        BottomNavigationView navView = findViewById(R.id.nav_view);
+        setSupportActionBar(findViewById(R.id.my_toolbar));
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
 
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_introduir_hores, R.id.navigation_historial, R.id.navigation_perfil)
                 .build();
@@ -59,8 +61,8 @@ public class EmployeeActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.ajustes_menu, menu);
+
         return true;
     }
 
