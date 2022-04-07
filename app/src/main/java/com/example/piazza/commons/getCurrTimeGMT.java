@@ -29,13 +29,33 @@ public class getCurrTimeGMT extends AsyncTask<String, Void, String> {
 
     private static final String LOG_TAG = "LOG";
     private TextView tvInfoCiutat;
+    public static ZonedDateTime zdt;
 
-    public getCurrTimeGMT(TextView mTitleText) {
-        this.tvInfoCiutat = mTitleText;
+    public static ZonedDateTime getZoneDateTime(String s) {
+
+        if (s != null) {
+            try {
+                JSONObject jsonResponse = new JSONObject(s);
+                ZonedDateTime jsonArray = ZonedDateTime.parse(jsonResponse.getString("datetime"));
+
+                return jsonArray;
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+
     }
 
-    public getCurrTimeGMT() {
 
+    public ZonedDateTime getCurrTimeGMT() {
+        return this.zdt;
+    }
+
+    public void setZdt(ZonedDateTime zdt) {
+        this.zdt = zdt;
     }
 
     static String collectInfoGMT(){
@@ -110,12 +130,7 @@ public class getCurrTimeGMT extends AsyncTask<String, Void, String> {
                 JSONObject jsonResponse = new JSONObject(s);
                 ZonedDateTime jsonArray = ZonedDateTime.parse(jsonResponse.getString("datetime"));
 
-
-                try {
-                    IntroduirHoresFragment.zdt = jsonArray;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                setZdt(jsonArray);
 
 
             } catch (JSONException e) {

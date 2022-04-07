@@ -3,16 +3,14 @@ package com.example.piazza.controladores.auth;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.example.piazza.classes.Usuario;
+import com.example.piazza.commons.getCurrTimeGMT;
 import com.example.piazza.controladores.admin.AdminActivity;
 import com.example.piazza.controladores.employee.EmployeeActivity;
 import com.example.piazza.controladores.employee.fragments.introduir_hores.IntroduirHoresFragment;
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.session.AuthUserSession;
-import com.example.testauth.R;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,31 +19,31 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import com.example.piazza.commons.getCurrTimeGMT;
-
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 public class SplashScreen extends Activity implements ReadData, AuthUserSession {
 
-    private ProgressBar mProgress;
     Usuario user = null;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Show the splash screen
-        // Start lengthy operation in a background thread
         setup();
     }
 
     private void setup() {
 
-        /* ======================================
-         * Comprovamos si tiene el usuario sesión activa
-         * ======================================
-         * */
-        new getCurrTimeGMT().execute();
+        try {
+            String s = new getCurrTimeGMT().execute().get();
+
+            getCurrTimeGMT.zdt = getCurrTimeGMT.getZoneDateTime(s);
+
+
+
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -86,11 +84,11 @@ public class SplashScreen extends Activity implements ReadData, AuthUserSession 
 
     private void setNumeroDocument(Task<QuerySnapshot> querySnapshotTask) {
 
-        Intent intent = null;
+        Intent intent;
 
         for (DocumentSnapshot d : querySnapshotTask.getResult()) {
 
-            if (d.getId().contains(userAuth.getUid()) && Integer.parseInt(d.get("diaEntrada").toString()) == IntroduirHoresFragment.zdt.getDayOfMonth()) {
+            if (d.getId().contains(userAuth.getUid()) && Integer.parseInt(Objects.requireNonNull(d.get("diaEntrada")).toString()) == getCurrTimeGMT.zdt.getDayOfMonth()) {
                 IntroduirHoresFragment.numeroDocument++;
                 System.out.println(IntroduirHoresFragment.numeroDocument);
             }
