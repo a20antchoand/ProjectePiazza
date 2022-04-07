@@ -64,10 +64,12 @@
                         android:id="@+id/imageView4"
                         android:layout_width="75dp"
                         android:layout_height="75dp"
+                        android:layout_margin="15dp"
                         android:layout_marginLeft="15dp"
                         android:layout_marginTop="15dp"
                         android:layout_marginBottom="15dp"
-                        app:srcCompat="@drawable/ic_baseline_account_box_24" />
+                        android:background="@drawable/bkg_img"
+                        app:srcCompat="@mipmap/imatge_butons_round" />
 
                     <LinearLayout
                         android:layout_width="match_parent"

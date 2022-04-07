@@ -29,7 +29,6 @@ public class SplashScreen extends Activity implements ReadData, AuthUserSession 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Show the splash screen
-        setContentView(R.layout.splashscreen);
 
         // Start lengthy operation in a background thread
         setup();
