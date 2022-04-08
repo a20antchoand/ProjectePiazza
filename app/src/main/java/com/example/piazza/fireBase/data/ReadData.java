@@ -13,9 +13,11 @@ import com.example.piazza.controladores.employee.fragments.introduir_hores.Intro
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.piazza.recyclerView.historialHores.ListElementHistorialHores;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -36,6 +38,12 @@ public interface ReadData {
 
     }
 
+    default void getListenerDocument(Query docRef, EventListener<QuerySnapshot> action) {
+
+        docRef.
+                addSnapshotListener(action);
+
+    }
 
     default void getMultipldeDocuments(Query query, OnCompleteListener<QuerySnapshot> action) {
 

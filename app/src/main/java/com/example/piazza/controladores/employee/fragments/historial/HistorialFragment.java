@@ -40,6 +40,8 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
     private static View root;
     private List<ListElementHistorialHores> listElements = new ArrayList<>();
 
+    Query query = DDBB.collection("horari")
+            .orderBy("diaEntrada", Query.Direction.DESCENDING);
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -53,9 +55,6 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
     }
 
     private void setup() {
-
-        Query query = DDBB.collection("horari")
-                .orderBy("diaEntrada", Query.Direction.DESCENDING);
 
         getMultipldeDocuments(query, this::setElements);
 
@@ -86,12 +85,18 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
             binding.titolHistorial.setVisibility(View.VISIBLE);
             binding.imatgeHistorial.setVisibility(View.VISIBLE);
             binding.recyclerViewHistorial.setVisibility(View.GONE);
+            binding.cardView.setVisibility(View.GONE);
+            binding.cardView2.setVisibility(View.GONE);
+            binding.cardView3.setVisibility(View.GONE);
 
         } else {
 
             binding.titolHistorial.setVisibility(View.GONE);
             binding.imatgeHistorial.setVisibility(View.GONE);
             binding.recyclerViewHistorial.setVisibility(View.VISIBLE);
+            binding.cardView.setVisibility(View.VISIBLE);
+            binding.cardView2.setVisibility(View.VISIBLE);
+            binding.cardView3.setVisibility(View.VISIBLE);
 
             ListAdapterHistorialHores listAdapter = new ListAdapterHistorialHores(listElements, root.getContext(), new ListAdapterHistorialHores.onItemClickListener() {
                 @Override

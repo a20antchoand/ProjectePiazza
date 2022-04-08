@@ -24,10 +24,20 @@ public class ListAdapterEstatTreballadors extends RecyclerView.Adapter<ListAdapt
     private Context context;
     final ListAdapterEstatTreballadors.onItemClickListener listener;
 
+    /**
+     * Interficie per asignar un onItemClickListener
+     */
+
     public interface onItemClickListener {
         void onItemClickListener(ListElementEstatTreballadors item);
     }
 
+    /**
+     * Constructor de l'adaptador de la recycler view
+     * @param itemList
+     * @param context
+     * @param listener
+     */
     public ListAdapterEstatTreballadors(List<ListElementEstatTreballadors> itemList, Context context, ListAdapterEstatTreballadors.onItemClickListener listener) {
         this.mInflater = LayoutInflater.from(context);
         this.context = context;
@@ -35,6 +45,10 @@ public class ListAdapterEstatTreballadors extends RecyclerView.Adapter<ListAdapt
         this.listener = listener;
     }
 
+    /**
+     * getter de la cantitat d'items
+     * @return cantitat de items
+     */
     @Override
     public int getItemCount() {
         return mData.size();
@@ -75,12 +89,7 @@ public class ListAdapterEstatTreballadors extends RecyclerView.Adapter<ListAdapt
             nom.setText(item.getNom());
             hores.setText(item.getHores());
             estat.setText(item.getEstat());
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    listener.onItemClickListener(item);
-                }
-            });
+            itemView.setOnClickListener(view -> listener.onItemClickListener(item));
         }
     }
 

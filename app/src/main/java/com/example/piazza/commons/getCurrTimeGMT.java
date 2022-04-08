@@ -28,7 +28,6 @@ import javax.xml.transform.Result;
 public class getCurrTimeGMT extends AsyncTask<String, Void, String> {
 
     private static final String LOG_TAG = "LOG";
-    private TextView tvInfoCiutat;
     public static ZonedDateTime zdt;
 
     public static ZonedDateTime getZoneDateTime(String s) {

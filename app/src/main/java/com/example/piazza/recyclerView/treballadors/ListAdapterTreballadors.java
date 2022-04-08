@@ -76,16 +76,14 @@ public class ListAdapterTreballadors extends RecyclerView.Adapter<ListAdapterTre
             nom.setText(item.getNom());
             hores.setText(item.getHores());
             sou.setText(item.getSou());
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    try {
-                        listener.onItemClickListener(item);
-                    } catch (FirebaseAuthException e) {
-                        e.printStackTrace();
-                    }
+            itemView.setOnClickListener(view -> {
+                try {
+                    listener.onItemClickListener(item);
+                } catch (FirebaseAuthException e) {
+                    e.printStackTrace();
                 }
             });
+
         }
     }
 

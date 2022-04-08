@@ -97,7 +97,7 @@
                     </LinearLayout>
 
                     <ImageView
-                        android:id="@+id/imageView5"
+                        android:id="@+id/downArrow"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_gravity="center|center_horizontal"
@@ -115,7 +115,8 @@
                     android:layout_height="75dp"
                     android:layout_margin="25dp"
                     android:gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="visible">
 
                     <Button
                         android:id="@+id/iniciarJornada"
@@ -125,7 +126,8 @@
                         android:enabled="true"
                         android:text="@string/iniciar"
                         android:textColor="#000000"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:visibility="visible" />
 
                     <Button
                         android:id="@+id/acabarJornada"
