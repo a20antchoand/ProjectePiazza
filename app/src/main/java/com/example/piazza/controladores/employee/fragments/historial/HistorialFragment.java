@@ -5,25 +5,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.example.piazza.classes.Horario;
-import com.example.piazza.commons.OnSwipeTouchListener;
-import com.example.piazza.controladores.employee.fragments.introduir_hores.IntroduirHoresFragment;
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.piazza.recyclerView.historialHores.ListAdapterHistorialHores;
 import com.example.piazza.recyclerView.historialHores.ListElementHistorialHores;
 import com.example.testauth.R;
+import com.example.piazza.commons.*;
 import com.example.testauth.databinding.FragmentHistorialBinding;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.Query;
@@ -58,6 +53,27 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
 
         getMultipldeDocuments(query, this::setElements);
 
+        getMultipldeDocuments(query, this::calcularHoresTreballades);
+
+    }
+
+    private void calcularHoresTreballades(Task<QuerySnapshot> querySnapshotTask) {
+
+        int totalTempsMes = 0;
+
+        if (querySnapshotTask.isSuccessful()) {
+            for (QueryDocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
+                if (documentSnapshot.getId().contains(userAuth.getUid())) {
+                    Horario horario = documentSnapshot.toObject(Horario.class);
+                    if (horario.getMesEntrada() == getCurrTimeGMT.zdt.getMonthValue())
+                        totalTempsMes += horario.getTotalMinutsTreballats();
+
+                }
+            }
+        }
+
+        binding.tvTotalHores.setText(totalTempsMes/60 + "h " + totalTempsMes%60 + "m");
+
     }
 
 
@@ -69,7 +85,7 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
                 if (documentSnapshot.getId().contains(userAuth.getUid())) {
                     Horario horario = documentSnapshot.toObject(Horario.class);
                     if (horario.getHoraSalida() != -1)
-                        listElements.add(addListElementHistorial(horario));
+                        listElements.add(bindDataElementHistorial(horario));
 
                 }
             }
@@ -82,59 +98,56 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
 
         if (listElements.size() == 0){
 
-            binding.titolHistorial.setVisibility(View.VISIBLE);
-            binding.imatgeHistorial.setVisibility(View.VISIBLE);
-            binding.recyclerViewHistorial.setVisibility(View.GONE);
-            binding.cardView.setVisibility(View.GONE);
-            binding.cardView2.setVisibility(View.GONE);
-            binding.cardView3.setVisibility(View.GONE);
+            showHistorialEmpty();
 
         } else {
 
-            binding.titolHistorial.setVisibility(View.GONE);
-            binding.imatgeHistorial.setVisibility(View.GONE);
-            binding.recyclerViewHistorial.setVisibility(View.VISIBLE);
-            binding.cardView.setVisibility(View.VISIBLE);
-            binding.cardView2.setVisibility(View.VISIBLE);
-            binding.cardView3.setVisibility(View.VISIBLE);
-
-            ListAdapterHistorialHores listAdapter = new ListAdapterHistorialHores(listElements, root.getContext(), new ListAdapterHistorialHores.onItemClickListener() {
-                @Override
-                public void onItemClickListener(ListElementHistorialHores item) {
-                    //moveToDescription(item);
-                }
-            });
-            RecyclerView recyclerView = root.findViewById(R.id.recyclerViewHistorial);
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
-            recyclerView.setAdapter(listAdapter);
+            showHistorial();
 
         }
     }
 
-    private ListElementHistorialHores addListElementHistorial(Horario horario) {
+    private void showHistorial() {
 
-        String data = horario.getAnioEntrada() + "/" + horario.getMesEntrada() + "/" + horario.getDiaEntrada();
-        String entrada = horario.getHoraEntrada() + ":" + horario.getMinutEntrada() ;
-        String sortida = horario.getHoraSalida() + ":" + horario.getMinutSalida();
-        String totalFinal = horario.getTotalMinutsTreballats()/60 + "h " + horario.getTotalMinutsTreballats()%60 + "m";
+        binding.titolHistorial.setVisibility(View.GONE);
+        binding.imatgeHistorial.setVisibility(View.GONE);
+        binding.recyclerViewHistorial.setVisibility(View.VISIBLE);
+        binding.cardView.setVisibility(View.VISIBLE);
+        binding.cardView2.setVisibility(View.VISIBLE);
+        binding.horesTreballadesTotal.setVisibility(View.VISIBLE);
 
-        if (horario.getMinutEntrada() < 10)
-            entrada = horario.getHoraEntrada() + ":0" + horario.getMinutEntrada();
-        if (horario.getHoraEntrada() < 10)
-            entrada = "0" + horario.getHoraEntrada() + ":" + horario.getMinutEntrada();
-        if (horario.getHoraEntrada() < 10 && horario.getMinutEntrada() < 10)
-            entrada = "0" + horario.getHoraEntrada() + ":0" + horario.getMinutEntrada();
+        ListAdapterHistorialHores listAdapter = new ListAdapterHistorialHores(listElements, root.getContext(), item -> {
+            //moveToDescription(item);
+        });
 
-        if (horario.getMinutSalida() < 10)
-            sortida = horario.getHoraSalida() + ":0" + horario.getMinutSalida();
-        if (horario.getHoraSalida() < 10)
-            sortida = "0" + horario.getHoraSalida() + ":" + horario.getMinutSalida();
-        if (horario.getHoraSalida() < 10 && horario.getMinutSalida() < 10)
-            sortida = "0" + horario.getHoraSalida() + ":0" + horario.getMinutSalida();;
+        RecyclerView recyclerView = root.findViewById(R.id.recyclerViewHistorial);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
+        recyclerView.setAdapter(listAdapter);
 
-        if ((horario.getTotalMinutsTreballats() % 60) < 10)
-            totalFinal = horario.getTotalMinutsTreballats()/60 + "h 0" + horario.getTotalMinutsTreballats()%60 + "m";
+    }
+
+    private void showHistorialEmpty() {
+
+        binding.titolHistorial.setVisibility(View.VISIBLE);
+        binding.imatgeHistorial.setVisibility(View.VISIBLE);
+        binding.recyclerViewHistorial.setVisibility(View.GONE);
+        binding.cardView.setVisibility(View.GONE);
+        binding.cardView2.setVisibility(View.GONE);
+        binding.horesTreballadesTotal.setVisibility(View.GONE);
+
+    }
+
+    private ListElementHistorialHores bindDataElementHistorial(Horario horario) {
+
+        String data2 = String.format("%02d",horario.getHoraEntrada());
+
+        System.out.println("DATA2: " + data2);
+
+        String data = String.format("%04d/%02d/%02d",horario.getAnioEntrada(), horario.getMesEntrada(), horario.getDiaEntrada());
+        String entrada = String.format("%02d:%02d",horario.getHoraEntrada(),horario.getMinutEntrada()) ;
+        String sortida = String.format("%02d:%02d",horario.getHoraSalida(), horario.getMinutSalida());
+        String totalFinal = String.format("%02dh %02dm",horario.getTotalMinutsTreballats()/60, horario.getTotalMinutsTreballats()%60);
 
         return new ListElementHistorialHores(
                 data,

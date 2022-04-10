@@ -56,7 +56,7 @@
 
                 <TextView
                     android:id="@+id/entradaTextView"
-                    android:layout_width="85dp"
+                    android:layout_width="95dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
                     android:gravity="left"
@@ -88,7 +88,7 @@
 
                 <TextView
                     android:id="@+id/sortidaTextView"
-                    android:layout_width="85dp"
+                    android:layout_width="95dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
                     android:gravity="left"
@@ -128,7 +128,7 @@
 
                 <TextView
                     android:id="@+id/totalTextView"
-                    android:layout_width="85dp"
+                    android:layout_width="95dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
                     android:gravity="left"

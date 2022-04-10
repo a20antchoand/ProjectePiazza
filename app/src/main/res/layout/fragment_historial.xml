@@ -51,32 +51,41 @@
         android:id="@+id/cardView2"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/recyclerViewHistorial"
-        app:layout_constraintEnd_toStartOf="@+id/cardView3"
+        app:layout_constraintEnd_toStartOf="@+id/horesTreballadesTotal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView3"
+        android:id="@+id/horesTreballadesTotal"
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:elevation="10dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/recyclerViewHistorial"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
+
+        <TextView
+            android:id="@+id/tvTotalHores"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:elevation="10dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/recyclerViewHistorial"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/cardView3"
+        app:layout_constraintStart_toEndOf="@+id/horesTreballadesTotal"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
