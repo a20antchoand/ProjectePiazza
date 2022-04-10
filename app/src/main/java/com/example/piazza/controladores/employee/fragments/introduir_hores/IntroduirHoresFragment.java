@@ -53,6 +53,8 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
     public static int numeroDocument = 0;
 
+    public static String documentBBDD = null;
+
     private FragmentIntroduirHoresBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -110,16 +112,22 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
 
         getMultipldeDocuments(query, this::totalMinutsDiaris);
+        getMultipldeDocuments(query, this::updateDocumentNumber);
 
         if (snapshot.size() == 0) {
-            System.out.println("NO HI HA CAP REGISTRE MODIFICAT");
-            //changeStateButtons.hideButton(acabarJornadaBtn);
-            //changeStateButtons.showButton(iniciarJornadaBtn);
 
-        } else {
-            System.out.println("DOCUMENTS AMB SORIDA -2: " + snapshot.getDocuments().get(0).getId());
-            System.out.println("SI HI HA CAP REGISTRE MODIFICAT");
-            RecuperarRegistroUsuariBBDD((DDBB.collection("horari").document(snapshot.getDocuments().get(0).getId())));
+            System.out.println("num document: " + numeroDocument);
+
+            changeStateButtons.hideButton(acabarJornadaBtn);
+            changeStateButtons.showButton(iniciarJornadaBtn);
+
+        } else if (snapshot.size() != 0){
+
+            System.out.println("DOCUMENTS AMB SORIDA -1: " + numeroDocument);
+
+            changeStateButtons.hideButton(iniciarJornadaBtn);
+            changeStateButtons.showButton(acabarJornadaBtn);
+
         }
 
     }
@@ -165,7 +173,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
     private void updateDocumentNumber(Task<QuerySnapshot> querySnapshotTask) {
 
-        numeroDocument = 1;
+        numeroDocument = 0;
 
         if (querySnapshotTask.isSuccessful()) {
             for (DocumentSnapshot d : querySnapshotTask.getResult().getDocuments()) {
@@ -174,8 +182,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
                 if (d.getId().contains(userAuth.getUid()))
                     if (horarioTemp.getDiaEntrada() == getCurrTimeGMT.zdt.getDayOfMonth()) {
-                        System.out.println(horarioTemp.getDiaEntrada() + "-->" + getCurrTimeGMT.zdt.getDayOfMonth());
-                        numeroDocument = numeroDocument + 1;
+                        numeroDocument++;
                         System.out.println("DOUCMENT NUMBER UPDATE " + numeroDocument);
                     }
 
@@ -183,8 +190,6 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             }
 
         }
-
-        GuardarRegistroBBDD(true);
 
     }
 
@@ -275,9 +280,17 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
         horarioUsuario = new Horario();
 
-        getFechaActual(true);
+
 
         getMultipldeDocuments(query, this::updateDocumentNumber);
+
+        getFechaActual(true);
+
+        numeroDocument++;
+
+        GuardarRegistroBBDD(true);
+
+
 
         DocumentReference docRefHorari = DDBB.collection("horari").document(getCurrTimeGMT.zdt.getYear() + "_" + getCurrTimeGMT.zdt.getMonthValue() + "_" + getCurrTimeGMT.zdt.getDayOfMonth() +  "_" + userAuth.getUid() + "_" + numeroDocument);;
 
