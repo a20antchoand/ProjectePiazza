@@ -182,9 +182,35 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
     private void RecuperarRegistroUsuariBBDD() {
 
-        getOneDocument(docRefHorari, this::validarRegistre);
+        Query queryRegistre = DDBB.collection("horari").whereEqualTo("estatJornada", false);
+
+        getMultipldeDocuments(queryRegistre, this::validarRegistres);
 
     }
+
+    private void validarRegistres(Task<QuerySnapshot> querySnapshotTask) {
+
+        System.out.println("VALIDAR REGISTRE FOR DOCUMENTS: " + querySnapshotTask.getResult().size());
+
+        if (querySnapshotTask.isSuccessful()) {
+
+            for (DocumentSnapshot d : querySnapshotTask.getResult()) {
+
+                System.out.println("VALIDAR REGISTRE FOR id_doc: " + d.getId());
+                System.out.println("VALIDAR REGISTRE FOR ref_doc: " + d.getReference());
+
+                if (d.getId().contains(userAuth.getUid())) {
+                    docRefHorari = d.getReference();
+                    document = d;
+                    comprovarEntradaSortida(true);
+                }
+
+            }
+
+        }
+
+    }
+
 
     private void validarRegistre(Task<DocumentSnapshot> documentSnapshotTask) {
 
@@ -245,7 +271,9 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
            Horario horariTemp = document.toObject(Horario.class);
 
-            if (horariTemp.getHoraEntrada() != 1) {
+            System.out.println("HORARIO: " + horariTemp.getHoraEntrada());
+
+            if (horariTemp.getHoraEntrada() != -1) {
 
                 horarioUsuario.setAnioEntrada(horariTemp.getAnioEntrada());
                 horarioUsuario.setMesEntrada(horariTemp.getMesEntrada());
@@ -256,7 +284,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                 changeStateButtons.hideButton(iniciarJornadaBtn);
                 changeStateButtons.showButton(acabarJornadaBtn);
 
-                if (horariTemp.getHoraEntrada() != 1 && horariTemp.isEstatJornada()) {
+                if (horariTemp.getHoraEntrada() != -1 && horariTemp.isEstatJornada()) {
 
                     horarioUsuario.setAnioSalida(horariTemp.getAnioSalida());
                     horarioUsuario.setMesSalida(horariTemp.getMesSalida());
@@ -327,7 +355,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
     private void amagarButons(View view) {
 
-        binding.downArrow.setImageDrawable(getResources().getDrawable(R.drawable.icons8_up_arrow_32));
+        binding.downArrow.setImageDrawable(getResources().getDrawable(R.drawable.lum_soft_02));
 
         binding.butonsLayout.setVisibility(View.GONE);
 

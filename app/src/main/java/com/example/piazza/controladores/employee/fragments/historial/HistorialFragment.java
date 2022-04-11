@@ -202,10 +202,6 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
 
         getMultipldeDocuments(query, this::calcularHoresTreballades);
 
-        System.out.println("RESULTAT: " + binding.tvResiduHores.getText());
-
-        getMultipldeDocuments(query, this::setElements);
-
     }
 
     void startRepeatingTask() {
