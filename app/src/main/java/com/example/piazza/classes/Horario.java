@@ -18,6 +18,8 @@ public class Horario {
 
     long totalMinutsTreballats;
 
+    boolean estatJornada;
+
     public Horario(Usuario usuario, int anioEntrada, int mesEntrada, int diaEntrada, int horaEntrada, int minutEntrada, int anioSalida, int mesSalida, int diaSalida, int horaSalida, int minutSalida, long totalMinutsTreballats) {
         this.usuario = usuario;
         this.anioEntrada = anioEntrada;
@@ -44,6 +46,8 @@ public class Horario {
         horaSalida = -1;
         minutEntrada = -1;
         minutSalida = -1;
+
+        estatJornada = false;
     }
 
     public int getAnioEntrada() {
@@ -142,4 +146,11 @@ public class Horario {
         this.usuario = usuario;
     }
 
+    public boolean isEstatJornada() {
+        return estatJornada;
+    }
+
+    public void setEstatJornada(boolean estatJornada) {
+        this.estatJornada = estatJornada;
+    }
 }

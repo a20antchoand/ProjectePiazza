@@ -49,7 +49,6 @@ public class ListAdapterHistorialHores extends RecyclerView.Adapter<ListAdapterH
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.cv.setAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_transition));
         holder.bindData(mData.get(position));
     }
 

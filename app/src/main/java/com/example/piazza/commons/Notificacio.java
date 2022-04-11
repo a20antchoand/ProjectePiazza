@@ -40,10 +40,8 @@ public class Notificacio {
             notificador.createNotificationChannel(miCanal);
             creador = new NotificationCompat.Builder(contexto, canalID);
         }
-        Bitmap iconoNotifica = BitmapFactory.decodeResource(contexto.getResources(), R.drawable.lum_soft_09);
-        int iconoSmall = R.drawable.lum_soft_09;
+        int iconoSmall = R.mipmap.ic_launcher;
         creador.setSmallIcon(iconoSmall);
-        creador.setLargeIcon(iconoNotifica);
         creador.setContentTitle(titulo);
         creador.setContentText(mensaje);
         creador.setContentIntent(intent);

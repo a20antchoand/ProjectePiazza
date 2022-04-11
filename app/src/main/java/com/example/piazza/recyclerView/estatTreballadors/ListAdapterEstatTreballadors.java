@@ -62,7 +62,6 @@ public class ListAdapterEstatTreballadors extends RecyclerView.Adapter<ListAdapt
 
     @Override
     public void onBindViewHolder(final ListAdapterEstatTreballadors.ViewHolder holder, final int position) {
-        holder.cv.setAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_transition));
         holder.bindData(mData.get(position));
     }
 

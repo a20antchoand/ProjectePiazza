@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +46,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -54,6 +56,10 @@ import java.util.concurrent.ExecutionException;
 
 public class IntroduirHoresFragment extends Fragment implements ReadData, WriteData, AuthUserSession{
 
+    private int mInterval = 5000; // 5 seconds by default, can be changed later
+    private Handler mHandler = new Handler();
+
+
     TextView benvinguda;
     Button iniciarJornadaBtn;
     Button acabarJornadaBtn;
@@ -62,12 +68,13 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     DocumentSnapshot document;
     Horario horarioUsuario;
 
+    DocumentReference docRefHorari;
+
+
     Query query = DDBB.collection("horari")
             .orderBy("diaEntrada", Query.Direction.DESCENDING);
 
     public static int numeroDocument = 0;
-
-    public static String documentBBDD = null;
 
     private FragmentIntroduirHoresBinding binding;
 
@@ -83,7 +90,8 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
     public void setup () {
 
-        System.out.println("INICI DOCUMENTS: " + numeroDocument);
+        docRefHorari = DDBB.collection("horari").document(getCurrTimeGMT.zdt.getYear() + "_" + getCurrTimeGMT.zdt.getMonthValue() + "_" + getCurrTimeGMT.zdt.getDayOfMonth() +  "_" + userAuth.getUid() + "_" + numeroDocument);
+        System.out.println("INICI DOCUMENTS: " + docRefHorari);
 
         iniciarJornadaBtn = binding.iniciarJornada;
         acabarJornadaBtn =binding.acabarJornada;
@@ -99,11 +107,13 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
         binding.downArrow.setOnClickListener(this::amagarButons);
 
-        RecuperarRegistroUsuariBBDD(DDBB.collection("horari").document(getCurrTimeGMT.zdt.getYear() + "_" + getCurrTimeGMT.zdt.getMonthValue() + "_" + getCurrTimeGMT.zdt.getDayOfMonth() +  "_" + userAuth.getUid() + "_" + numeroDocument));
+        RecuperarRegistroUsuariBBDD();
 
-        escoltarBBDD();
+        //escoltarBBDD();
 
         getMultipldeDocuments(query, this::totalMinutsDiaris);
+
+        FirebaseMessaging.getInstance().subscribeToTopic("40hores");
 
     }
 
@@ -113,37 +123,38 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         horarioUsuario.setUsuario(userAuth);
 
         getMultipldeDocuments(query, this::updateDocumentNumber);
-        numeroDocument++;
+        numeroDocument = numeroDocument + 1;
+        docRefHorari = DDBB.collection("horari").document(getCurrTimeGMT.zdt.getYear() + "_" + getCurrTimeGMT.zdt.getMonthValue() + "_" + getCurrTimeGMT.zdt.getDayOfMonth() +  "_" + userAuth.getUid() + "_" + numeroDocument);;
 
         getFechaActual(true);
 
-        GuardarRegistroBBDD();
+        GuardarRegistroBBDD(docRefHorari);
 
-        Notificacio.Notificar(getContext(),"Piazza", "Has iniciat la teva Jornada.\n Podras parar-la en qualsevol moment donan-li al boto de parar.", 1);
+        Notificacio.Notificar(getContext(),"Piazza", "Has iniciat la teva Jornada.\nPodras parar-la en qualsevol moment donan-li al boto de parar.", 1);
 
         changeStateButtons.hideButton(iniciarJornadaBtn);
         changeStateButtons.showButton(acabarJornadaBtn);
 
+        startRepeatingTask();
     }
 
     public void acabarJornada (View view) {
 
-        getFechaActual(false);
-
-        GuardarRegistroBBDD();
-
-        Notificacio.Notificar(getContext(),"Piazza", "Has acabat la teva Jornada.\n Espero que descansis.", 1);
+        horarioUsuario.setEstatJornada(true);
 
         changeStateButtons.hideButton(acabarJornadaBtn);
         changeStateButtons.showButton(iniciarJornadaBtn);
 
-        calcularHores();
+        getFechaActual(false);
 
+        Notificacio.Notificar(getContext(),"Piazza", "Has acabat la teva Jornada.\nEspero que descansis.\nHas fet un torn de: " + horarioUsuario.getTotalMinutsTreballats()/60 + "h " + horarioUsuario.getTotalMinutsTreballats()%60 + "m" , 1);
+
+        stopRepeatingTask();
     }
 
-    private void escoltarBBDD() {
+/*    private void escoltarBBDD() {
 
-        Query docRefHorari = DDBB.collection("horari").whereEqualTo("horaSalida", -1);
+        Query docRefHorari = DDBB.collection("horari").whereEqualTo("estatJornada", false);
 
         getListenerDocument(docRefHorari, this::resultatEscoltarBBDD);
 
@@ -166,7 +177,9 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                 getMultipldeDocuments(query, this::totalMinutsDiaris);
                 getMultipldeDocuments(query, this::updateDocumentNumber);
 
-                if (snapshot.size() == 0) {
+                System.out.println("iepa: " + snapshot.size());
+
+                if (d.getBoolean("estatJornada")) {
 
                     System.out.println("num document: " + numeroDocument);
 
@@ -175,7 +188,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
                 } else if (snapshot.size() != 0) {
 
-                    System.out.println("DOCUMENTS AMB SORIDA -1: " + numeroDocument);
+                    System.out.println("DOCUMENTS AMB SORIDA -1: " + snapshot.size());
 
                     changeStateButtons.hideButton(iniciarJornadaBtn);
                     changeStateButtons.showButton(acabarJornadaBtn);
@@ -184,9 +197,9 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             }
         }
 
-    }
+    }*/
 
-    private void RecuperarRegistroUsuariBBDD(DocumentReference docRefHorari) {
+    private void RecuperarRegistroUsuariBBDD() {
 
         System.out.println("RECUPERAR: " + docRefHorari.getId());
 
@@ -215,9 +228,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
     }
 
-    private void GuardarRegistroBBDD() {
-
-            DocumentReference docRefHorari = DDBB.collection("horari").document(getCurrTimeGMT.zdt.getYear() + "_" + getCurrTimeGMT.zdt.getMonthValue() + "_" + getCurrTimeGMT.zdt.getDayOfMonth() +  "_" + userAuth.getUid() + "_" + numeroDocument);;
+    private void GuardarRegistroBBDD(DocumentReference docRef) {
 
             writeOneDocument(docRefHorari, horarioUsuario);
 
@@ -252,7 +263,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
            Horario horariTemp = document.toObject(Horario.class);
 
-            if ((long) horariTemp.getHoraEntrada() != -1) {
+            if (horariTemp.getHoraEntrada() != 1) {
 
                 horarioUsuario.setAnioEntrada(horariTemp.getAnioEntrada());
                 horarioUsuario.setMesEntrada(horariTemp.getMesEntrada());
@@ -261,19 +272,21 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                 horarioUsuario.setMinutEntrada(horariTemp.getMinutEntrada());
 
                 changeStateButtons.hideButton(iniciarJornadaBtn);
+                changeStateButtons.showButton(acabarJornadaBtn);
 
-                if ((long) horariTemp.getHoraSalida() != -1) {
+                if (horariTemp.getHoraEntrada() != 1 && horariTemp.isEstatJornada()) {
 
                     horarioUsuario.setAnioSalida(horariTemp.getAnioSalida());
                     horarioUsuario.setMesSalida(horariTemp.getMesSalida());
                     horarioUsuario.setDiaSalida(horariTemp.getDiaSalida());
                     horarioUsuario.setHoraSalida(horariTemp.getHoraSalida());
                     horarioUsuario.setMinutSalida(horariTemp.getMinutSalida());
+                    horarioUsuario.setEstatJornada(true);
 
+                    stopRepeatingTask();
 
                     changeStateButtons.hideButton(acabarJornadaBtn);
                     changeStateButtons.showButton(iniciarJornadaBtn);
-
 
                     calcularHores();
 
@@ -282,12 +295,15 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                     changeStateButtons.showButton(acabarJornadaBtn);
                     changeStateButtons.hideButton(iniciarJornadaBtn);
 
+                    startRepeatingTask();
+
                 }
 
 
             }
         } else {
             changeStateButtons.showButton(iniciarJornadaBtn);
+            changeStateButtons.hideButton(acabarJornadaBtn);
 
             changeTextTimeResultat(binding.totalTempsTreballat, 0, 0);
 
@@ -325,6 +341,8 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             horarioUsuario.setDiaSalida(getCurrTimeGMT.zdt.getDayOfMonth());
             horarioUsuario.setHoraSalida(getCurrTimeGMT.zdt.getHour());
             horarioUsuario.setMinutSalida(getCurrTimeGMT.zdt.getMinute());
+
+            calcularHores();
         }
 
     }
@@ -349,7 +367,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
         horarioUsuario.setTotalMinutsTreballats(diffMinuts);
 
-        GuardarRegistroBBDD();
+        GuardarRegistroBBDD(docRefHorari);
 
 
 
@@ -364,8 +382,9 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             for (QueryDocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
                 if (documentSnapshot.getId().contains(userAuth.getUid())) {
                     Horario horario = documentSnapshot.toObject(Horario.class);
-                    if (horario.getDiaEntrada() == getCurrTimeGMT.zdt.getDayOfMonth() && horario.getHoraSalida() != -1) {
+                    if (horario.getDiaEntrada() == getCurrTimeGMT.zdt.getDayOfMonth()) {
                         totalTempsTreballat += horario.getTotalMinutsTreballats();
+                        System.out.println(totalTempsTreballat);
                     }
 
                 }
@@ -398,6 +417,38 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             textView.setText(hora + "h " + minut + "m");
     }
 
+    Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                updateStatus(); //this function can change value of mInterval.
+            } finally {
+                // 100% guarantee that this always happens, even if
+                // your update method throws an exception
+                mHandler.postDelayed(mStatusChecker, mInterval);
+            }
+        }
+    };
 
+    private void updateStatus() {
 
+        System.out.println("docRef updateStatus: " + docRefHorari.getId());
+
+        getFechaActual(false);
+
+    }
+
+    void startRepeatingTask() {
+        mStatusChecker.run();
+    }
+
+    void stopRepeatingTask() {
+        mHandler.removeCallbacks(mStatusChecker);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopRepeatingTask();
+    }
 }

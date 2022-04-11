@@ -1,7 +1,9 @@
 package com.example.piazza.controladores.employee.fragments.historial;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,8 +30,12 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class HistorialFragment extends Fragment implements ReadData, AuthUserSession{
+
+    private int mInterval = 5000; // 5 seconds by default, can be changed later
+    private Handler mHandler = new Handler();
 
     private static final String TAG = "HistorialFragment: ";
     private FragmentHistorialBinding binding;
@@ -58,6 +64,7 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
 
         getMultipldeDocuments(query, this::calcularHoresTreballades);
 
+        startRepeatingTask();
     }
 
     private void calcularHoresTreballades(Task<QuerySnapshot> querySnapshotTask) {
@@ -89,7 +96,7 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
         if (totalMinutsTreballar > totalTempsMes) {
             residu = totalMinutsTreballar - totalTempsMes;
             binding.tvResiduHores.setText(String.format("-%01d:%02d",residu/60,residu%60));
-            binding.tvResiduHores.setTextColor(getResources().getColor(R.color.end_btn));
+            binding.tvResiduHores.setTextColor(Objects.requireNonNull(getContext()).getResources().getColor(R.color.end_btn));
         } else if (totalMinutsTreballar < totalTempsMes) {
             residu = totalTempsMes - totalMinutsTreballar;
             binding.tvResiduHores.setText(String.format("+%01d:%02d",residu/60,residu%60));
@@ -107,9 +114,7 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
             for (QueryDocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
                 if (documentSnapshot.getId().contains(userAuth.getUid())) {
                     Horario horario = documentSnapshot.toObject(Horario.class);
-                    if (horario.getHoraSalida() != -1)
-                        listElements.add(bindDataElementHistorial(horario));
-
+                    listElements.add(bindDataElementHistorial(horario));
                 }
             }
 
@@ -180,9 +185,40 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
 
     }
 
+    Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                updateStatus(); //this function can change value of mInterval.
+            } finally {
+                // 100% guarantee that this always happens, even if
+                // your update method throws an exception
+                mHandler.postDelayed(mStatusChecker, mInterval);
+            }
+        }
+    };
+
+    private void updateStatus() {
+
+        getMultipldeDocuments(query, this::calcularHoresTreballades);
+
+        System.out.println("RESULTAT: " + binding.tvResiduHores.getText());
+
+        getMultipldeDocuments(query, this::setElements);
+
+    }
+
+    void startRepeatingTask() {
+        mStatusChecker.run();
+    }
+
+    void stopRepeatingTask() {
+        mHandler.removeCallbacks(mStatusChecker);
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+        stopRepeatingTask();
     }
 }
