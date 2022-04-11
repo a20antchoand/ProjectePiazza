@@ -1,5 +1,6 @@
 package com.example.piazza.controladores.employee.fragments.historial;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -53,6 +54,8 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
 
         getMultipldeDocuments(query, this::setElements);
 
+        binding.tvHoresMensuals.setText(userAuth.getHoresMensuals() + "h");
+
         getMultipldeDocuments(query, this::calcularHoresTreballades);
 
     }
@@ -73,6 +76,26 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
         }
 
         binding.tvTotalHores.setText(totalTempsMes/60 + "h " + totalTempsMes%60 + "m");
+
+        calcularResiduHores(totalTempsMes);
+
+    }
+
+    private void calcularResiduHores(int totalTempsMes) {
+
+        int totalMinutsTreballar = Integer.parseInt(userAuth.getHoresMensuals()) * 60;
+        int residu;
+
+        if (totalMinutsTreballar > totalTempsMes) {
+            residu = totalMinutsTreballar - totalTempsMes;
+            binding.tvResiduHores.setText(String.format("-%01d:%02d",residu/60,residu%60));
+            binding.tvResiduHores.setTextColor(getResources().getColor(R.color.end_btn));
+        } else if (totalMinutsTreballar < totalTempsMes) {
+            residu = totalTempsMes - totalMinutsTreballar;
+            binding.tvResiduHores.setText(String.format("+%01d:%02d",residu/60,residu%60));
+            binding.tvResiduHores.setTextColor(getResources().getColor(R.color.start_btn));
+        } else
+            binding.tvResiduHores.setText("00:00");
 
     }
 
@@ -144,10 +167,10 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
 
         System.out.println("DATA2: " + data2);
 
-        String data = String.format("%04d/%02d/%02d",horario.getAnioEntrada(), horario.getMesEntrada(), horario.getDiaEntrada());
-        String entrada = String.format("%02d:%02d",horario.getHoraEntrada(),horario.getMinutEntrada()) ;
-        String sortida = String.format("%02d:%02d",horario.getHoraSalida(), horario.getMinutSalida());
-        String totalFinal = String.format("%02dh %02dm",horario.getTotalMinutsTreballats()/60, horario.getTotalMinutsTreballats()%60);
+        String data = String.format("%4d/%02d/%02d",horario.getAnioEntrada(), horario.getMesEntrada(), horario.getDiaEntrada());
+        String entrada = String.format("%d:%02d",horario.getHoraEntrada(),horario.getMinutEntrada()) ;
+        String sortida = String.format("%d:%02d",horario.getHoraSalida(), horario.getMinutSalida());
+        String totalFinal = String.format("%dh %02dm",horario.getTotalMinutsTreballats()/60, horario.getTotalMinutsTreballats()%60);
 
         return new ListElementHistorialHores(
                 data,

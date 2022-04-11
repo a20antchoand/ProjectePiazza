@@ -39,7 +39,13 @@
     <string name="cognom_perfil">COGNOM</string>
     <string name="telefon_perfil">TELEFON</string>
     <string name="rol_perfil">ROL</string>
+    <string name="spn_title">Rol</string>
+    <string name="horesMensuals_perfil">HORES MENSUALS</string>
 
+    <string-array name="dlangs">
+        <item>treballador</item>
+        <item>admin</item>
+    </string-array>
 
 
 </resources>

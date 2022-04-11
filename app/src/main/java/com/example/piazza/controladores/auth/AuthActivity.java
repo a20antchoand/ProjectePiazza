@@ -1,6 +1,7 @@
 package com.example.piazza.controladores.auth;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +24,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.Objects;
 
@@ -78,8 +81,8 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
 
                 if (DocumentSnapshotTask.getResult().getData() != null) {
 
-                    DocumentReference docRef = DDBB.collection("usuaris").document(Objects.requireNonNull(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()));
-                    cargarDatosUsuario(docRef, this::guardarDatosusuarioAuth);
+                    DocumentReference docRef = DDBB.collection("usuaris").document(FirebaseAuth.getInstance().getUid());
+                    cargarDatosUsuario(docRef, this::getUsuari);
 
                     Query query2 = DDBB.collection("horari");
                     getMultipldeDocuments(query2, this::setNumeroDocument);
@@ -89,21 +92,9 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
 
             }
 
-            private void guardarDatosusuarioAuth (Task<DocumentSnapshot> documentSnapshotTask) {
+            private void getUsuari(Task<DocumentSnapshot> documentSnapshotTask) {
 
-                Usuario user = getUsuari(documentSnapshotTask);
-
-                userAuth.setNom(user.getNom());
-                userAuth.setUid(user.getUid());
-                userAuth.setEmail(user.getEmail());
-                userAuth.setCognom(user.getCognom());
-                userAuth.setRol(user.getRol());
-                userAuth.setTelefono(user.getTelefono());
-            }
-
-            private Usuario getUsuari(Task<DocumentSnapshot> documentSnapshotTask) {
-
-                return documentSnapshotTask.getResult().toObject(Usuario.class);
+                guardarDatosGlobalesJugador(documentSnapshotTask.getResult().toObject(Usuario.class));
 
             }
 

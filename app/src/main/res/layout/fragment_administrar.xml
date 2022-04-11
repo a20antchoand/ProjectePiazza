@@ -77,14 +77,26 @@
             android:layout_height="16dp" />
 
         <EditText
-            android:id="@+id/editTextRol"
+            android:id="@+id/editTextHoresMensuals"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:background="@drawable/edit_text_bg"
             android:ems="10"
-            android:hint="Rol"
+            android:hint="Hores mensuals"
             android:inputType="text" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="16dp" />
+
+        <Spinner
+            android:id="@+id/spn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dip"
+            android:entries="@array/dlangs"
+            android:prompt="@string/spn_title" />
 
         <Space
             android:layout_width="match_parent"

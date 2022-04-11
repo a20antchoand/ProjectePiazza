@@ -1,5 +1,7 @@
 package com.example.piazza.controladores.employee.fragments.perfil;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,14 +17,15 @@ import com.example.piazza.controladores.employee.fragments.introduir_hores.Intro
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentPerfilBinding;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class PerfilFragment extends Fragment implements AuthUserSession{
 
     private FragmentPerfilBinding binding;
     private View root;
-    Usuario currUser;
-    EditText nom, email, rol, telefon, cognom;
-    ImageView imatge;
+
+    Bitmap bitmap;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -38,14 +41,6 @@ public class PerfilFragment extends Fragment implements AuthUserSession{
 
     private void setup() {
 
-        nom = root.findViewById(R.id.nom);
-        email = root.findViewById(R.id.email);
-        rol = root.findViewById(R.id.rol);
-        telefon = root.findViewById(R.id.telefon);
-        cognom = root.findViewById(R.id.cognom);
-        imatge = root.findViewById(R.id.imatgePerfil);
-
-
         mostrarDatosPerfil();
 
 
@@ -53,12 +48,15 @@ public class PerfilFragment extends Fragment implements AuthUserSession{
 
     public void mostrarDatosPerfil() {
 
-        email.setText(userAuth.getEmail());
-        nom.setText(userAuth.getNom());
-        cognom.setText(userAuth.getCognom());
-        telefon.setText(userAuth.getTelefono());
-        rol.setText(userAuth.getRol());
+        binding.email.setText(userAuth.getEmail());
+        binding.nom.setText(userAuth.getNom());
+        binding.cognom.setText(userAuth.getCognom());
+        binding.telefon.setText(userAuth.getTelefono());
+        binding.rol.setText(userAuth.getRol());
+        binding.rol.setEnabled(false);
+        binding.horesMensuals.setText(userAuth.getHoresMensuals());
 
+        binding.imatgePerfil.setImageBitmap(perfil.getBitmap());
     }
 
     @Override

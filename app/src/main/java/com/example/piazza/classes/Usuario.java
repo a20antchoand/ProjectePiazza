@@ -7,19 +7,23 @@ public class Usuario {
     String telefono;
     String nom;
     String cognom;
+    String horesMensuals;
     String rol;
+    String urlPerfil;
 
 
     public Usuario () {
     }
 
-    public Usuario(String uid, String email, String nom, String cognom, String telefono, String rol) {
+    public Usuario(String uid, String email, String nom, String cognom, String telefono, String rol, String horesMensuals, String urlPerfil) {
         this.uid = uid;
         this.email = email;
         this.telefono = telefono;
         this.rol = rol;
         this.nom = nom;
         this.cognom = cognom;
+        this.horesMensuals = horesMensuals;
+        this.urlPerfil = urlPerfil;
     }
 
     public String getUid() {
@@ -68,5 +72,21 @@ public class Usuario {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getHoresMensuals() {
+        return horesMensuals;
+    }
+
+    public void setHoresMensuals(String horesMensuals) {
+        this.horesMensuals = horesMensuals;
+    }
+
+    public String getUrlPerfil() {
+        return urlPerfil;
+    }
+
+    public void setUrlPerfil(String urlPerfil) {
+        this.urlPerfil = urlPerfil;
     }
 }

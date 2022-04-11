@@ -2,6 +2,7 @@ package com.example.piazza.controladores.auth;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import com.example.piazza.classes.Usuario;
@@ -18,6 +19,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -68,17 +71,21 @@ public class SplashScreen extends Activity implements ReadData, AuthUserSession 
 
             System.out.println(DocumentSnapshotTask.getResult().getData());
 
-            user = DocumentSnapshotTask.getResult().toObject(Usuario.class);
-
-            guardarDatosGlobalesJugador();
+            DocumentReference docRef = DDBB.collection("usuaris").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            cargarDatosUsuario(docRef, this::getUsuari);
 
             Query query2 = DDBB.collection("horari");
-
             getMultipldeDocuments(query2, this::setNumeroDocument);
 
         } else {
             startActivity(new Intent(SplashScreen.this, AuthActivity.class));
         }
+
+    }
+
+    private void getUsuari(Task<DocumentSnapshot> documentSnapshotTask) {
+
+        guardarDatosGlobalesJugador(documentSnapshotTask.getResult().toObject(Usuario.class));
 
     }
 
@@ -103,17 +110,6 @@ public class SplashScreen extends Activity implements ReadData, AuthUserSession 
         }
         startActivity(intent);
         finish();
-    }
-
-    private void guardarDatosGlobalesJugador() {
-
-        userAuth.setNom(user.getNom());
-        userAuth.setUid(user.getUid());
-        userAuth.setEmail(user.getEmail());
-        userAuth.setCognom(user.getCognom());
-        userAuth.setRol(user.getRol());
-        userAuth.setTelefono(user.getTelefono());
-
     }
 
 }

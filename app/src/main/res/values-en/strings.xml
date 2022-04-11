@@ -42,4 +42,7 @@
     <string name="telefon_perfil">PHONE</string>
     <string name="rol_perfil">ROL</string>
 
+    <string name="spn_title">Rol</string>
+
+
 </resources>
