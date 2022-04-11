@@ -109,7 +109,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
         getFechaActual(true);
 
-        GuardarRegistroBBDD(docRefHorari);
+        GuardarRegistroBBDD();
 
         Notificacio.Notificar(getContext(),"Piazza", "Has iniciat la teva Jornada.\nPodras parar-la en qualsevol moment donan-li al boto de parar.", 1);
 
@@ -233,7 +233,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
     }
 
-    private void GuardarRegistroBBDD(DocumentReference docRef) {
+    private void GuardarRegistroBBDD() {
 
         horarioUsuario.setUsuario(userAuth);
 
@@ -373,7 +373,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
         horarioUsuario.setTotalMinutsTreballats(diffMinuts);
 
-        GuardarRegistroBBDD(docRefHorari);
+        GuardarRegistroBBDD();
 
 
 
