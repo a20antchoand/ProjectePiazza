@@ -2,16 +2,6 @@ package com.example.piazza.controladores.employee.fragments.introduir_hores;
 
 import static com.google.firebase.crashlytics.internal.Logger.TAG;
 
-import android.annotation.SuppressLint;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -21,28 +11,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.core.app.AppOpsManagerCompat;
-import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.piazza.classes.Horario;
 import com.example.piazza.commons.*;
-import com.example.piazza.controladores.employee.EmployeeActivity;
-import com.example.piazza.controladores.employee.fragments.historial.HistorialFragment;
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.data.WriteData;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentIntroduirHoresBinding;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -50,14 +32,12 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 public class IntroduirHoresFragment extends Fragment implements ReadData, WriteData, AuthUserSession{
 
     private int mInterval = 5000; // 5 seconds by default, can be changed later
-    private Handler mHandler = new Handler();
+    public static Handler HandlerIntroduirHores = new Handler();
 
 
     TextView benvinguda;
@@ -90,8 +70,10 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
     public void setup () {
 
+        getMultipldeDocuments(query, this::updateDocumentNumber);
+
         docRefHorari = DDBB.collection("horari").document(getCurrTimeGMT.zdt.getYear() + "_" + getCurrTimeGMT.zdt.getMonthValue() + "_" + getCurrTimeGMT.zdt.getDayOfMonth() +  "_" + userAuth.getUid() + "_" + numeroDocument);
-        System.out.println("INICI DOCUMENTS: " + docRefHorari);
+        System.out.println("INICI DOCUMENTS: " + docRefHorari.getId());
 
         iniciarJornadaBtn = binding.iniciarJornada;
         acabarJornadaBtn =binding.acabarJornada;
@@ -122,7 +104,6 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         horarioUsuario = new Horario();
         horarioUsuario.setUsuario(userAuth);
 
-        getMultipldeDocuments(query, this::updateDocumentNumber);
         numeroDocument = numeroDocument + 1;
         docRefHorari = DDBB.collection("horari").document(getCurrTimeGMT.zdt.getYear() + "_" + getCurrTimeGMT.zdt.getMonthValue() + "_" + getCurrTimeGMT.zdt.getDayOfMonth() +  "_" + userAuth.getUid() + "_" + numeroDocument);;
 
@@ -201,8 +182,6 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
     private void RecuperarRegistroUsuariBBDD() {
 
-        System.out.println("RECUPERAR: " + docRefHorari.getId());
-
         getOneDocument(docRefHorari, this::validarRegistre);
 
     }
@@ -230,9 +209,12 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
     private void GuardarRegistroBBDD(DocumentReference docRef) {
 
-            writeOneDocument(docRefHorari, horarioUsuario);
+        horarioUsuario.setUsuario(userAuth);
 
-            getMultipldeDocuments(query, this::totalMinutsDiaris);
+        writeOneDocument(docRefHorari, horarioUsuario);
+
+        getMultipldeDocuments(query, this::totalMinutsDiaris);
+
     }
 
     private void updateDocumentNumber(Task<QuerySnapshot> querySnapshotTask) {
@@ -317,12 +299,8 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         try {
             String stringTemps = new getCurrTimeGMT().execute().get();
             getCurrTimeGMT.zdt = getCurrTimeGMT.getZoneDateTime(stringTemps);
-
-            Toast.makeText(getContext(), "HORA: "+getCurrTimeGMT.zdt, Toast.LENGTH_SHORT).show();
-
         } catch (ExecutionException e) {
             e.printStackTrace();
-            Toast.makeText(getContext(), "HORA: FUCK", Toast.LENGTH_SHORT).show();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -422,10 +400,13 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         public void run() {
             try {
                 updateStatus(); //this function can change value of mInterval.
-            } finally {
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("ERROOOOOOR");
+            }finally {
                 // 100% guarantee that this always happens, even if
                 // your update method throws an exception
-                mHandler.postDelayed(mStatusChecker, mInterval);
+                HandlerIntroduirHores.postDelayed(mStatusChecker, mInterval);
             }
         }
     };
@@ -443,7 +424,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     }
 
     void stopRepeatingTask() {
-        mHandler.removeCallbacks(mStatusChecker);
+        HandlerIntroduirHores.removeCallbacks(mStatusChecker);
     }
 
     @Override
@@ -451,4 +432,6 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         super.onDestroy();
         stopRepeatingTask();
     }
+    
+    
 }

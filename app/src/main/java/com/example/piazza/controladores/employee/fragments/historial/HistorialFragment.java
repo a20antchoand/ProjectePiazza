@@ -1,7 +1,5 @@
 package com.example.piazza.controladores.employee.fragments.historial;
 
-import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -16,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.example.piazza.classes.Horario;
+import com.example.piazza.controladores.employee.fragments.introduir_hores.IntroduirHoresFragment;
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.piazza.recyclerView.historialHores.ListAdapterHistorialHores;
@@ -35,7 +34,7 @@ import java.util.Objects;
 public class HistorialFragment extends Fragment implements ReadData, AuthUserSession{
 
     private int mInterval = 5000; // 5 seconds by default, can be changed later
-    private Handler mHandler = new Handler();
+    public static Handler HandlerHistorial = new Handler();
 
     private static final String TAG = "HistorialFragment: ";
     private FragmentHistorialBinding binding;
@@ -65,6 +64,7 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
         getMultipldeDocuments(query, this::calcularHoresTreballades);
 
         startRepeatingTask();
+
     }
 
     private void calcularHoresTreballades(Task<QuerySnapshot> querySnapshotTask) {
@@ -96,11 +96,11 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
         if (totalMinutsTreballar > totalTempsMes) {
             residu = totalMinutsTreballar - totalTempsMes;
             binding.tvResiduHores.setText(String.format("-%01d:%02d",residu/60,residu%60));
-            binding.tvResiduHores.setTextColor(Objects.requireNonNull(getContext()).getResources().getColor(R.color.end_btn));
+            binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.end_btn));
         } else if (totalMinutsTreballar < totalTempsMes) {
             residu = totalTempsMes - totalMinutsTreballar;
             binding.tvResiduHores.setText(String.format("+%01d:%02d",residu/60,residu%60));
-            binding.tvResiduHores.setTextColor(getResources().getColor(R.color.start_btn));
+            binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.start_btn));
         } else
             binding.tvResiduHores.setText("00:00");
 
@@ -193,7 +193,7 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
             } finally {
                 // 100% guarantee that this always happens, even if
                 // your update method throws an exception
-                mHandler.postDelayed(mStatusChecker, mInterval);
+                HandlerHistorial.postDelayed(mStatusChecker, mInterval);
             }
         }
     };
@@ -213,7 +213,7 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
     }
 
     void stopRepeatingTask() {
-        mHandler.removeCallbacks(mStatusChecker);
+        HandlerHistorial.removeCallbacks(mStatusChecker);
     }
 
     @Override
