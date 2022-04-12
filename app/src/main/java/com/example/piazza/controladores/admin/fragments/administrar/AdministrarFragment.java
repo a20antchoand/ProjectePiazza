@@ -54,6 +54,7 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
             String telefon = ((TextView) root.findViewById(R.id.editTextTelefon)).getText().toString();
             String rol = ((Spinner) root.findViewById(R.id.spn)).getSelectedItem().toString();
             String horesMensuals = ((TextView) root.findViewById(R.id.editTextHoresMensuals)).getText().toString();
+            String urlPerfil = "";
 
 
             FirebaseOptions firebaseOptions = new FirebaseOptions.Builder()
@@ -76,7 +77,7 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
                             Toast.makeText(getActivity().getApplication(), "Usuario dado de alta correctamente.",
                                     Toast.LENGTH_SHORT).show();
 
-                            GuardarUsuarioBBDD(new Usuario(task.getResult().getUser().getUid(), email, nom, cognom, telefon, rol, horesMensuals, "gs://testauth-f5eb4.appspot.com/ORF8060.jpg"));
+                            GuardarUsuarioBBDD(new Usuario(task.getResult().getUser().getUid(), email, nom, cognom, telefon, rol, horesMensuals, urlPerfil));
 
                             mAuth2.signOut();
                         } else {
