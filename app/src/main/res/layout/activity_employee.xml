@@ -27,7 +27,6 @@
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-
             android:src="@drawable/lum_soft_09"
             tools:layout_editor_absoluteX="16dp" />
 

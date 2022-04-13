@@ -48,47 +48,52 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
 
         binding.alta.setOnClickListener(view -> {
 
-            String email = ((TextView) root.findViewById(R.id.editTextEmail)).getText().toString();
-            String nom = ((TextView) root.findViewById(R.id.editTextNom)).getText().toString();
-            String cognom = ((TextView) root.findViewById(R.id.editTextCognom)).getText().toString();
-            String telefon = ((TextView) root.findViewById(R.id.editTextTelefon)).getText().toString();
-            String rol = ((Spinner) root.findViewById(R.id.spn)).getSelectedItem().toString();
-            String horesMensuals = ((TextView) root.findViewById(R.id.editTextHoresMensuals)).getText().toString();
+            String email = binding.email.getText().toString();
+            String nom = binding.email.getText().toString();
+            String cognom = binding.email.getText().toString();
+            String telefon = binding.email.getText().toString();
+            String rol = binding.spn2.getSelectedItem().toString();
+            String horesMensuals = binding.email.getText().toString();
             String urlPerfil = "";
 
+            if (email.equals("") || nom.equals("") || nom.equals("") || nom.equals("") || nom.equals("") || nom.equals("") || nom.equals("")) {
+                Toast.makeText(getActivity().getApplication(), "Recuerda rellenar todos los campos.",
+                        Toast.LENGTH_SHORT).show();
+            } else {
 
-            FirebaseOptions firebaseOptions = new FirebaseOptions.Builder()
-                    .setDatabaseUrl("(default)")
-                    .setApiKey("AIzaSyAh3NcfuNmG-GESIDu98k6_QBIDraUkNn0\n")
-                    .setApplicationId("testauth-f5eb4\n").build();
 
-            try {
-                FirebaseApp myApp = FirebaseApp.initializeApp(getContext(), firebaseOptions, "AnyAppName");
-                mAuth2 = FirebaseAuth.getInstance(myApp);
-            } catch (IllegalStateException e){
-                mAuth2 = FirebaseAuth.getInstance(FirebaseApp.getInstance("AnyAppName"));
+                FirebaseOptions firebaseOptions = new FirebaseOptions.Builder()
+                        .setDatabaseUrl("(default)")
+                        .setApiKey("AIzaSyAh3NcfuNmG-GESIDu98k6_QBIDraUkNn0\n")
+                        .setApplicationId("testauth-f5eb4\n").build();
+
+                try {
+                    FirebaseApp myApp = FirebaseApp.initializeApp(getContext(), firebaseOptions, "AnyAppName");
+                    mAuth2 = FirebaseAuth.getInstance(myApp);
+                } catch (IllegalStateException e) {
+                    mAuth2 = FirebaseAuth.getInstance(FirebaseApp.getInstance("AnyAppName"));
+                }
+
+                mAuth2.createUserWithEmailAndPassword(email, "123456")
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d(TAG, "createUserWithEmail:success");
+                                Toast.makeText(getActivity().getApplication(), "Usuario dado de alta correctamente.",
+                                        Toast.LENGTH_SHORT).show();
+
+                                GuardarUsuarioBBDD(new Usuario(task.getResult().getUser().getUid(), email, nom, cognom, telefon, rol, horesMensuals, urlPerfil));
+
+                                mAuth2.signOut();
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                                Toast.makeText(getActivity().getApplication(), "No se a podido dar de alta al usuario.",
+                                        Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
             }
-
-            mAuth2.createUserWithEmailAndPassword(email, "123456")
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "createUserWithEmail:success");
-                            Toast.makeText(getActivity().getApplication(), "Usuario dado de alta correctamente.",
-                                    Toast.LENGTH_SHORT).show();
-
-                            GuardarUsuarioBBDD(new Usuario(task.getResult().getUser().getUid(), email, nom, cognom, telefon, rol, horesMensuals, urlPerfil));
-
-                            mAuth2.signOut();
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(getActivity().getApplication(), "No se a podido dar de alta al usuario.",
-                                    Toast.LENGTH_SHORT).show();
-
-                        }
-                    });
-
         });
 
 
