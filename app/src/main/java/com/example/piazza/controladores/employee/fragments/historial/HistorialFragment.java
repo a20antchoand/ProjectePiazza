@@ -57,64 +57,34 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
 
     private void setup() {
 
+        //Recorrem tots els registres horaris
         getMultipldeDocuments(query, this::setElements);
 
+        //mostrem les hores mensuals
         binding.tvHoresMensuals.setText(userAuth.getHoresMensuals() + "h");
 
+        //Recorrem tots els registres horaris
         getMultipldeDocuments(query, this::calcularHoresTreballades);
 
+        //Iniciem un handler
         startRepeatingTask();
 
     }
 
-    private void calcularHoresTreballades(Task<QuerySnapshot> querySnapshotTask) {
+    public void setElements(Task<QuerySnapshot> histrorialsDocuments) {
 
-        int totalTempsMes = 0;
+        //si el resultat es successful
+        if (histrorialsDocuments.isSuccessful()) {
 
-        if (querySnapshotTask.isSuccessful()) {
-            for (QueryDocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
-                if (documentSnapshot.getId().contains(userAuth.getUid())) {
-                    Horario horario = documentSnapshot.toObject(Horario.class);
-                    if (horario.getMesEntrada() == getCurrTimeGMT.zdt.getMonthValue())
-                        totalTempsMes += horario.getTotalMinutsTreballats();
-
-                }
-            }
-        }
-
-        binding.tvTotalHores.setText(totalTempsMes/60 + "h " + totalTempsMes%60 + "m");
-
-        calcularResiduHores(totalTempsMes);
-
-    }
-
-    private void calcularResiduHores(int totalTempsMes) {
-
-        int totalMinutsTreballar = Integer.parseInt(userAuth.getHoresMensuals()) * 60;
-        int residu;
-
-        if (totalMinutsTreballar > totalTempsMes) {
-            residu = totalMinutsTreballar - totalTempsMes;
-            binding.tvResiduHores.setText(String.format("-%01d:%02d",residu/60,residu%60));
-            binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.end_btn));
-        } else if (totalMinutsTreballar < totalTempsMes) {
-            residu = totalTempsMes - totalMinutsTreballar;
-            binding.tvResiduHores.setText(String.format("+%01d:%02d",residu/60,residu%60));
-            binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.start_btn));
-        } else
-            binding.tvResiduHores.setText("00:00");
-
-    }
-
-
-    public void setElements(Task<QuerySnapshot> querySnapshotTask) {
-
-        if (querySnapshotTask.isSuccessful()) {
-
-            for (QueryDocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
-                if (documentSnapshot.getId().contains(userAuth.getUid())) {
-                    Horario horario = documentSnapshot.toObject(Horario.class);
+            //recorrem els registres
+            for (QueryDocumentSnapshot historialDocument : histrorialsDocuments.getResult()) {
+                //Si el registre pertany al usuari acual
+                if (historialDocument.getId().contains(userAuth.getUid())) {
+                    //Creem l'objecte Historial que hem rcuperat del document
+                    Horario horario = historialDocument.toObject(Horario.class);
+                    //si la jornada esta acabada
                     if (horario.isEstatJornada())
+                        //creem l'item de la recycler view i l'afegim a un array list d'elements
                         listElements.add(bindDataElementHistorial(horario));
                 }
             }
@@ -125,12 +95,15 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
             Log.d(TAG, "Error al recuperar varios documentos.");
         }
 
+        //al finalitzar, si no hi han elements a l'array
         if (listElements.size() == 0){
 
+            //mostrem l'estat de registrres buit
             showHistorialEmpty();
 
         } else {
 
+            //mostrem l'historial de registres
             showHistorial();
 
         }
@@ -138,6 +111,7 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
 
     private void showHistorial() {
 
+        //Mostrem la recyclerView i tots els elements necessaris
         binding.titolHistorial.setVisibility(View.GONE);
         binding.imatgeHistorial.setVisibility(View.GONE);
         binding.recyclerViewHistorial.setVisibility(View.VISIBLE);
@@ -145,10 +119,12 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
         binding.cardView2.setVisibility(View.VISIBLE);
         binding.horesTreballadesTotal.setVisibility(View.VISIBLE);
 
+        //Creem l'adaptador de la recyclerview
         ListAdapterHistorialHores listAdapter = new ListAdapterHistorialHores(listElements, root.getContext(), item -> {
             //moveToDescription(item);
         });
 
+        //creem la recyclerview
         RecyclerView recyclerView = root.findViewById(R.id.recyclerViewHistorial);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
@@ -158,6 +134,7 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
 
     private void showHistorialEmpty() {
 
+        //mostrem un titol dient que no tens registres junt amb una imatge
         binding.titolHistorial.setVisibility(View.VISIBLE);
         binding.imatgeHistorial.setVisibility(View.VISIBLE);
         binding.recyclerViewHistorial.setVisibility(View.GONE);
@@ -186,6 +163,66 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
 
     }
 
+    private void calcularHoresTreballades(Task<QuerySnapshot> historialsDocuments) {
+
+        int totalTempsMes = 0;
+
+        //si el resultat es successful
+        if (historialsDocuments.isSuccessful()) {
+            //recorrem els documents
+            for (QueryDocumentSnapshot historialDocument : historialsDocuments.getResult()) {
+                //si el document pertany a l'usuari
+                if (historialDocument.getId().contains(userAuth.getUid())) {
+                    //creem l'objecte Horario recuperat del document
+                    Horario horario = historialDocument.toObject(Horario.class);
+                    //comprovem si el document és del mes actual
+                    if (horario.getMesEntrada() == getCurrTimeGMT.zdt.getMonthValue())
+                        //sumem els minuts totals treballats
+                        totalTempsMes += horario.getTotalMinutsTreballats();
+
+                }
+            }
+        }
+
+        //es mostra el total de temps treballat durant el mes
+        binding.tvTotalHores.setText(String.format("+%01d:%02d",totalTempsMes/60,totalTempsMes%60));
+
+        //calculem el residu d'hores
+        calcularResiduHores(totalTempsMes);
+
+    }
+
+    private void calcularResiduHores(int totalTempsMes) {
+
+        //minuts a treballar al mes
+        int totalMinutsTreballar = Integer.parseInt(userAuth.getHoresMensuals()) * 60;
+        int residu;
+
+        //si els minuts a treballar son majors als minuts treballats
+        //mostrem en negatiu el residu d'hores.
+        if (totalMinutsTreballar > totalTempsMes) {
+            residu = totalMinutsTreballar - totalTempsMes;
+            binding.tvResiduHores.setText(String.format("-%01d:%02d",residu/60,residu%60));
+            binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.end_btn));
+
+        //si els minuts a treballar son menors als minuts treballats
+        //mostrem en positiu el residu d'hores.
+        } else if (totalMinutsTreballar < totalTempsMes) {
+            residu = totalTempsMes - totalMinutsTreballar;
+            binding.tvResiduHores.setText(String.format("+%01d:%02d",residu/60,residu%60));
+            binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.start_btn));
+        //mostrem el residu a 00:00
+        } else {
+            binding.tvResiduHores.setText("00:00");
+            binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.black));
+        }
+    }
+
+
+    /*
+    * Cada 5 segons actualitzem les hores treballades
+    * */
+
     Runnable mStatusChecker = new Runnable() {
         @Override
         public void run() {
@@ -212,6 +249,8 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
     void stopRepeatingTask() {
         HandlerHistorial.removeCallbacks(mStatusChecker);
     }
+
+
 
     @Override
     public void onDestroyView() {

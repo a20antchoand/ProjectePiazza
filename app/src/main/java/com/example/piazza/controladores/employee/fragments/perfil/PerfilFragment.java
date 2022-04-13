@@ -56,6 +56,9 @@ public class PerfilFragment extends Fragment implements AuthUserSession{
 
     }
 
+    /**
+     * Funcio per obrir la galeria del dispositiu i poder modificar la imatge de perfil de l'usuari
+     */
     private void openGallery(){
         Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
         startActivityForResult(gallery, PICK_IMAGE);
@@ -82,20 +85,18 @@ public class PerfilFragment extends Fragment implements AuthUserSession{
                 perfil.setBitmap(bitmap);
                 binding.imatgePerfil.setImageBitmap(perfil.getBitmap());
 
+                //transformem la imatge recuperada en byteArray
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] bitmapData = baos.toByteArray();
 
-                StorageReference storageRef = STORAGE.getReference();
-
-                StorageReference ImagesRef = storageRef.child(userAuth.getUid());
-
+                //iniciem la referencia a firebase storage
+                StorageReference ImagesRef = STORAGE.getReference().child(userAuth.getUid());
+                //Creem la tasca d'actualització de storage
                 UploadTask uploadTask = ImagesRef.putBytes(bitmapData);
-
+                //executem la tasca i al acabar modifiquem la informació de l'usuari per que es modifiqui permanentment
+                //la imatge de perfil.
                 uploadTask.addOnSuccessListener(taskSnapshot -> {
-                    System.out.println("success" + ImagesRef.getPath());
-                    System.out.println("success" + ImagesRef.getName());
-                    System.out.println("success" + ImagesRef.getRoot().toString());
 
                     userAuth.setUrlPerfil(ImagesRef.getRoot() + ImagesRef.getPath());
 
@@ -111,6 +112,10 @@ public class PerfilFragment extends Fragment implements AuthUserSession{
         }
     }
 
+    /**
+     * Funcio per mostrar dades del perfil mostrant la informacio que tenim
+     * emmagatzemada a cada camp de la interficie
+     */
     public void mostrarDatosPerfil() {
 
         binding.email.setText(userAuth.getEmail());
