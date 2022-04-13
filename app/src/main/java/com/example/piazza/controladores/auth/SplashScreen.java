@@ -2,9 +2,9 @@ package com.example.piazza.controladores.auth;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
+import com.example.piazza.classes.Horario;
 import com.example.piazza.classes.Usuario;
 import com.example.piazza.commons.getCurrTimeGMT;
 import com.example.piazza.controladores.admin.AdminActivity;
@@ -19,15 +19,13 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 public class SplashScreen extends Activity implements ReadData, AuthUserSession {
 
-    Usuario user = null;
+    FirebaseUser user;
+    DocumentReference docRefUsuari;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,79 +33,122 @@ public class SplashScreen extends Activity implements ReadData, AuthUserSession 
         setup();
     }
 
+    /**
+     * Prepara la app per funcionar
+     */
     private void setup() {
 
         try {
+            //demana el temps actual i espera resposta d ela asynk task
             String s = new getCurrTimeGMT().execute().get();
 
+            //emmagatzema el resultat passant la cadena que hem recuperat a ZonedDateTime
             getCurrTimeGMT.zdt = getCurrTimeGMT.getZoneDateTime(s);
-
 
 
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        //Cargem la informació de l'usauri actual
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
         if (user != null) {
 
-            DocumentReference query = DDBB.collection("usuaris")
-                    .document(Objects.requireNonNull(user.getUid()));
+            //busquem la informació de firebase sobre l'usuari si aquest te una sessió activa
+            docRefUsuari = DDBB.collection("usuaris")
+                    .document(user.getUid());
 
-            getOneDocument(query, this::validarLogin);
-
-        } else {
-            startActivity(new Intent(SplashScreen.this, AuthActivity.class));
-        }
-
-
-
-    }
-
-    private void validarLogin(Task<DocumentSnapshot> DocumentSnapshotTask) {
-
-        if (DocumentSnapshotTask.getResult().getData() != null) {
-
-            System.out.println(DocumentSnapshotTask.getResult().getData());
-
-            DocumentReference docRef = DDBB.collection("usuaris").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
-            cargarDatosUsuario(docRef, this::getUsuari);
-
-            Query query2 = DDBB.collection("horari");
-            getMultipldeDocuments(query2, this::setNumeroDocument);
+            //recuperem la informació del document que coincideix amb la referencia i validem la informació
+            getOneDocument(docRefUsuari, this::validarLogin);
 
         } else {
+            //Si no te sesio activa l'enviem a AuthActivity
             startActivity(new Intent(SplashScreen.this, AuthActivity.class));
         }
 
     }
 
-    private void getUsuari(Task<DocumentSnapshot> documentSnapshotTask) {
+    /**
+     * Funcio per validar el login de l'usuari recuperat de la BBDD
+     *
+     * @param usuariDocument document recuperat de firebse
+     */
+    private void validarLogin(Task<DocumentSnapshot> usuariDocument) {
 
-        guardarDatosGlobalesJugador(documentSnapshotTask.getResult().toObject(Usuario.class));
+        //validem que la informació recuperada sigui diferent a null
+        if (usuariDocument.getResult().getData() != null) {
+
+            //agafem la refere
+            cargarDatosUsuario(docRefUsuari, this::setUserAuth);
+
+            //agafem la referencia als horaris
+            Query query = DDBB.collection("horari");
+            //Recuperem tots els documents i a ctualitzem el numero de document (numero que utilitzarem per la gestió dels torns)
+            getMultipldeDocuments(query, this::setNumeroDocument);
+
+        } else {
+            //Si la informació que recuperem és null enviem a l'usauri a la pantalla de AuthActivity
+            startActivity(new Intent(SplashScreen.this, AuthActivity.class));
+        }
 
     }
 
-    private void setNumeroDocument(Task<QuerySnapshot> querySnapshotTask) {
+    /**
+     * Funcio per guardar les dades de l'usuari recuperat
+     *
+     * @param userDocument resultat recuperat de firebase
+     */
+    private void setUserAuth(Task<DocumentSnapshot> userDocument) {
 
-        Intent intent;
+        //Cargem la informació que recuperem de firebase i guardem la informació a la variable estatica que utilitzarem durant
+        //tot el transcurs de la app. Li enviem a la funcio un objecte usuari creantlo directament desde firebase.
+        guardarDatosGlobalesJugador(userDocument.getResult().toObject(Usuario.class));
 
-        for (DocumentSnapshot d : querySnapshotTask.getResult()) {
+    }
 
-            if (d.getId().contains(userAuth.getUid()) && Integer.parseInt(Objects.requireNonNull(d.get("diaEntrada")).toString()) == getCurrTimeGMT.zdt.getDayOfMonth()) {
+    /**
+     * Funcio per actualitzar el numero de document actual
+     *
+     * @param horarisDocuments tots els documents recuperats
+     */
+    private void setNumeroDocument(Task<QuerySnapshot> horarisDocuments) {
+
+        //recorrem tots els documents recuperats
+        for (DocumentSnapshot horariDocument : horarisDocuments.getResult()) {
+
+            Horario horarioTemp = horariDocument.toObject(Horario.class);
+
+            //per cada document que pertany a l'usuari i és del dia a ctual augmentem per 1 el document
+            if (horariDocument.getId().contains(userAuth.getUid()) && horarioTemp.getDiaEntrada() == getCurrTimeGMT.zdt.getDayOfMonth()) {
                 IntroduirHoresFragment.numeroDocument++;
-                System.out.println(IntroduirHoresFragment.numeroDocument);
             }
         }
 
         if (userAuth.getRol().equals("admin")) {
-            intent = new Intent(SplashScreen.this, AdminActivity.class);
+            showAdmin();
         } else if (userAuth.getRol().equals("treballador")) {
-            intent = new Intent(SplashScreen.this, EmployeeActivity.class);
+            showEmployee();
         } else {
-            intent = new Intent(SplashScreen.this, AuthActivity.class);
+            showAuth();
         }
+
+    }
+
+    private void showAdmin() {
+        Intent intent = new Intent(this, AdminActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void showEmployee () {
+        Intent intent = new Intent(this, EmployeeActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void showAuth () {
+        Intent intent = new Intent(this, AuthActivity.class);
         startActivity(intent);
         finish();
     }

@@ -1,15 +1,17 @@
 package com.example.piazza.controladores.auth;
 
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.piazza.classes.Horario;
 import com.example.piazza.classes.Usuario;
 import com.example.piazza.commons.getCurrTimeGMT;
 import com.example.piazza.controladores.admin.AdminActivity;
@@ -24,14 +26,14 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-
-import java.util.Objects;
 
 public class AuthActivity extends AppCompatActivity implements ReadData, AuthUserSession{
 
     Button logIn;
+    TextView errorLogin;
+    ProgressBar pbLogin;
+
+    DocumentReference docRefUsuari;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,17 +47,27 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
     public void setup() {
 
         logIn = findViewById(R.id.logIn);
+        errorLogin = findViewById(R.id.errorLogin);
+        pbLogin = findViewById(R.id.pbLogin);
 
         logIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
+                //agafem els valors de email i password
                 String email = ((EditText) findViewById(R.id.editTextEmail)).getText().toString();
                 String password = ((EditText) findViewById(R.id.editTextPassword)).getText().toString();
 
                 if (!email.equals("") && !password.equals("")) {
 
+                    //retirem missatge d'error per si de cas i mostrem progress bar
+                    errorLogin.setVisibility(View.GONE);
+                    pbLogin.setVisibility(View.VISIBLE);
+
+                    //Fem un login amb l'usuari i password
                     FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
+
+                        //si funciona cargem les dades de l'usauri
                         if (task.isSuccessful()) {
 
                             /* ======================================
@@ -63,54 +75,81 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
                              * ======================================
                              * */
 
-                            DocumentReference query = DDBB.collection("usuaris")
-                                    .document(Objects.requireNonNull(Objects.requireNonNull(task.getResult().getUser()).getUid()));
+                            docRefUsuari = DDBB.collection("usuaris")
+                                    .document(task.getResult().getUser().getUid());
 
-                            System.out.println(task.getResult().getUser().getUid());
+                            getOneDocument(docRefUsuari, this::validarLogin);
 
-                            getOneDocument(query, this::validarLogin);
 
                         } else {
+
+                            //sino mostrem missatge d'error
                             showAlert("El usuario o la contrasenya no són correctes.");
                         }
                     });
-                }
-            }
-
-            private void validarLogin(Task<DocumentSnapshot> DocumentSnapshotTask) {
-
-                if (DocumentSnapshotTask.getResult().getData() != null) {
-
-                    DocumentReference docRef = DDBB.collection("usuaris").document(FirebaseAuth.getInstance().getUid());
-                    cargarDatosUsuario(docRef, this::getUsuari);
-
-                    Query query2 = DDBB.collection("horari");
-                    getMultipldeDocuments(query2, this::setNumeroDocument);
-
+                } else {
+                    //mostrem error eliminem progressbar
+                    errorLogin.setVisibility(View.VISIBLE);
+                    pbLogin.setVisibility(View.GONE);
 
                 }
+            }
+
+            /**
+             * Funcio per validar el login de l'usuari recuperat de la BBDD
+             *
+             * @param usuariDocument document recuperat de firebse
+             */
+            private void validarLogin(Task<DocumentSnapshot> usuariDocument) {
+
+                //validem que la informació recuperada sigui diferent a null
+                if (usuariDocument.getResult().getData() != null) {
+
+                    //agafem la refere
+                    cargarDatosUsuario(docRefUsuari, this::setUserAuth);
+
+                    //agafem la referencia als horaris
+                    Query query = DDBB.collection("horari");
+                    //Recuperem tots els documents i a ctualitzem el numero de document (numero que utilitzarem per la gestió dels torns)
+                    getMultipldeDocuments(query, this::setNumeroDocument);
+
+                }
 
             }
 
-            private void getUsuari(Task<DocumentSnapshot> documentSnapshotTask) {
+            /**
+             * Funcio per guardar les dades de l'usuari recuperat
+             *
+             * @param userDocument resultat recuperat de firebase
+             */
+            private void setUserAuth(Task<DocumentSnapshot> userDocument) {
 
-                guardarDatosGlobalesJugador(documentSnapshotTask.getResult().toObject(Usuario.class));
+                //Cargem la informació que recuperem de firebase i guardem la informació a la variable estatica que utilitzarem durant
+                //tot el transcurs de la app. Li enviem a la funcio un objecte usuari creantlo directament desde firebase.
+                guardarDatosGlobalesJugador(userDocument.getResult().toObject(Usuario.class));
 
             }
 
-            private void setNumeroDocument(Task<QuerySnapshot> querySnapshotTask) {
+            /**
+             * Funcio per actualitzar el numero de document actual
+             *
+             * @param horarisDocuments tots els documents recuperats
+             */
+            private void setNumeroDocument(Task<QuerySnapshot> horarisDocuments) {
 
-                for (DocumentSnapshot d : querySnapshotTask.getResult()) {
-                    if (d.getId().contains(userAuth.getUid()) && Integer.parseInt(Objects.requireNonNull(d.get("diaEntrada")).toString()) == getCurrTimeGMT.zdt.getDayOfMonth()) {
+                //recorrem tots els documents recuperats
+                for (DocumentSnapshot horariDocument : horarisDocuments.getResult()) {
+
+                    Horario horarioTemp = horariDocument.toObject(Horario.class);
+
+                    //per cada document que pertany a l'usuari i és del dia a ctual augmentem per 1 el document
+                    if (horariDocument.getId().contains(userAuth.getUid()) && horarioTemp.getDiaEntrada() == getCurrTimeGMT.zdt.getDayOfMonth()) {
                         IntroduirHoresFragment.numeroDocument++;
-                        System.out.println(IntroduirHoresFragment.numeroDocument);
                     }
                 }
 
-                System.out.println("EMAIL: " + userAuth.getEmail());
-
                 if (userAuth.getRol().equals("admin")) {
-                    showHome();
+                    showAdmin();
                 } else if (userAuth.getRol().equals("treballador")) {
                     showEmployee();
                 }
@@ -131,7 +170,7 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
         alerta.show();
     }
 
-    private void showHome () {
+    private void showAdmin() {
         Intent intent = new Intent(this, AdminActivity.class);
         startActivity(intent);
         finish();

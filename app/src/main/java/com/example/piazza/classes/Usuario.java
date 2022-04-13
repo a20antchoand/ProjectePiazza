@@ -11,9 +11,24 @@ public class Usuario {
     String rol;
     String urlPerfil;
 
-
+    /**
+     * Constructor per defecte d'Usuari
+     */
     public Usuario () {
     }
+
+    /**
+     * Constructor d'Usuari
+     *
+     * @param uid id de l'usuari generat per firebase
+     * @param email email de l'usuari amb el que accedeix
+     * @param nom nom de l'usuari
+     * @param cognom cognom de l'usuari
+     * @param telefono telefon de l'usuari
+     * @param rol rol de l'usauri a l'empresa i la app
+     * @param horesMensuals hores mensuals de l'usuari
+     * @param urlPerfil url de la imatge de perfil de l'usuarfi
+     */
 
     public Usuario(String uid, String email, String nom, String cognom, String telefono, String rol, String horesMensuals, String urlPerfil) {
         this.uid = uid;

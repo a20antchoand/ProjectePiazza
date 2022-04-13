@@ -28,6 +28,8 @@ import javax.xml.transform.Result;
 public class getCurrTimeGMT extends AsyncTask<String, Void, String> {
 
     private static final String LOG_TAG = "LOG";
+
+    //VAriable estatica per poder agafar el seu valor
     public static ZonedDateTime zdt;
 
     public static ZonedDateTime getZoneDateTime(String s) {
@@ -35,9 +37,9 @@ public class getCurrTimeGMT extends AsyncTask<String, Void, String> {
         if (s != null) {
             try {
                 JSONObject jsonResponse = new JSONObject(s);
-                ZonedDateTime jsonArray = ZonedDateTime.parse(jsonResponse.getString("datetime"));
+                ZonedDateTime tempsActual = ZonedDateTime.parse(jsonResponse.getString("datetime"));
 
-                return jsonArray;
+                return tempsActual;
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -48,19 +50,14 @@ public class getCurrTimeGMT extends AsyncTask<String, Void, String> {
 
     }
 
-
-    public ZonedDateTime getCurrTimeGMT() {
-        return this.zdt;
-    }
-
     public void setZdt(ZonedDateTime zdt) {
-        this.zdt = zdt;
+        getCurrTimeGMT.zdt = zdt;
     }
 
     static String collectInfoGMT(){
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
-        String bookJSONString = null;
+        String tempsActualJsonString = null;
 
         try {
 
@@ -84,7 +81,7 @@ public class getCurrTimeGMT extends AsyncTask<String, Void, String> {
                     return null;
                 }
 
-                bookJSONString = builder.toString();
+                tempsActualJsonString = builder.toString();
             } catch (Exception e) {
                 Log.d(LOG_TAG, "CIUTAT NO TROBADA");
                 return null;
@@ -109,8 +106,8 @@ public class getCurrTimeGMT extends AsyncTask<String, Void, String> {
             }
         }
 
-        Log.d(LOG_TAG, bookJSONString);
-        return bookJSONString;
+        Log.d(LOG_TAG, tempsActualJsonString);
+        return tempsActualJsonString;
     }
 
     @Override

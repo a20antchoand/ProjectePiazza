@@ -45,6 +45,12 @@ public interface AuthUserSession {
 
     }
 
+
+    /**
+     * Funcio per actualitzar les dades de l'usuari que s'utulitzaran durant la sessió a la APP
+     *
+     * @param user usuari que s'ha recuperat de firebase
+     */
     default void guardarDatosGlobalesJugador(Usuario user) {
 
         userAuth.setNom(user.getNom());
@@ -57,10 +63,16 @@ public interface AuthUserSession {
         userAuth.setUrlPerfil(user.getUrlPerfil());
 
         if (userAuth.getUrlPerfil() != null && !userAuth.getUrlPerfil().equals("")) {
+
+            //Recuperem la imatge del usuari del seu apartat de firebase storage amb la seva url
+
             StorageReference storageRef = STORAGE.getReferenceFromUrl(userAuth.getUrlPerfil());
             storageRef.getBytes(1024 * 1024)
                     .addOnSuccessListener(bytes -> perfil.setBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length)));
         } else {
+
+            //Si l'usuari no te url de foto de perfil encara, posem la imatge de perfil per defecte
+
             StorageReference storageRef = STORAGE.getReferenceFromUrl("gs://testauth-f5eb4.appspot.com/ORF8060.jpg");
             storageRef.getBytes(1024 * 1024)
                     .addOnSuccessListener(bytes -> perfil.setBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length)));

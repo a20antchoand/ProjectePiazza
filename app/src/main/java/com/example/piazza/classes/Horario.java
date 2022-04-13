@@ -20,21 +20,9 @@ public class Horario {
 
     boolean estatJornada;
 
-    public Horario(Usuario usuario, int anioEntrada, int mesEntrada, int diaEntrada, int horaEntrada, int minutEntrada, int anioSalida, int mesSalida, int diaSalida, int horaSalida, int minutSalida, long totalMinutsTreballats) {
-        this.usuario = usuario;
-        this.anioEntrada = anioEntrada;
-        this.mesEntrada = mesEntrada;
-        this.diaEntrada = diaEntrada;
-        this.horaEntrada = horaEntrada;
-        this.minutEntrada = minutEntrada;
-        this.anioSalida = anioSalida;
-        this.mesSalida = mesSalida;
-        this.diaSalida = diaSalida;
-        this.horaSalida = horaSalida;
-        this.minutSalida = minutSalida;
-        this.totalMinutsTreballats = totalMinutsTreballats;
-    }
-
+    /**
+     * Constructor per defecte de Horari
+     */
     public Horario() {
         anioEntrada = -1;
         anioSalida = -1;

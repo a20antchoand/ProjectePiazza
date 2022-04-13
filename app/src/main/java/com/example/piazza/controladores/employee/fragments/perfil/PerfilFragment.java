@@ -141,7 +141,7 @@ public class PerfilFragment extends Fragment implements AuthUserSession{
 
         int originalSize = (onlyBoundsOptions.outHeight > onlyBoundsOptions.outWidth) ? onlyBoundsOptions.outHeight : onlyBoundsOptions.outWidth;
 
-        double ratio = (originalSize > 800) ? (originalSize / 800) : 1.0;
+        double ratio = (originalSize > 150) ? (originalSize / 150) : 1.0;
 
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
         bitmapOptions.inSampleSize = getPowerOfTwoForSampleRatio(ratio);

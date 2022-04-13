@@ -114,7 +114,8 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
             for (QueryDocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
                 if (documentSnapshot.getId().contains(userAuth.getUid())) {
                     Horario horario = documentSnapshot.toObject(Horario.class);
-                    listElements.add(bindDataElementHistorial(horario));
+                    if (horario.isEstatJornada())
+                        listElements.add(bindDataElementHistorial(horario));
                 }
             }
 

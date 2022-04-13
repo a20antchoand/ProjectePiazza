@@ -6,6 +6,10 @@ import android.widget.Button;
 
 public class changeStateButtons {
 
+    /**
+     * Oculta un buto de la interficie
+     * @param button
+     */
     public static void hideButton(Button button) {
 
         button.setEnabled(false);
@@ -13,6 +17,10 @@ public class changeStateButtons {
 
     }
 
+    /**
+     * Mostra un boto d ela interficie
+     * @param button
+     */
     public static void showButton(Button button) {
 
         button.setEnabled(true);
