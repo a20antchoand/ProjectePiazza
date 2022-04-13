@@ -70,66 +70,87 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
     public void setup () {
 
+        //Actualitzem el numero de document
         getMultipldeDocuments(query, this::updateDocumentNumber);
 
+        //agafem la referencia del document actual
         docRefHorari = DDBB.collection("horari").document(getCurrTimeGMT.zdt.getYear() + "_" + getCurrTimeGMT.zdt.getMonthValue() + "_" + getCurrTimeGMT.zdt.getDayOfMonth() +  "_" + userAuth.getUid() + "_" + numeroDocument);
-        System.out.println("INICI DOCUMENTS: " + docRefHorari.getId());
 
+        //iniciem variables
         iniciarJornadaBtn = binding.iniciarJornada;
         acabarJornadaBtn =binding.acabarJornada;
         benvinguda = binding.benvingudaIntoduirHores;
         butons = binding.butonsLayout;
         horarioUsuario = new Horario();
 
+        //donem la benvingua a l'usuari
         benvinguda.setText("Hola, " + userAuth.getNom().substring(0, 1).toUpperCase() + userAuth.getNom().substring(1));
 
+        //indiquem la funció del boto iniciarJornada
         binding.iniciarJornada.setOnClickListener(this::iniciarJornada);
 
+        //indiquem la funció del boto acabarJornada
         binding.acabarJornada.setOnClickListener(this::acabarJornada);
 
-        binding.downArrow.setOnClickListener(this::amagarButons);
+        //binding.downArrow.setOnClickListener(this::amagarButons);
 
+        //recuperem el registre de l'usuari actual
         RecuperarRegistroUsuariBBDD();
 
         //escoltarBBDD();
 
+        //calculem el temps total treballats durant el dia
         getMultipldeDocuments(query, this::totalMinutsDiaris);
 
-        FirebaseMessaging.getInstance().subscribeToTopic("40hores");
+        //FirebaseMessaging.getInstance().subscribeToTopic("40hores");
 
     }
 
     public void iniciarJornada (View view) {
 
+        //iniciem l'horari de l'usuari
         horarioUsuario = new Horario();
+        //indiquem l'usuari a l'horari
         horarioUsuario.setUsuario(userAuth);
 
+        //augmentem el numero de document en +1
         numeroDocument = numeroDocument + 1;
+        //agafem la referencia del document a treballar
         docRefHorari = DDBB.collection("horari").document(getCurrTimeGMT.zdt.getYear() + "_" + getCurrTimeGMT.zdt.getMonthValue() + "_" + getCurrTimeGMT.zdt.getDayOfMonth() +  "_" + userAuth.getUid() + "_" + numeroDocument);;
 
+        //agafem la data actual
         getFechaActual(true);
 
+        //guardem el registre a la BBDD
         GuardarRegistroBBDD();
 
+        //noifiquem a l'usuari de l'entrada a treballar
         Notificacio.Notificar(getContext(),"Piazza", "Has iniciat la teva Jornada.\nPodras parar-la en qualsevol moment donan-li al boto de parar.", 1);
 
+        //amagem e lboto d'inici i mostrem el d'acabar
         changeStateButtons.hideButton(iniciarJornadaBtn);
         changeStateButtons.showButton(acabarJornadaBtn);
 
+        //iniciem el handler que actualitzara el contador
         startRepeatingTask();
     }
 
     public void acabarJornada (View view) {
 
+        //indiquem que la jornada esta acabada
         horarioUsuario.setEstatJornada(true);
 
+        //cambiem els botons ocultant el d'acabar i mostrant el d'iniciar
         changeStateButtons.hideButton(acabarJornadaBtn);
         changeStateButtons.showButton(iniciarJornadaBtn);
 
+        //agafem la dada actual i guardem la informacio
         getFechaActual(false);
 
+        //notifiquem del final de la jornada
         Notificacio.Notificar(getContext(),"Piazza", "Has acabat la teva Jornada.\nEspero que descansis.\nHas fet un torn de: " + horarioUsuario.getTotalMinutsTreballats()/60 + "h " + horarioUsuario.getTotalMinutsTreballats()%60 + "m" , 1);
 
+        //parem el handler
         stopRepeatingTask();
     }
 
@@ -182,27 +203,31 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
     private void RecuperarRegistroUsuariBBDD() {
 
+        //query de documents que tenen la jornada iniciada
         Query queryRegistre = DDBB.collection("horari").whereEqualTo("estatJornada", false);
 
+        //validme el registre
         getMultipldeDocuments(queryRegistre, this::validarRegistres);
 
     }
 
-    private void validarRegistres(Task<QuerySnapshot> querySnapshotTask) {
+    private void validarRegistres(Task<QuerySnapshot> horarisDocuments) {
 
-        System.out.println("VALIDAR REGISTRE FOR DOCUMENTS: " + querySnapshotTask.getResult().size());
+        //si l'estat es successful
+        if (horarisDocuments.isSuccessful()) {
 
-        if (querySnapshotTask.isSuccessful()) {
+            //recorrem els documents
+            for (DocumentSnapshot horariDocument : horarisDocuments.getResult()) {
 
-            for (DocumentSnapshot d : querySnapshotTask.getResult()) {
+                //si el registre pertany a l'usuari
+                if (horariDocument.getId().contains(userAuth.getUid())) {
 
-                System.out.println("VALIDAR REGISTRE FOR id_doc: " + d.getId());
-                System.out.println("VALIDAR REGISTRE FOR ref_doc: " + d.getReference());
-
-                if (d.getId().contains(userAuth.getUid())) {
-                    docRefHorari = d.getReference();
-                    document = d;
-                    comprovarEntradaSortida(true);
+                    //modifiquem la referencia del document
+                    docRefHorari = horariDocument.getReference();
+                    //modifiquem el document
+                    document = horariDocument;
+                    //comprovem la entrada i sortida
+                    comprovarEntradaSortida();
                 }
 
             }
@@ -212,50 +237,38 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     }
 
 
-    private void validarRegistre(Task<DocumentSnapshot> documentSnapshotTask) {
-
-        if (documentSnapshotTask.isSuccessful()) {
-            document = documentSnapshotTask.getResult();
-
-            if (document.exists()) {
-
-                Log.d(TAG, "DocumentSnapshot data: " + document.getData() + " ID: " + document.getId());
-                comprovarEntradaSortida(true);
-            } else {
-
-                Log.d(TAG, "No such document");
-
-                changeTextTimeResultat(binding.totalTempsTreballat, 0, 0);
-            }
-        } else {
-            Log.d(TAG, "get failed with ", documentSnapshotTask.getException());
-        }
-
-    }
-
     private void GuardarRegistroBBDD() {
 
+        //tornem a guardar l'usuari
         horarioUsuario.setUsuario(userAuth);
 
+        //escribim el document a firestore
         writeOneDocument(docRefHorari, horarioUsuario);
 
+        //tornem a calcular el total de minuts treballats per rectificar les  dades.
         getMultipldeDocuments(query, this::totalMinutsDiaris);
 
     }
 
-    private void updateDocumentNumber(Task<QuerySnapshot> querySnapshotTask) {
+    private void updateDocumentNumber(Task<QuerySnapshot> horarisDocuments) {
 
         numeroDocument = 0;
 
-        if (querySnapshotTask.isSuccessful()) {
-            for (DocumentSnapshot d : querySnapshotTask.getResult().getDocuments()) {
+        //si el resultat es successful
+        if (horarisDocuments.isSuccessful()) {
 
-                Horario horarioTemp = d.toObject(Horario.class);
+            //recorrrem els horaris
+            for (DocumentSnapshot horariDocument : horarisDocuments.getResult().getDocuments()) {
 
-                if (d.getId().contains(userAuth.getUid()))
+                //creem l'objecte Horari del regsistre recuperat
+                Horario horarioTemp = horariDocument.toObject(Horario.class);
+
+                //Si el document pertany a l'usauri
+                if (horariDocument.getId().contains(userAuth.getUid()))
+                    //si dai d'entrada es igual al dia actual
                     if (horarioTemp.getDiaEntrada() == getCurrTimeGMT.zdt.getDayOfMonth()) {
+                        //augmentem el numero de document
                         numeroDocument++;
-                        System.out.println("DOUCMENT NUMBER UPDATE " + numeroDocument);
                     }
 
 
@@ -265,65 +278,65 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
     }
 
-    private void comprovarEntradaSortida(boolean exist) {
+    private void comprovarEntradaSortida() {
 
-        if (exist) {
+        //Creem l'objecte Horari del document recuperat
+        Horario horariTemp = document.toObject(Horario.class);
 
-           Horario horariTemp = document.toObject(Horario.class);
+        //Si l'horari te hora d'entrada
+        if (horariTemp.getHoraEntrada() != -1) {
 
-            System.out.println("HORARIO: " + horariTemp.getHoraEntrada());
+            //cargem les dades al historial global
+            horarioUsuario.setAnioEntrada(horariTemp.getAnioEntrada());
+            horarioUsuario.setMesEntrada(horariTemp.getMesEntrada());
+            horarioUsuario.setDiaEntrada(horariTemp.getDiaEntrada());
+            horarioUsuario.setHoraEntrada(horariTemp.getHoraEntrada());
+            horarioUsuario.setMinutEntrada(horariTemp.getMinutEntrada());
 
-            if (horariTemp.getHoraEntrada() != -1) {
+            //modifiquem els butons
+            changeStateButtons.hideButton(iniciarJornadaBtn);
+            changeStateButtons.showButton(acabarJornadaBtn);
 
-                horarioUsuario.setAnioEntrada(horariTemp.getAnioEntrada());
-                horarioUsuario.setMesEntrada(horariTemp.getMesEntrada());
-                horarioUsuario.setDiaEntrada(horariTemp.getDiaEntrada());
-                horarioUsuario.setHoraEntrada(horariTemp.getHoraEntrada());
-                horarioUsuario.setMinutEntrada(horariTemp.getMinutEntrada());
+            //si l'horari te hora d'entrada i la jornada esta acabada
+            if (horariTemp.getHoraEntrada() != -1 && horariTemp.isEstatJornada()) {
 
-                changeStateButtons.hideButton(iniciarJornadaBtn);
+                //cargem les dades al historial global
+                horarioUsuario.setAnioSalida(horariTemp.getAnioSalida());
+                horarioUsuario.setMesSalida(horariTemp.getMesSalida());
+                horarioUsuario.setDiaSalida(horariTemp.getDiaSalida());
+                horarioUsuario.setHoraSalida(horariTemp.getHoraSalida());
+                horarioUsuario.setMinutSalida(horariTemp.getMinutSalida());
+                horarioUsuario.setEstatJornada(true);
+
+                //parem el Handler
+                stopRepeatingTask();
+
+                //cambiem els butons
+                changeStateButtons.hideButton(acabarJornadaBtn);
+                changeStateButtons.showButton(iniciarJornadaBtn);
+
+                //calculem les hores totals
+                calcularHores();
+
+            //si te entrada i no sortida
+            } else {
+
+                //cambiem els butons
                 changeStateButtons.showButton(acabarJornadaBtn);
+                changeStateButtons.hideButton(iniciarJornadaBtn);
 
-                if (horariTemp.getHoraEntrada() != -1 && horariTemp.isEstatJornada()) {
-
-                    horarioUsuario.setAnioSalida(horariTemp.getAnioSalida());
-                    horarioUsuario.setMesSalida(horariTemp.getMesSalida());
-                    horarioUsuario.setDiaSalida(horariTemp.getDiaSalida());
-                    horarioUsuario.setHoraSalida(horariTemp.getHoraSalida());
-                    horarioUsuario.setMinutSalida(horariTemp.getMinutSalida());
-                    horarioUsuario.setEstatJornada(true);
-
-                    stopRepeatingTask();
-
-                    changeStateButtons.hideButton(acabarJornadaBtn);
-                    changeStateButtons.showButton(iniciarJornadaBtn);
-
-                    calcularHores();
-
-                } else {
-
-                    changeStateButtons.showButton(acabarJornadaBtn);
-                    changeStateButtons.hideButton(iniciarJornadaBtn);
-
-                    startRepeatingTask();
-
-                }
-
+                //iniciem el Handler
+                startRepeatingTask();
 
             }
-        } else {
-            changeStateButtons.showButton(iniciarJornadaBtn);
-            changeStateButtons.hideButton(acabarJornadaBtn);
-
-            changeTextTimeResultat(binding.totalTempsTreballat, 0, 0);
-
-            horarioUsuario = new Horario();
         }
+
 
     }
 
     public void getFechaActual(boolean entrada) {
 
+        //agafem l adata actual desde la api de worldtimeapi
         try {
             String stringTemps = new getCurrTimeGMT().execute().get();
             getCurrTimeGMT.zdt = getCurrTimeGMT.getZoneDateTime(stringTemps);
@@ -333,7 +346,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             e.printStackTrace();
         }
 
-
+        //si estem registrant l'entrada guardem les dades
         if (entrada) {
             horarioUsuario.setAnioEntrada(getCurrTimeGMT.zdt.getYear());
             horarioUsuario.setMesEntrada(getCurrTimeGMT.zdt.getMonthValue());
@@ -341,6 +354,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             horarioUsuario.setHoraEntrada(getCurrTimeGMT.zdt.getHour());
             horarioUsuario.setMinutEntrada(getCurrTimeGMT.zdt.getMinute());
 
+        //si no, guadrem les dades i calculem les hores totals
         } else {
             horarioUsuario.setAnioSalida(getCurrTimeGMT.zdt.getYear());
             horarioUsuario.setMesSalida(getCurrTimeGMT.zdt.getMonthValue());
@@ -348,6 +362,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             horarioUsuario.setHoraSalida(getCurrTimeGMT.zdt.getHour());
             horarioUsuario.setMinutSalida(getCurrTimeGMT.zdt.getMinute());
 
+            //calculem les hores
             calcularHores();
         }
 
@@ -364,38 +379,49 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
     private void calcularHores() {
 
+        //agafem la data d'entrada i la de sortida
         LocalDateTime entrada = formatarDateTime(horarioUsuario.getAnioEntrada(), horarioUsuario.getMesEntrada(), horarioUsuario.getDiaEntrada(), horarioUsuario.getHoraEntrada(), horarioUsuario.getMinutEntrada());
         LocalDateTime sortida = formatarDateTime(horarioUsuario.getAnioSalida(), horarioUsuario.getMesSalida(), horarioUsuario.getDiaSalida(), horarioUsuario.getHoraSalida(), horarioUsuario.getMinutSalida());
 
+        //calculem la diferencia entre entrada i sortida
         Duration diff = Duration.between(entrada, sortida);
 
+        //ho passem a minuts
         long diffMinuts = diff.toMinutes();
 
+        //afegim al horari el total de minuts treballats
         horarioUsuario.setTotalMinutsTreballats(diffMinuts);
 
+        //guardem registre a la BBDD
         GuardarRegistroBBDD();
 
 
 
     }
 
-    public void totalMinutsDiaris(Task<QuerySnapshot> querySnapshotTask) {
+    public void totalMinutsDiaris(Task<QuerySnapshot> horarisDocuments) {
 
-        if (querySnapshotTask.isSuccessful()) {
+        //si el resultat es successful
+        if (horarisDocuments.isSuccessful()) {
 
             int totalTempsTreballat = 0;
 
-            for (QueryDocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
-                if (documentSnapshot.getId().contains(userAuth.getUid())) {
-                    Horario horario = documentSnapshot.toObject(Horario.class);
+            //recuperem els documents individualment
+            for (QueryDocumentSnapshot historialDocument : horarisDocuments.getResult()) {
+                //si el document pertany a l'usuri
+                if (historialDocument.getId().contains(userAuth.getUid())) {
+                    //Creem l'objecte Horari del registre que hem recuperat
+                    Horario horario = historialDocument.toObject(Horario.class);
+                    //si el dia de entrada recuperat es el mateix que el dia actual
                     if (horario.getDiaEntrada() == getCurrTimeGMT.zdt.getDayOfMonth()) {
+                        //calculem el total de temps treballat
                         totalTempsTreballat += horario.getTotalMinutsTreballats();
-                        System.out.println(totalTempsTreballat);
                     }
 
                 }
             }
 
+            //mostrem el temps total
             changeTextTimeResultat(binding.totalTempsTreballat, totalTempsTreballat/60, totalTempsTreballat%60);
 
         } else {
@@ -408,8 +434,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
         LocalDateTime dataEntrada;
 
-        System.out.println("MES: " + mesEntrada);
-
+        //creem un LocalDateTime desde les dades recuperades
         dataEntrada = LocalDateTime.of(anioEntrada, mesEntrada, diaEntrada, horaEntrada, minutEntrada);
 
         return dataEntrada;
@@ -417,10 +442,9 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     }
 
     public void changeTextTimeResultat (TextView textView, long hora, long minut) {
-        if (minut < 10)
-            textView.setText(hora + "h 0" + minut + "m");
-        else
-            textView.setText(hora + "h " + minut + "m");
+
+        //formatem el text
+        textView.setText(String.format("%01dh %02dm",hora,minut));
     }
 
     Runnable mStatusChecker = new Runnable() {
@@ -430,7 +454,6 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                 updateStatus(); //this function can change value of mInterval.
             } catch (Exception e) {
                 e.printStackTrace();
-                System.out.println("ERROOOOOOR");
             }finally {
                 // 100% guarantee that this always happens, even if
                 // your update method throws an exception

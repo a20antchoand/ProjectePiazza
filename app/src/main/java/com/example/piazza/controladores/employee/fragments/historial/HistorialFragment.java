@@ -185,7 +185,7 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
         }
 
         //es mostra el total de temps treballat durant el mes
-        binding.tvTotalHores.setText(String.format("+%01d:%02d",totalTempsMes/60,totalTempsMes%60));
+        binding.tvTotalHores.setText(String.format("%01dh %02dm",totalTempsMes/60,totalTempsMes%60));
 
         //calculem el residu d'hores
         calcularResiduHores(totalTempsMes);
@@ -202,18 +202,18 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
         //mostrem en negatiu el residu d'hores.
         if (totalMinutsTreballar > totalTempsMes) {
             residu = totalMinutsTreballar - totalTempsMes;
-            binding.tvResiduHores.setText(String.format("-%01d:%02d",residu/60,residu%60));
+            binding.tvResiduHores.setText(String.format("-%01dh %02dm",residu/60,residu%60));
             binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.end_btn));
 
         //si els minuts a treballar son menors als minuts treballats
         //mostrem en positiu el residu d'hores.
         } else if (totalMinutsTreballar < totalTempsMes) {
             residu = totalTempsMes - totalMinutsTreballar;
-            binding.tvResiduHores.setText(String.format("+%01d:%02d",residu/60,residu%60));
+            binding.tvResiduHores.setText(String.format("+%01dh %02dm",residu/60,residu%60));
             binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.start_btn));
         //mostrem el residu a 00:00
         } else {
-            binding.tvResiduHores.setText("00:00");
+            binding.tvResiduHores.setText("0h 0m");
             binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.black));
         }
     }

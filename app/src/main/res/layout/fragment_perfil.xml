@@ -68,11 +68,12 @@
                         <EditText
                             android:id="@+id/email"
                             android:layout_width="match_parent"
-                            android:layout_height="40dp"
+                            android:layout_height="48dp"
                             android:background="@color/white"
                             android:ems="14"
                             android:inputType="textPersonName"
-                            android:singleLine="false" />
+                            android:singleLine="false"
+                            tools:ignore="SpeakableTextPresentCheck" />
 
                         <View
                             android:id="@+id/divider2"
@@ -91,10 +92,11 @@
                         <EditText
                             android:id="@+id/nom"
                             android:layout_width="match_parent"
-                            android:layout_height="40dp"
+                            android:layout_height="48dp"
                             android:background="@color/white"
                             android:ems="14"
-                            android:inputType="textPersonName" />
+                            android:inputType="textPersonName"
+                            tools:ignore="SpeakableTextPresentCheck" />
 
                         <View
                             android:id="@+id/divider3"
@@ -113,10 +115,11 @@
                         <EditText
                             android:id="@+id/cognom"
                             android:layout_width="match_parent"
-                            android:layout_height="40dp"
+                            android:layout_height="48dp"
                             android:background="@color/white"
                             android:ems="14"
-                            android:inputType="textPersonName" />
+                            android:inputType="textPersonName"
+                            tools:ignore="SpeakableTextPresentCheck" />
 
                         <View
                             android:id="@+id/divider4"
@@ -135,10 +138,11 @@
                         <EditText
                             android:id="@+id/telefon"
                             android:layout_width="match_parent"
-                            android:layout_height="40dp"
+                            android:layout_height="48dp"
                             android:background="@color/white"
                             android:ems="14"
-                            android:inputType="textPersonName" />
+                            android:inputType="textPersonName"
+                            tools:ignore="SpeakableTextPresentCheck" />
 
                         <View
                             android:id="@+id/divider5"
@@ -157,10 +161,11 @@
                         <EditText
                             android:id="@+id/horesMensuals"
                             android:layout_width="match_parent"
-                            android:layout_height="40dp"
+                            android:layout_height="48dp"
                             android:background="@color/white"
                             android:ems="14"
-                            android:inputType="textPersonName" />
+                            android:inputType="textPersonName"
+                            tools:ignore="SpeakableTextPresentCheck" />
 
                         <View
                             android:id="@+id/divider8"
@@ -179,10 +184,11 @@
                         <EditText
                             android:id="@+id/rol"
                             android:layout_width="match_parent"
-                            android:layout_height="40dp"
+                            android:layout_height="48dp"
                             android:background="@color/white"
                             android:ems="14"
-                            android:inputType="textPersonName" />
+                            android:inputType="textPersonName"
+                            tools:ignore="SpeakableTextPresentCheck" />
 
                     </LinearLayout>
                 </RelativeLayout>
