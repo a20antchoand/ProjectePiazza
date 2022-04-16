@@ -55,6 +55,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             .orderBy("diaEntrada", Query.Direction.DESCENDING);
 
     public static int numeroDocument = 0;
+    public static boolean finalJornadaNoti = false;
 
     private FragmentIntroduirHoresBinding binding;
 
@@ -464,9 +465,16 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
     private void updateStatus() {
 
-        System.out.println("docRef updateStatus: " + docRefHorari.getId());
-
         getFechaActual(false);
+
+        System.out.println(horarioUsuario.getTotalMinutsTreballats());
+
+        if (horarioUsuario.getTotalMinutsTreballats() == 180 && !finalJornadaNoti) {
+            Notificacio.Notificar(getContext(), "Portes 3 hores treballant", "Recorda marcar la sortida", 2);
+            finalJornadaNoti = true;
+        } if (horarioUsuario.getTotalMinutsTreballats() != 180) {
+            finalJornadaNoti = false;
+        }
 
     }
 
@@ -477,6 +485,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     void stopRepeatingTask() {
         HandlerIntroduirHores.removeCallbacks(mStatusChecker);
     }
+
 
     @Override
     public void onDestroy() {

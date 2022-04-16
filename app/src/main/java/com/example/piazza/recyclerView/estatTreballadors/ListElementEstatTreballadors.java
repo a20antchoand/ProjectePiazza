@@ -13,6 +13,7 @@ public class ListElementEstatTreballadors implements Serializable {
     String nom;
     String hores;
     String estat;
+    String uid;
 
     /** Classe constructora per els elements de la recycler view amb la informació del estat
      * de les hores dels treballadors.
@@ -22,11 +23,12 @@ public class ListElementEstatTreballadors implements Serializable {
      * @param hores hores que ha introduit
      * @param estat estat en el que es troba
      */
-    public ListElementEstatTreballadors(String color, String nom, String hores, String estat) {
+    public ListElementEstatTreballadors(String color, String nom, String hores, String estat, String uid) {
         this.color = color;
         this.nom = nom;
         this.hores = hores;
         this.estat = estat;
+        this.uid = uid;
     }
 
     /**

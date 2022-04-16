@@ -19,10 +19,7 @@ import com.example.piazza.recyclerView.treballadors.ListAdapterTreballadors;
 import com.example.piazza.recyclerView.treballadors.ListElementTreballadors;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentTreballadorsBinding;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -66,7 +63,7 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
                 Usuario usuari = documentSnapshot.toObject(Usuario.class);
 
                 if (!usuari.getRol().equals("admin"))
-                    listElements.add(addListElementHistorial(usuari));
+                    listElements.add(addListElementTreballadors(usuari));
 
             }
 
@@ -77,35 +74,24 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
         }
 
 
-        ListAdapterTreballadors listAdapter = new ListAdapterTreballadors(listElements, root.getContext(), new ListAdapterTreballadors.onItemClickListener() {
-            @Override
-            public void onItemClickListener(ListElementTreballadors item) throws FirebaseAuthException {
+        ListAdapterTreballadors listAdapter = new ListAdapterTreballadors(listElements, root.getContext(), item -> {
 
-                Map<String, Object> data = new HashMap<>();
+            Map<String, Object> data = new HashMap<>();
 
-                DDBB.collection("usuaris").document(item.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if (documentSnapshot.getString("rol").equals("despedit")) {
-                            data.put("rol", "treballador");
-                        } else {
-                            data.put("rol", "despedit");
-                        }
+            DDBB.collection("usuaris").document(item.getUid()).get().addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.getString("rol").equals("despedit")) {
+                    data.put("rol", "treballador");
+                } else {
+                    data.put("rol", "despedit");
+                }
 
-                        DDBB.collection("usuaris").document(item.getUid())
-                                .set(data, SetOptions.merge());
+                DDBB.collection("usuaris").document(item.getUid())
+                        .set(data, SetOptions.merge());
 
-                        listElements.clear();
-                        setup();
-                    }
-                });
+                listElements.clear();
+                setup();
+            });
 
-
-
-
-
-
-            }
         });
         RecyclerView recyclerView = root.findViewById(R.id.recyclerViewTreballadors);
         recyclerView.setHasFixedSize(true);
@@ -114,7 +100,7 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
 
     }
 
-    private ListElementTreballadors addListElementHistorial(Usuario usuario) {
+    private ListElementTreballadors addListElementTreballadors(Usuario usuario) {
 
         String color = "#123456";
         String nom = usuario.getNom();

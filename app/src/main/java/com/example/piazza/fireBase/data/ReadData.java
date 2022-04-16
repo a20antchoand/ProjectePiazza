@@ -44,12 +44,12 @@ public interface ReadData {
 
     }
 
-/*    default void getListenerDocument(Query docRef, EventListener<QuerySnapshot> action) {
+    default void getListenerDocument(Query docRef, EventListener<QuerySnapshot> action) {
 
         docRef.
                 addSnapshotListener(action);
 
-    }*/
+    }
 
 
     /**
