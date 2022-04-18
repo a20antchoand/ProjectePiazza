@@ -39,6 +39,7 @@ public interface AuthUserSession {
      */
     default void GuardarUsuarioBBDD(Usuario usuario) {
 
+        System.out.println("nom: " + usuario.getNom());
 
         DDBB.collection("usuaris").document(Objects.requireNonNull(usuario.getUid()))
                 .set(usuario);

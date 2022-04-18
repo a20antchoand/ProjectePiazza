@@ -54,7 +54,7 @@
                             android:layout_height="48dp"
                             android:background="@color/white"
                             android:ems="14"
-                            android:inputType="textPersonName"
+                            android:inputType="textEmailAddress"
                             android:singleLine="false"
                             tools:ignore="SpeakableTextPresentCheck" />
 
@@ -124,7 +124,7 @@
                             android:layout_height="48dp"
                             android:background="@color/white"
                             android:ems="14"
-                            android:inputType="textPersonName"
+                            android:inputType="number"
                             tools:ignore="SpeakableTextPresentCheck" />
 
                         <View
@@ -147,7 +147,7 @@
                             android:layout_height="48dp"
                             android:background="@color/white"
                             android:ems="14"
-                            android:inputType="textPersonName"
+                            android:inputType="number"
                             tools:ignore="SpeakableTextPresentCheck" />
 
                         <View

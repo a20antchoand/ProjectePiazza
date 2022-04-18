@@ -27,7 +27,8 @@
             app:layout_constraintBottom_toTopOf="@+id/cardView2"
             app:layout_constraintEnd_toEndOf="@+id/cardView2"
             app:layout_constraintStart_toStartOf="@+id/cardView2"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="gone" />
 
         <TextView
             android:id="@+id/textView6"
@@ -39,7 +40,8 @@
             app:layout_constraintBottom_toTopOf="@+id/cardView"
             app:layout_constraintEnd_toEndOf="@+id/cardView"
             app:layout_constraintStart_toStartOf="@+id/cardView"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="gone" />
 
         <TextView
             android:id="@+id/textView7"
@@ -51,7 +53,8 @@
             app:layout_constraintBottom_toTopOf="@+id/horesTreballadesTotal"
             app:layout_constraintEnd_toEndOf="@+id/horesTreballadesTotal"
             app:layout_constraintStart_toStartOf="@+id/horesTreballadesTotal"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="gone" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView2"

@@ -108,10 +108,6 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
                     //agafem la refere
                     cargarDatosUsuario(docRefUsuari, this::setUserAuth);
 
-                    //agafem la referencia als horaris
-                    Query query = DDBB.collection("horari");
-                    //Recuperem tots els documents i a ctualitzem el numero de document (numero que utilitzarem per la gestió dels torns)
-                    getMultipldeDocuments(query, this::setNumeroDocument);
 
                 }
 
@@ -127,6 +123,11 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
                 //Cargem la informació que recuperem de firebase i guardem la informació a la variable estatica que utilitzarem durant
                 //tot el transcurs de la app. Li enviem a la funcio un objecte usuari creantlo directament desde firebase.
                 guardarDatosGlobalesJugador(userDocument.getResult().toObject(Usuario.class));
+
+                //agafem la referencia als horaris
+                Query query = DDBB.collection("horari");
+                //Recuperem tots els documents i a ctualitzem el numero de document (numero que utilitzarem per la gestió dels torns)
+                getMultipldeDocuments(query, this::setNumeroDocument);
 
             }
 

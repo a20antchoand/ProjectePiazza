@@ -469,10 +469,13 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
         System.out.println(horarioUsuario.getTotalMinutsTreballats());
 
-        if (horarioUsuario.getTotalMinutsTreballats() == 180 && !finalJornadaNoti) {
+        if (horarioUsuario.getTotalMinutsTreballats() == 2 && !finalJornadaNoti) {
+
+            System.out.println(horarioUsuario.getTotalMinutsTreballats());
+
             Notificacio.Notificar(getContext(), "Portes 3 hores treballant", "Recorda marcar la sortida", 2);
             finalJornadaNoti = true;
-        } if (horarioUsuario.getTotalMinutsTreballats() != 180) {
+        } if (horarioUsuario.getTotalMinutsTreballats() != 2) {
             finalJornadaNoti = false;
         }
 

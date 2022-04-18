@@ -4,18 +4,15 @@
     <item
         android:id="@+id/navigation_introduir_hores"
         android:icon="@drawable/icons8_home_32"
-        android:iconTint="@color/black"
         android:title="@string/title_introduir_hores" />
     <item
         android:id="@+id/navigation_historial"
         android:icon="@drawable/icons8_schedule_24"
-        android:iconTint="@color/black"
         android:title="@string/title_historial" />
 
     <item
         android:id="@+id/navigation_perfil"
         android:icon="@drawable/icons8_male_user_32"
-        android:iconTint="@color/black"
         android:title="@string/title_perfil" />
 
 </menu>

@@ -37,8 +37,9 @@ public class AdminActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayUseLogoEnabled(true);
 
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_inici, R.id.navigation_treballadors, R.id.navigation_administrar)
+                R.id.navigation_inici, R.id.navigation_treballadors, R.id.navigation_administrar, R.id.navigation_reports)
                 .build();
+
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_admin);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
@@ -65,8 +66,7 @@ public class AdminActivity extends AppCompatActivity {
 
     public void logOut() {
         FirebaseAuth.getInstance().signOut();
-        Intent intent = new Intent(this, AuthActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(this, AuthActivity.class));
         finish();
     }
 

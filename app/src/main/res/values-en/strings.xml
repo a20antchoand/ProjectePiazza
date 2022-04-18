@@ -41,6 +41,8 @@
     <string name="cognom_perfil">SECOND NAME</string>
     <string name="telefon_perfil">PHONE</string>
     <string name="rol_perfil">ROL</string>
+    <string name="horesMensuals_perfil">HORES MENSUALS</string>
+
 
     <string name="spn_title">Rol</string>
 

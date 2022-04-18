@@ -103,7 +103,7 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
     private ListElementTreballadors addListElementTreballadors(Usuario usuario) {
 
         String color = "#123456";
-        String nom = usuario.getNom();
+        String nom = usuario.getNom().substring(0, 1).toUpperCase() + usuario.getNom().substring(1);
         String hores = usuario.getTelefono();
         String sou = usuario.getRol();
         String uid = usuario.getUid();

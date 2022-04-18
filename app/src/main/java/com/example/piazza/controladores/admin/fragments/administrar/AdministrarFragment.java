@@ -49,11 +49,11 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
         binding.alta.setOnClickListener(view -> {
 
             String email = binding.email.getText().toString();
-            String nom = binding.email.getText().toString();
-            String cognom = binding.email.getText().toString();
-            String telefon = binding.email.getText().toString();
+            String nom = binding.nom.getText().toString();
+            String cognom = binding.cognom.getText().toString();
+            String telefon = binding.telefon.getText().toString();
             String rol = binding.spn2.getSelectedItem().toString();
-            String horesMensuals = binding.email.getText().toString();
+            String horesMensuals = binding.horesMensuals.getText().toString();
             String urlPerfil = "";
 
             if (email.equals("") || nom.equals("") || nom.equals("") || nom.equals("") || nom.equals("") || nom.equals("") || nom.equals("")) {
@@ -85,6 +85,13 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
                                 GuardarUsuarioBBDD(new Usuario(task.getResult().getUser().getUid(), email, nom, cognom, telefon, rol, horesMensuals, urlPerfil));
 
                                 mAuth2.signOut();
+
+                                binding.email.setText("");
+                                binding.nom.setText("");
+                                binding.cognom.setText("");
+                                binding.telefon.setText("");
+                                binding.horesMensuals.setText("");
+
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());

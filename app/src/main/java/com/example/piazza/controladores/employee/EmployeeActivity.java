@@ -42,7 +42,6 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
         setTheme(R.style.Theme_TestAuth);
 
         binding = ActivityEmployeeBinding.inflate(getLayoutInflater());
-
         setContentView(binding.getRoot());
 
         setSupportActionBar(findViewById(R.id.my_toolbar));
@@ -52,6 +51,7 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_introduir_hores, R.id.navigation_historial, R.id.navigation_perfil)
                 .build();
+
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
@@ -62,7 +62,6 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.ajustes_menu, menu);
-
         return true;
     }
 
