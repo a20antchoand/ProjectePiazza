@@ -18,51 +18,51 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/tvMensuals"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:text="MENSUALS"
-            app:layout_constraintBottom_toTopOf="@+id/cardView2"
-            app:layout_constraintEnd_toEndOf="@+id/cardView2"
-            app:layout_constraintStart_toStartOf="@+id/cardView2"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="gone" />
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/cvHoresMensuals"
+            app:layout_constraintEnd_toEndOf="@+id/cvHoresMensuals"
+            app:layout_constraintStart_toStartOf="@+id/cvHoresMensuals"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/tvExtres"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:text="RESIDU"
-            app:layout_constraintBottom_toTopOf="@+id/cardView"
-            app:layout_constraintEnd_toEndOf="@+id/cardView"
-            app:layout_constraintStart_toStartOf="@+id/cardView"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="gone" />
+            android:text="EXTRES"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/cvResidu"
+            app:layout_constraintEnd_toEndOf="@+id/cvResidu"
+            app:layout_constraintStart_toStartOf="@+id/cvResidu"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView7"
+            android:id="@+id/tvTreballades"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:text="TREBALLADES"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/horesTreballadesTotal"
             app:layout_constraintEnd_toEndOf="@+id/horesTreballadesTotal"
             app:layout_constraintStart_toStartOf="@+id/horesTreballadesTotal"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="gone" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView2"
+            android:id="@+id/cvHoresMensuals"
             android:layout_width="100dp"
             android:layout_height="50dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/horesTreballadesTotal"
             app:layout_constraintStart_toStartOf="parent"
@@ -75,17 +75,18 @@
                 android:gravity="center"
                 android:textColor="#000000"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView"
+            android:id="@+id/cvResidu"
             android:layout_width="100dp"
             android:layout_height="50dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:elevation="10dp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/horesTreballadesTotal"
@@ -98,7 +99,8 @@
                 android:gravity="center"
                 android:textColor="#000000"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
@@ -108,7 +110,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:elevation="10dp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -121,7 +123,8 @@
                 android:gravity="center"
                 android:textColor="#000000"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
         </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

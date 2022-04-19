@@ -130,7 +130,7 @@ public class PerfilFragment extends Fragment implements AuthUserSession{
 
     }
 
-    public Bitmap getThumbnail(Uri uri) throws FileNotFoundException, IOException {
+    public Bitmap getThumbnail(Uri uri) throws IOException {
         InputStream input = getContext().getContentResolver().openInputStream(uri);
 
         BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options();

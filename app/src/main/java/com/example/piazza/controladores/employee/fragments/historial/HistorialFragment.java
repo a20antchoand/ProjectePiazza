@@ -115,8 +115,11 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
         binding.titolHistorial.setVisibility(View.GONE);
         binding.imatgeHistorial.setVisibility(View.GONE);
         binding.recyclerViewHistorial.setVisibility(View.VISIBLE);
-        binding.cardView.setVisibility(View.VISIBLE);
-        binding.cardView2.setVisibility(View.VISIBLE);
+        binding.tvHoresMensuals.setVisibility(View.VISIBLE);
+        binding.tvResiduHores.setVisibility(View.VISIBLE);
+        binding.tvTotalHores.setVisibility(View.VISIBLE);
+        binding.cvResidu.setVisibility(View.VISIBLE);
+        binding.cvHoresMensuals.setVisibility(View.VISIBLE);
         binding.horesTreballadesTotal.setVisibility(View.VISIBLE);
 
         //Creem l'adaptador de la recyclerview
@@ -138,8 +141,11 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
         binding.titolHistorial.setVisibility(View.VISIBLE);
         binding.imatgeHistorial.setVisibility(View.VISIBLE);
         binding.recyclerViewHistorial.setVisibility(View.GONE);
-        binding.cardView.setVisibility(View.GONE);
-        binding.cardView2.setVisibility(View.GONE);
+        binding.tvHoresMensuals.setVisibility(View.GONE);
+        binding.tvResiduHores.setVisibility(View.GONE);
+        binding.tvTotalHores.setVisibility(View.GONE);
+        binding.cvHoresMensuals.setVisibility(View.GONE);
+        binding.cvResidu.setVisibility(View.GONE);
         binding.horesTreballadesTotal.setVisibility(View.GONE);
 
     }

@@ -58,14 +58,13 @@
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/drawable/start_button_pressed.xml" value="0.3769230769230769" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/drawable/start_effect.xml" value="0.3769230769230769" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/activity_admin.xml" value="0.1828125" />
-        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/activity_auth.xml" value="0.33" />
+        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/activity_auth.xml" value="0.1" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/activity_employee.xml" value="0.22" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/activity_piazza_home.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/fragment_administrar.xml" value="0.21713147410358566" />
-        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/fragment_historial.xml" value="0.5" />
+        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/fragment_administrar.xml" value="0.2296875" />
+        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/fragment_historial.xml" value="0.22083333333333333" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/fragment_introduir_hores.xml" value="0.42803030303030304" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/fragment_perfil.xml" value="0.33" />
-        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/fragment_reports.xml" value="0.16614583333333333" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/fragment_treballadors.xml" value="0.1" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/fragment_validar.xml" value="0.2296875" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/list_element.xml" value="0.1" />
@@ -75,12 +74,11 @@
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/splashscreen.xml" value="0.17831813576494426" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/toolbar.xml" value="0.1" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/menu/ajustes_menu.xml" value="0.1" />
-        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/menu/bottom_nav_menu.xml" value="0.1" />
+        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/menu/bottom_nav_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/menu/bottom_nav_menu_employee.xml" value="0.22" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/menu/toolbar_test.xml" value="0.1" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.3828125" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.19427083333333334" />
-        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/mipmap-anydpi-v26/imatge_butons.xml" value="0.17592592592592593" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/mipmap-anydpi-v26/imatge_butons_round.xml" value="0.3769230769230769" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/TestAuth/app/src/main/res/layout/activity_auth.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/TestAuth/app/src/main/res/layout/activity_home.xml" value="0.3453125" />
@@ -100,6 +98,9 @@
         <entry key="..\:/Users/Toni/AndroidStudioProjects/TestAuth/app/src/main/res/mipmap-anydpi-v26/Piazza_round.xml" value="0.221875" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/TestAuth/app/src/main/res/mipmap-mdpi/ic_launcher.xml" value="0.1935185185185185" />
         <entry key="app/src/main/res/drawable/edit_text_bg.xml" value="0.19427083333333334" />
+        <entry key="app/src/main/res/layout/activity_auth.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/fragment_historial.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_introduir_hores.xml" value="0.3287981859410431" />
       </map>
     </option>
   </component>

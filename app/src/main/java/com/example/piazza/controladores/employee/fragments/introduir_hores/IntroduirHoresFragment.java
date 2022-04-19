@@ -28,7 +28,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -469,14 +468,11 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
         System.out.println(horarioUsuario.getTotalMinutsTreballats());
 
-        if (horarioUsuario.getTotalMinutsTreballats() == 2 && !finalJornadaNoti) {
+        if (horarioUsuario.getTotalMinutsTreballats() == 2 ) {
 
             System.out.println(horarioUsuario.getTotalMinutsTreballats());
 
             Notificacio.Notificar(getContext(), "Portes 3 hores treballant", "Recorda marcar la sortida", 2);
-            finalJornadaNoti = true;
-        } if (horarioUsuario.getTotalMinutsTreballats() != 2) {
-            finalJornadaNoti = false;
         }
 
     }
