@@ -3,12 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_inici">
-
-    <fragment
-        android:id="@+id/navigation_inici"
-        android:name="com.example.piazza.controladores.admin.fragments.validar.ValidarFragment"
-        tools:layout="@layout/fragment_validar" />
+    app:startDestination="@+id/navigation_treballadors">
 
     <fragment
         android:id="@+id/navigation_treballadors"

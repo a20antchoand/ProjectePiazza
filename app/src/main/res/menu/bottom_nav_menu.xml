@@ -2,11 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_inici"
-        android:icon="@drawable/ic_baseline_more_time_24"
-        android:title="@string/title_inici" />
-
-    <item
         android:id="@+id/navigation_treballadors"
         android:icon="@drawable/ic_baseline_supervised_user_circle_24"
         android:title="@string/title_treballadors" />

@@ -1,5 +1,7 @@
 package com.example.piazza.controladores.admin.fragments.treballdors;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +26,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,36 +66,17 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
                 Usuario usuari = documentSnapshot.toObject(Usuario.class);
 
                 if (!usuari.getRol().equals("admin"))
-                    listElements.add(addListElementTreballadors(usuari));
+                    addListElementTreballadors(usuari);
 
             }
 
-            System.out.println("Elements actualitzats");
+            System.out.println("Elements actualitzats " + listElements.size());
 
         } else {
             Log.d(TAG, "Error al recuperar varios documentos.");
         }
 
-
-        ListAdapterTreballadors listAdapter = new ListAdapterTreballadors(listElements, root.getContext(), item -> {
-
-            Map<String, Object> data = new HashMap<>();
-
-            DDBB.collection("usuaris").document(item.getUid()).get().addOnSuccessListener(documentSnapshot -> {
-                if (documentSnapshot.getString("rol").equals("despedit")) {
-                    data.put("rol", "treballador");
-                } else {
-                    data.put("rol", "despedit");
-                }
-
-                DDBB.collection("usuaris").document(item.getUid())
-                        .set(data, SetOptions.merge());
-
-                listElements.clear();
-                setup();
-            });
-
-        });
+        ListAdapterTreballadors listAdapter = new ListAdapterTreballadors(listElements, root.getContext(), this::showName);
         RecyclerView recyclerView = root.findViewById(R.id.recyclerViewTreballadors);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
@@ -100,26 +84,21 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
 
     }
 
-    private ListElementTreballadors addListElementTreballadors(Usuario usuario) {
+    private void addListElementTreballadors(Usuario usuario) {
 
-        String color = "#123456";
         String nom = usuario.getNom().substring(0, 1).toUpperCase() + usuario.getNom().substring(1);
-        String hores = usuario.getTelefono();
-        String sou = usuario.getRol();
+        String cognom = usuario.getCognom();
         String uid = usuario.getUid();
-
-        return new ListElementTreballadors(
-                color,
+        listElements.add(new ListElementTreballadors(
                 nom ,
-                hores,
-                sou,
-                uid);
+                cognom,
+                uid));
 
     }
 
     private void showName(ListElementTreballadors item) {
 
-        Toast.makeText(root.getContext(), "Empleat:  " + item.getNom(), Toast.LENGTH_LONG).show();
+        Toast.makeText(root.getContext(), "Empleat:  " + item.getNom(), Toast.LENGTH_SHORT).show();
 
     }
 

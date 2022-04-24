@@ -1,29 +1,19 @@
 package com.example.piazza.recyclerView.treballadors;
 
+import android.graphics.Bitmap;
+
 import java.io.Serializable;
 
 public class ListElementTreballadors implements Serializable {
 
     String uid;
-    String color;
     String nom;
-    String hores;
-    String sou;
+    String cognom;
 
-    public ListElementTreballadors(String color, String nom, String hores, String sou, String uid) {
-        this.color = color;
+    public ListElementTreballadors(String nom, String cognom, String uid) {
         this.nom = nom;
-        this.hores = hores;
-        this.sou = sou;
+        this.cognom = cognom;
         this.uid = uid;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
     }
 
     public String getNom() {
@@ -34,20 +24,12 @@ public class ListElementTreballadors implements Serializable {
         this.nom = nom;
     }
 
-    public String getHores() {
-        return hores;
+    public String getCognom() {
+        return cognom;
     }
 
-    public void setHores(String hores) {
-        this.hores = hores;
-    }
-
-    public String getSou() {
-        return sou;
-    }
-
-    public void setSou(String sou) {
-        this.sou = sou;
+    public void setCognom(String cognom) {
+        this.cognom = cognom;
     }
 
     public String getUid() {
@@ -57,4 +39,5 @@ public class ListElementTreballadors implements Serializable {
     public void setUid(String uid) {
         this.uid = uid;
     }
+
 }

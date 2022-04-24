@@ -12,12 +12,13 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
 import com.google.firebase.auth.FirebaseAuthException;
 
 import java.util.List;
 
-public class ListAdapterTreballadors extends RecyclerView.Adapter<ListAdapterTreballadors.ViewHolder> {
+public class ListAdapterTreballadors extends RecyclerView.Adapter<ListAdapterTreballadors.ViewHolder> implements AuthUserSession {
 
     private List<ListElementTreballadors> mData;
     private LayoutInflater mInflater;
@@ -57,23 +58,16 @@ public class ListAdapterTreballadors extends RecyclerView.Adapter<ListAdapterTre
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView iconImage;
-        TextView nom, hores, sou;
-        CardView cv;
+        TextView nom;
 
         ViewHolder(View itemView) {
             super(itemView);
             iconImage = itemView.findViewById(R.id.iconImageView);
-            nom = itemView.findViewById(R.id.nomTextView);
-            hores = itemView.findViewById(R.id.horesMensualsTextView);
-            sou = itemView.findViewById(R.id.souTextView);
-            cv = itemView.findViewById(R.id.cv);
+            nom = itemView.findViewById(R.id.nom);
         }
 
         void bindData (final ListElementTreballadors item) {
-            iconImage.setColorFilter(Color.parseColor(item.getColor()), PorterDuff.Mode.SRC_IN);
-            nom.setText(item.getNom());
-            hores.setText(item.getHores());
-            sou.setText(item.getSou());
+            nom.setText(item.getNom() + " " + item.getCognom());
             itemView.setOnClickListener(view -> {
                 try {
                     listener.onItemClickListener(item);

@@ -84,7 +84,6 @@ public class ListAdapterEstatTreballadors extends RecyclerView.Adapter<ListAdapt
         }
 
         void bindData (final ListElementEstatTreballadors item) {
-            iconImage.setColorFilter(Color.parseColor(item.getColor()), PorterDuff.Mode.SRC_IN);
             nom.setText(item.getNom());
             hores.setText(item.getHores());
             estat.setText(item.getEstat());
