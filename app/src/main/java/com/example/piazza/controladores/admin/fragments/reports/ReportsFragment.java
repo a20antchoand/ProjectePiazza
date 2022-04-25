@@ -69,8 +69,9 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
     private void setup() {
 
-        getMultipldeDocuments(DDBB.collection("usuaris"), this::obtenerUsuarios);
+        pedirPermisos();
 
+        getMultipldeDocuments(DDBB.collection("usuaris"), this::obtenerUsuarios);
 
         binding.button.setOnClickListener(l -> getMultipldeDocuments(DDBB.collection("horari"), this::exportarCSV));
 
@@ -124,13 +125,10 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
     private void exportarCSV(Task<QuerySnapshot> querySnapshotTask) {
 
-        pedirPermisos();
-
         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File file = new File(path.getPath(), "Report_" + getCurrTimeGMT.zdt.getDayOfMonth() + "_" + getCurrTimeGMT.zdt.getMonthValue() + "_" + getCurrTimeGMT.zdt.getYear() + "-" + Calendar.getInstance().getTime().getMinutes() + "_" + Calendar.getInstance().getTime().getSeconds() + ".csv");
 
-        System.out.println(path.toString());
-
-        File file = new File(path, "Report_" + getCurrTimeGMT.zdt.getDayOfMonth() + "_" + getCurrTimeGMT.zdt.getMonthValue() + "_" + getCurrTimeGMT.zdt.getYear() + ".csv");
+        System.out.println(file.exists() + "  " + file.toString());
 
         path.mkdir();
 

@@ -76,7 +76,7 @@
                 android:textColor="#000000"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:visibility="gone" />
+                android:visibility="visible" />
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
@@ -100,7 +100,7 @@
                 android:textColor="#000000"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:visibility="gone" />
+                android:visibility="visible" />
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
@@ -124,7 +124,7 @@
                 android:textColor="#000000"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:visibility="gone" />
+                android:visibility="visible" />
         </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

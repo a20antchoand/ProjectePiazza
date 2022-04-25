@@ -94,4 +94,12 @@ public class ListElementEstatTreballadors implements Serializable {
     public void setEstat(String estat) {
         this.estat = estat;
     }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
 }
