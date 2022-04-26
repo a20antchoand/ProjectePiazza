@@ -106,5 +106,6 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        listElements.clear();
     }
 }

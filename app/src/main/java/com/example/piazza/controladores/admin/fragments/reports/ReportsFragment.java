@@ -18,6 +18,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.piazza.classes.Horario;
@@ -29,6 +31,7 @@ import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.data.WriteData;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.BuildConfig;
+import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentReportsBinding;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
@@ -51,8 +54,10 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
     private FragmentReportsBinding binding;
     private View root;
+    ArrayAdapter<String> dataAdapter;
 
     List<Usuario> listaUsuarios = new ArrayList<>();
+    List<String> noms = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,6 +76,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
         pedirPermisos();
 
+        // Application of the Array to the Spinner
         getMultipldeDocuments(DDBB.collection("usuaris"), this::obtenerUsuarios);
 
         binding.button.setOnClickListener(l -> getMultipldeDocuments(DDBB.collection("horari"), this::exportarCSV));
@@ -107,16 +113,22 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
         listaUsuarios.clear();
 
-
         if (querySnapshotTask.isSuccessful()) {
 
             for (DocumentSnapshot document : querySnapshotTask.getResult().getDocuments()) {
 
                 Usuario temp = document.toObject(Usuario.class);
 
-                listaUsuarios.add(temp);
+                if (temp.getRol() != "admin" && temp.getNom() != null) {
+                    listaUsuarios.add(temp);
+                    noms.add(temp.getNom());
+                }
 
             }
+
+            ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getActivity(),   android.R.layout.simple_spinner_item, noms.stream().toArray(String[]::new));
+            spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
+            binding.spnTreballador.setAdapter(spinnerArrayAdapter);
 
         }
 
@@ -135,11 +147,11 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         try {
             FileWriter fileWriter = new FileWriter(file);
 
-            fileWriter.append("NOM, ENTRADA, SORTIDA, TOTAL\n\n");
+            fileWriter.append("NOM, DATA, ENTRADA, SORTIDA, TOTAL\n\n");
 
             for (Usuario usuari : listaUsuarios) {
 
-                if (usuari.getRol().equals("treballador")) {
+                if (usuari.getRol().equals("treballador") && usuari.getNom().equals(binding.spnTreballador.getSelectedItem().toString())) {
 
                     for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult().getDocuments()) {
 
@@ -151,9 +163,11 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
                             fileWriter.append(usuari.getNom());
                             fileWriter.append(",");
-                            fileWriter.append(horario.getHoraEntrada() + ":" + horario.getMinutEntrada());
+                            fileWriter.append(horario.getDiaEntrada() + "/" + horario.getMesEntrada() + "/" + horario.getAnioEntrada());
                             fileWriter.append(",");
-                            fileWriter.append(horario.getHoraSalida() + ":" + horario.getMinutSalida());
+                            fileWriter.append(horario.getHoraEntrada() + ":" + String.format("%02d",horario.getMinutEntrada()));
+                            fileWriter.append(",");
+                            fileWriter.append(horario.getHoraSalida() + ":" + String.format("%02d",horario.getMinutSalida()));
                             fileWriter.append(",");
                             fileWriter.append(horario.getTotalMinutsTreballats() + "");
                             fileWriter.append("\n");
