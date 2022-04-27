@@ -118,6 +118,9 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
         binding.tvHoresMensuals.setVisibility(View.VISIBLE);
         binding.tvResiduHores.setVisibility(View.VISIBLE);
         binding.tvTotalHores.setVisibility(View.VISIBLE);
+        binding.tvMensuals.setVisibility(View.VISIBLE);
+        binding.tvExtres.setVisibility(View.VISIBLE);
+        binding.tvTreballades.setVisibility(View.VISIBLE);
         binding.cvResidu.setVisibility(View.VISIBLE);
         binding.cvHoresMensuals.setVisibility(View.VISIBLE);
         binding.horesTreballadesTotal.setVisibility(View.VISIBLE);
@@ -144,6 +147,9 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
         binding.tvHoresMensuals.setVisibility(View.GONE);
         binding.tvResiduHores.setVisibility(View.GONE);
         binding.tvTotalHores.setVisibility(View.GONE);
+        binding.tvMensuals.setVisibility(View.GONE);
+        binding.tvExtres.setVisibility(View.GONE);
+        binding.tvTreballades.setVisibility(View.GONE);
         binding.cvHoresMensuals.setVisibility(View.GONE);
         binding.cvResidu.setVisibility(View.GONE);
         binding.horesTreballadesTotal.setVisibility(View.GONE);

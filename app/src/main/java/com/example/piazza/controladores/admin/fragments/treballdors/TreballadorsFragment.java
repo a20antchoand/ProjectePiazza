@@ -96,9 +96,13 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
 
     }
 
-    private void showName(ListElementTreballadors item) {
+    private void showName(ListElementTreballadors item, View itemview) {
 
         Toast.makeText(root.getContext(), "Empleat:  " + item.getNom(), Toast.LENGTH_SHORT).show();
+
+        System.out.println(itemview.findViewById(R.id.constraint_table).getVisibility() + " " + View.VISIBLE);
+
+
 
     }
 

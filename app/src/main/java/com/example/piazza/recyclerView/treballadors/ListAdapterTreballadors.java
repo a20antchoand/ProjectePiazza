@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.view.menu.MenuView;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,7 +27,7 @@ public class ListAdapterTreballadors extends RecyclerView.Adapter<ListAdapterTre
     final onItemClickListener listener;
 
     public interface onItemClickListener {
-        void onItemClickListener(ListElementTreballadors item) throws FirebaseAuthException;
+        void onItemClickListener(ListElementTreballadors item, View itemview) throws FirebaseAuthException;
     }
 
     public ListAdapterTreballadors(List<ListElementTreballadors> itemList, Context context, onItemClickListener listener) {
@@ -64,19 +65,31 @@ public class ListAdapterTreballadors extends RecyclerView.Adapter<ListAdapterTre
             super(itemView);
             iconImage = itemView.findViewById(R.id.iconImageView);
             nom = itemView.findViewById(R.id.nom);
+
+
+
         }
 
         void bindData (final ListElementTreballadors item) {
             nom.setText(item.getNom() + " " + item.getCognom());
             itemView.setOnClickListener(view -> {
                 try {
-                    listener.onItemClickListener(item);
+                    listener.onItemClickListener(item, itemView);
+
+                    if (itemView.findViewById(R.id.constraint_table).getVisibility() == View.GONE)
+                        itemView.findViewById(R.id.constraint_table).setVisibility(View.VISIBLE);
+                    else
+                        itemView.findViewById(R.id.constraint_table).setVisibility(View.GONE);
+
                 } catch (FirebaseAuthException e) {
                     e.printStackTrace();
                 }
             });
 
+
+
         }
+
     }
 
 }

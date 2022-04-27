@@ -40,4 +40,5 @@ public class ListElementTreballadors implements Serializable {
         this.uid = uid;
     }
 
+
 }
