@@ -17,6 +17,7 @@ public class Horario {
     int minutSalida;
 
     long totalMinutsTreballats;
+    int diaAny;
 
     boolean estatJornada;
 
@@ -36,6 +37,7 @@ public class Horario {
         minutSalida = -1;
 
         estatJornada = false;
+        diaAny = 0;
     }
 
     public int getAnioEntrada() {
@@ -140,5 +142,13 @@ public class Horario {
 
     public void setEstatJornada(boolean estatJornada) {
         this.estatJornada = estatJornada;
+    }
+
+    public int getDiaAny() {
+        return diaAny;
+    }
+
+    public void setDiaAny(int diaAny) {
+        this.diaAny = diaAny;
     }
 }

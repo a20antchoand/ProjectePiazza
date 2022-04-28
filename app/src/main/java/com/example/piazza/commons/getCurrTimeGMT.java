@@ -39,6 +39,8 @@ public class getCurrTimeGMT extends AsyncTask<String, Void, String> {
                 JSONObject jsonResponse = new JSONObject(s);
                 ZonedDateTime tempsActual = ZonedDateTime.parse(jsonResponse.getString("datetime"));
 
+                System.out.println("DIA DE L'ANY: " + tempsActual.getDayOfYear());
+
                 return tempsActual;
 
             } catch (JSONException e) {

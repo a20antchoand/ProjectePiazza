@@ -43,6 +43,7 @@
     <string name="rol_perfil">ROL</string>
     <string name="spn_title">Rol</string>
     <string name="horesMensuals_perfil">HORES MENSUALS</string>
+    <string name="tots" translatable="false">Tots</string>
 
     <string-array name="dlangs">
         <item>treballador</item>

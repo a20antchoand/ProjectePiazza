@@ -1,7 +1,6 @@
 package com.example.piazza.controladores.admin.fragments.reports;
 
 import android.Manifest;
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -18,8 +17,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.TranslateAnimation;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.piazza.classes.Horario;
@@ -28,6 +29,7 @@ import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.data.WriteData;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.BuildConfig;
+import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentReportsBinding;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -37,7 +39,6 @@ import com.example.piazza.commons.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -73,27 +74,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
         pedirPermisos();
 
-        binding.cbTreballador.setOnClickListener(l -> {
-
-            if (binding.cbTreballador.isChecked()) {
-                binding.unicTreballadorLayout.setVisibility(View.VISIBLE);
-            } else {
-                binding.unicTreballadorLayout.setVisibility(View.GONE);
-            }
-
-        });
-
-        binding.cbTemps.setOnClickListener(l -> {
-
-            if (binding.cbTemps.isChecked()) {
-                binding.dataLayout.setVisibility(View.VISIBLE);
-            } else {
-                binding.dataLayout.setVisibility(View.GONE);
-            }
-
-        });
-
-        binding.btnSeleccionaFranja.setOnClickListener(new View.OnClickListener() {
+        /*binding.btnSeleccionaFranja.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DatePickerDialog datePicker1 = new DatePickerDialog(getContext(),
@@ -142,21 +123,131 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
                         }
                     };
 
-        });
+        });*/
 
         // Application of the Array to the Spinner
         getMultipldeDocuments(DDBB.collection("usuaris"), this::obtenerUsuarios);
 
-        binding.button.setOnClickListener(l -> {
-            if (binding.cbTreballador.isChecked()) {
-                getMultipldeDocuments(DDBB.collection("horari"), this::exportarCSVUsuari);
-            } else {
-                getMultipldeDocuments(DDBB.collection("horari"), this::exportarCSVGeneral);
-            }
-        });
+        binding.button.setOnClickListener(l -> getMultipldeDocuments(DDBB.collection("horari"), this::exportarCSVGeneral));
 
+        binding.constraintLayout.bringToFront();
+
+        binding.spnTreballador.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (!binding.spnTreballador.getSelectedItem().equals(getString(R.string.tots))) {
+                    binding.cardViewHistorial.setVisibility(View.VISIBLE);
+                    getMultipldeDocuments(DDBB.collection("horari"), this::mostrarInfoReport);
+                } else {
+                    binding.cardViewHistorial.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+
+            private void mostrarInfoReport(Task<QuerySnapshot> querySnapshotTask) {
+
+                Usuario usuari = usuarios.get(binding.spnTreballador.getSelectedItem());
+
+                int totalTreballat = 0, totalTempsMes = 0, residu = 0;
+
+                for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
+
+                    Horario temp = documentSnapshot.toObject(Horario.class);
+
+                    if (temp.getUsuario().getUid().equals(usuari.getUid()) && temp.getDiaAny() == getCurrTimeGMT.zdt.getDayOfYear()) {
+                        System.out.println("COINCIDE");
+                        totalTreballat += temp.getTotalMinutsTreballats();
+                    } else {
+                        System.out.println("NO COINCIDE: " + temp.getUsuario().getUid() + " --> " + usuari.getUid());
+                    }
+
+                }
+
+                totalTempsMes = Integer.parseInt(usuari.getHoresMensuals()) * 60;
+                binding.tvHoresMensuals.setText(usuari.getHoresMensuals());
+
+                if (totalTreballat > totalTempsMes) {
+                    residu = totalTreballat - totalTempsMes;
+                    binding.tvResiduHores.setText(String.format("-%01dh",residu/60));
+                    binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.end_btn));
+
+                    //si els minuts a treballar son menors als minuts treballats
+                    //mostrem en positiu el residu d'hores.
+                } else if (totalTreballat < totalTempsMes) {
+                    residu = totalTempsMes - totalTreballat;
+                    binding.tvResiduHores.setText(String.format("+%01dh",residu/60));
+                    binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.start_btn));
+                    //mostrem el residu a 00:00
+                } else {
+                    binding.tvResiduHores.setText("0h");
+                    binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.black));
+                }
+
+                binding.tvTotalHores.setText(String.format("%01dh", totalTreballat/60));;
+
+            }
+
+        });
+        //binding.button.setOnClickListener(l -> getMultipldeDocuments(DDBB.collection("horari"), this::mostrarInfoReport));
+
+        binding.btnSeleccionaFranja.setOnClickListener(l -> mostrarSelectorData(binding.constraintLayout));
+
+        binding.textView6.setOnClickListener(l -> ocultarSelectorData(binding.textView6, binding.constraintLayout));
+        binding.textView7.setOnClickListener(l -> ocultarSelectorData(binding.textView7, binding.constraintLayout));
+        binding.textView8.setOnClickListener(l -> ocultarSelectorData(binding.textView8, binding.constraintLayout));
+        binding.textView9.setOnClickListener(l -> ocultarSelectorData(binding.textView9, binding.constraintLayout));
+        binding.textView10.setOnClickListener(l -> ocultarSelectorData(binding.textView10, binding.constraintLayout));
     }
 
+    public void mostrarSelectorData(View view) {
+
+        if (view.getVisibility() != View.VISIBLE) {
+            binding.textView6.setVisibility(View.VISIBLE);
+            binding.textView7.setVisibility(View.VISIBLE);
+            binding.textView8.setVisibility(View.VISIBLE);
+            binding.textView9.setVisibility(View.VISIBLE);
+            binding.textView10.setVisibility(View.VISIBLE);
+
+            TranslateAnimation animate = new TranslateAnimation(
+                    0,                 // fromXDelta
+                    0,                 // toXDelta
+                    view.getHeight(),  // fromYDelta
+                    0);                // toYDelta
+            animate.setDuration(500);
+            animate.setFillAfter(true);
+            view.setVisibility(View.VISIBLE);
+            view.startAnimation(animate);
+
+
+
+        }
+    }
+
+    public void ocultarSelectorData(TextView item, View view) {
+
+        binding.tvData2.setText(item.getText());
+
+        TranslateAnimation animate = new TranslateAnimation(
+                0,                 // fromXDelta
+                0,                 // toXDelta
+                0,  // fromYDelta
+                view.getHeight());                // toYDelta
+        animate.setDuration(500);
+        animate.setFillAfter(true);
+        view.setVisibility(View.INVISIBLE);
+        view.startAnimation(animate);
+
+        binding.textView6.setVisibility(View.INVISIBLE);
+        binding.textView7.setVisibility(View.INVISIBLE);
+        binding.textView8.setVisibility(View.INVISIBLE);
+        binding.textView9.setVisibility(View.INVISIBLE);
+        binding.textView10.setVisibility(View.INVISIBLE);
+
+    }
 
     public void pedirPermisos() {
         // PERMISOS PARA ANDROID 6 O SUPERIOR
@@ -185,6 +276,8 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
         listaUsuarios.clear();
         usuarios.clear();
+
+        noms.add(getString(R.string.tots));
 
         if (querySnapshotTask.isSuccessful()) {
 
@@ -317,32 +410,4 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        binding.dataLayout.setVisibility(View.GONE);
-        binding.cbTemps.setChecked(false);
-        binding.unicTreballadorLayout.setVisibility(View.GONE);
-        binding.cbTreballador.setChecked(false);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        binding.dataLayout.setVisibility(View.GONE);
-        binding.cbTemps.setChecked(false);
-        binding.unicTreballadorLayout.setVisibility(View.GONE);
-        binding.cbTreballador.setChecked(false);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        binding.dataLayout.setVisibility(View.GONE);
-        binding.cbTemps.setChecked(false);
-        binding.unicTreballadorLayout.setVisibility(View.GONE);
-        binding.cbTreballador.setChecked(false);
-
-    }
 }

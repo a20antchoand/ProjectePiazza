@@ -281,32 +281,17 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     private void comprovarEntradaSortida() {
 
         //Creem l'objecte Horari del document recuperat
-        Horario horariTemp = document.toObject(Horario.class);
+        horarioUsuario = document.toObject(Horario.class);
 
         //Si l'horari te hora d'entrada
-        if (horariTemp.getHoraEntrada() != -1) {
-
-            //cargem les dades al historial global
-            horarioUsuario.setAnioEntrada(horariTemp.getAnioEntrada());
-            horarioUsuario.setMesEntrada(horariTemp.getMesEntrada());
-            horarioUsuario.setDiaEntrada(horariTemp.getDiaEntrada());
-            horarioUsuario.setHoraEntrada(horariTemp.getHoraEntrada());
-            horarioUsuario.setMinutEntrada(horariTemp.getMinutEntrada());
+        if (horarioUsuario.getHoraEntrada() != -1) {
 
             //modifiquem els butons
             changeStateButtons.hideButton(iniciarJornadaBtn);
             changeStateButtons.showButton(acabarJornadaBtn);
 
             //si l'horari te hora d'entrada i la jornada esta acabada
-            if (horariTemp.getHoraEntrada() != -1 && horariTemp.isEstatJornada()) {
-
-                //cargem les dades al historial global
-                horarioUsuario.setAnioSalida(horariTemp.getAnioSalida());
-                horarioUsuario.setMesSalida(horariTemp.getMesSalida());
-                horarioUsuario.setDiaSalida(horariTemp.getDiaSalida());
-                horarioUsuario.setHoraSalida(horariTemp.getHoraSalida());
-                horarioUsuario.setMinutSalida(horariTemp.getMinutSalida());
-                horarioUsuario.setEstatJornada(true);
+            if (horarioUsuario.getHoraEntrada() != -1 && horarioUsuario.isEstatJornada()) {
 
                 //parem el Handler
                 stopRepeatingTask();
@@ -353,7 +338,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             horarioUsuario.setDiaEntrada(getCurrTimeGMT.zdt.getDayOfMonth());
             horarioUsuario.setHoraEntrada(getCurrTimeGMT.zdt.getHour());
             horarioUsuario.setMinutEntrada(getCurrTimeGMT.zdt.getMinute());
-
+            horarioUsuario.setDiaAny(getCurrTimeGMT.zdt.getDayOfYear());
         //si no, guadrem les dades i calculem les hores totals
         } else {
             horarioUsuario.setAnioSalida(getCurrTimeGMT.zdt.getYear());
