@@ -44,6 +44,11 @@
     <string name="spn_title">Rol</string>
     <string name="horesMensuals_perfil">HORES MENSUALS</string>
     <string name="tots" translatable="false">Tots</string>
+    <string name="dia">AVUI</string>
+    <string name="setmana">ULTIMA SETMANA</string>
+    <string name="mes">ULTIM MES</string>
+    <string name="any">ULTIM ANY</string>
+    <string name="personalitzat">PERSONALITZADA</string>
 
     <string-array name="dlangs">
         <item>treballador</item>

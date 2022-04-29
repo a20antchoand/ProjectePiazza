@@ -331,11 +331,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
-                android:text="MENSUALS"
+                android:text="HORES A FER"
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="@+id/cvHoresMensuals"
                 app:layout_constraintStart_toStartOf="@+id/cvHoresMensuals"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/documents"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/horesTreballadesTotal" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
@@ -376,7 +386,7 @@
                 android:layout_height="50dp"
                 android:gravity="center|start"
                 android:paddingStart="10dp"
-                android:text="Avui"
+                android:text="@string/dia"
                 android:textSize="24sp" />
 
             <View
@@ -390,7 +400,7 @@
                 android:layout_height="50dp"
                 android:gravity="center|start"
                 android:paddingStart="10dp"
-                android:text="Ultima setmana"
+                android:text="@string/setmana"
                 android:textSize="24sp" />
 
             <View
@@ -404,7 +414,7 @@
                 android:layout_height="50dp"
                 android:gravity="center|start"
                 android:paddingStart="10dp"
-                android:text="Ultim mes"
+                android:text="@string/mes"
                 android:textSize="24sp" />
 
             <View
@@ -418,7 +428,7 @@
                 android:layout_height="50dp"
                 android:gravity="center|start"
                 android:paddingStart="10dp"
-                android:text="Ultim any"
+                android:text="@string/any"
                 android:textSize="24sp" />
 
             <View
@@ -432,7 +442,7 @@
                 android:layout_height="50dp"
                 android:gravity="center|start"
                 android:paddingStart="10dp"
-                android:text="Personalitzada"
+                android:text="@string/personalitzat"
                 android:textSize="24sp" />
 
             <View

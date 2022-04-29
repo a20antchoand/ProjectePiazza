@@ -2,6 +2,7 @@ package com.example.piazza.controladores.employee.fragments.introduir_hores;
 
 import static com.google.firebase.crashlytics.internal.Logger.TAG;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -20,9 +21,12 @@ import com.example.piazza.commons.*;
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.data.WriteData;
 import com.example.piazza.fireBase.session.AuthUserSession;
+import com.example.testauth.BuildConfig;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentIntroduirHoresBinding;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
@@ -70,6 +74,20 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
     public void setup () {
 
+        switch(getFirstTimeRun()) {
+            case 0:
+                Log.d("appPreferences", "Es la primera vez!");
+
+                
+
+                break;
+            case 1:
+                Log.d("appPreferences", "ya has iniciado la app alguna vez");
+                break;
+            case 2:
+                Log.d("appPreferences", "es una versión nueva");
+        }
+
         //Actualitzem el numero de document
         getMultipldeDocuments(query, this::updateDocumentNumber);
 
@@ -103,6 +121,18 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         getMultipldeDocuments(query, this::totalMinutsDiaris);
 
         //FirebaseMessaging.getInstance().subscribeToTopic("40hores");
+
+    }
+
+    private int getFirstTimeRun() {
+
+        SharedPreferences sp = getActivity().getSharedPreferences("Piazza", 0);
+        int result, currentVersionCode = BuildConfig.VERSION_CODE;
+        int lastVersionCode = sp.getInt("FIRSTTIMERUN", -1);
+        if (lastVersionCode == -1) result = 0; else
+            result = (lastVersionCode == currentVersionCode) ? 1 : 2;
+        sp.edit().putInt("FIRSTTIMERUN", currentVersionCode).apply();
+        return result;
 
     }
 

@@ -56,6 +56,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
     Map<String, Usuario> usuarios = new HashMap<>();
     List<Usuario> listaUsuarios = new ArrayList<>();
     List<String> noms = new ArrayList<>();
+    int documentsRecuperar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -152,33 +153,38 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
                 Usuario usuari = usuarios.get(binding.spnTreballador.getSelectedItem());
 
-                int totalTreballat = 0, totalTempsMes = 0, residu = 0;
+                int horesTreballades = 0, horesMensuals, residu;
+                int cont = 0;
 
                 for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
 
                     Horario temp = documentSnapshot.toObject(Horario.class);
 
-                    if (temp.getUsuario().getUid().equals(usuari.getUid()) && temp.getDiaAny() == getCurrTimeGMT.zdt.getDayOfYear()) {
+                    if (temp.getUsuario().getUid().equals(usuari.getUid())
+                            && temp.getDiaAny() > (getCurrTimeGMT.zdt.getDayOfYear() - documentsRecuperar)) {
                         System.out.println("COINCIDE");
-                        totalTreballat += temp.getTotalMinutsTreballats();
+                        horesTreballades += temp.getTotalMinutsTreballats();
+                        cont++;
                     } else {
                         System.out.println("NO COINCIDE: " + temp.getUsuario().getUid() + " --> " + usuari.getUid());
                     }
 
                 }
 
-                totalTempsMes = Integer.parseInt(usuari.getHoresMensuals()) * 60;
+                horesMensuals = Integer.parseInt(usuari.getHoresMensuals()) * 60;
                 binding.tvHoresMensuals.setText(usuari.getHoresMensuals());
 
-                if (totalTreballat > totalTempsMes) {
-                    residu = totalTreballat - totalTempsMes;
+                binding.documents.setText("DOCUMENTS: " + cont);
+
+                if (horesMensuals > horesTreballades) {
+                    residu = horesMensuals - horesTreballades;
                     binding.tvResiduHores.setText(String.format("-%01dh",residu/60));
                     binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.end_btn));
 
                     //si els minuts a treballar son menors als minuts treballats
                     //mostrem en positiu el residu d'hores.
-                } else if (totalTreballat < totalTempsMes) {
-                    residu = totalTempsMes - totalTreballat;
+                } else if (horesTreballades > horesMensuals) {
+                    residu = horesTreballades - horesMensuals;
                     binding.tvResiduHores.setText(String.format("+%01dh",residu/60));
                     binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.start_btn));
                     //mostrem el residu a 00:00
@@ -187,7 +193,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
                     binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.black));
                 }
 
-                binding.tvTotalHores.setText(String.format("%01dh", totalTreballat/60));;
+                binding.tvTotalHores.setText(String.format("%01dh", horesTreballades/60));;
 
             }
 
@@ -247,6 +253,18 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         binding.textView9.setVisibility(View.INVISIBLE);
         binding.textView10.setVisibility(View.INVISIBLE);
 
+        String text = item.getText().toString();
+        if (getString(R.string.dia).equals(text)) {
+            documentsRecuperar = 1;
+        } else if (getString(R.string.setmana).equals(text)) {
+            documentsRecuperar = 7;
+        } else if (getString(R.string.mes).equals(text)) {
+            documentsRecuperar = 31;
+        } else if (getString(R.string.any).equals(text)) {
+            documentsRecuperar = 365;
+        } else if (getString(R.string.personalitzat).equals(text)) {
+            documentsRecuperar = 10000;
+        }
     }
 
     public void pedirPermisos() {

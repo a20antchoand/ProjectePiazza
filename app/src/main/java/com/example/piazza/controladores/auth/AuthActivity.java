@@ -2,12 +2,14 @@ package com.example.piazza.controladores.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,6 +22,7 @@ import com.example.piazza.controladores.employee.fragments.introduir_hores.Intro
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -30,10 +33,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 public class AuthActivity extends AppCompatActivity implements ReadData, AuthUserSession{
 
     Button logIn;
-    TextView errorLogin;
+    TextView errorLogin, recuperarContrasenya;
     ProgressBar pbLogin;
 
     DocumentReference docRefUsuari;
+    private String TAG = "RECUPERAR: ";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +52,19 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
 
         logIn = findViewById(R.id.logIn);
         errorLogin = findViewById(R.id.errorLogin);
+        recuperarContrasenya = findViewById(R.id.recuperarContrasenya);
         pbLogin = findViewById(R.id.pbLogin);
+
+        recuperarContrasenya.setOnClickListener(l -> {
+
+            FirebaseAuth.getInstance().sendPasswordResetEmail(((EditText) findViewById(R.id.editTextEmail)).getText().toString())
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "Email sent.");
+                        }
+                    });
+
+        });
 
         logIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,6 +174,9 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
             }
 
         });
+
+
+
     }
 
 
