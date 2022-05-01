@@ -31,7 +31,7 @@
             android:name="com.example.piazza.controladores.auth.SplashScreen"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.TestAuth.NoActionBar">
+            android:theme="@style/Theme.SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

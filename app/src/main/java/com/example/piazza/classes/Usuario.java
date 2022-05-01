@@ -8,6 +8,7 @@ public class Usuario {
     String nom;
     String cognom;
     String horesMensuals;
+    String diesSetmana;
     String rol;
     String urlPerfil;
 
@@ -30,7 +31,7 @@ public class Usuario {
      * @param urlPerfil url de la imatge de perfil de l'usuarfi
      */
 
-    public Usuario(String uid, String email, String nom, String cognom, String telefono, String rol, String horesMensuals, String urlPerfil) {
+    public Usuario(String uid, String email, String nom, String cognom, String telefono, String rol, String horesMensuals, String diesSetmana, String urlPerfil) {
         this.uid = uid;
         this.email = email;
         this.telefono = telefono;
@@ -38,6 +39,7 @@ public class Usuario {
         this.nom = nom;
         this.cognom = cognom;
         this.horesMensuals = horesMensuals;
+        this.diesSetmana = diesSetmana;
         this.urlPerfil = urlPerfil;
     }
 
@@ -95,6 +97,14 @@ public class Usuario {
 
     public void setHoresMensuals(String horesMensuals) {
         this.horesMensuals = horesMensuals;
+    }
+
+    public String getDiesSetmana() {
+        return diesSetmana;
+    }
+
+    public void setDiesSetmana(String diesSetmana) {
+        this.diesSetmana = diesSetmana;
     }
 
     public String getUrlPerfil() {

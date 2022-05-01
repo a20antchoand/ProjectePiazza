@@ -1,8 +1,11 @@
 package com.example.piazza.controladores.admin.fragments.reports;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -39,8 +42,14 @@ import com.example.piazza.commons.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +65,8 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
     Map<String, Usuario> usuarios = new HashMap<>();
     List<Usuario> listaUsuarios = new ArrayList<>();
     List<String> noms = new ArrayList<>();
-    int documentsRecuperar;
+    int documentsRecuperar = 0;
+    Calendar calendariInici, calendariFinal;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,73 +85,81 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
         pedirPermisos();
 
-        /*binding.btnSeleccionaFranja.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatePickerDialog datePicker1 = new DatePickerDialog(getContext(),
-                        dateListener, getCurrTimeGMT.zdt.getYear(), (getCurrTimeGMT.zdt.getMonthValue()-1), getCurrTimeGMT.zdt.getDayOfMonth());
-                datePicker1.getDatePicker().setMinDate(0);
-                datePicker1.show();
-
-            }
-
-
-            DatePickerDialog.OnDateSetListener dateListener =
-                    new DatePickerDialog.OnDateSetListener() {
-                        @Override
-                        public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-
-                            Calendar now = Calendar.getInstance();
-
-                            now.set(year, month, dayOfMonth);
-
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
-                            System.out.println(now.getTime());
-
-                            binding.tvData2.setText(simpleDateFormat.format(now.getTime()));
-
-                            DatePickerDialog datePicker1 = new DatePickerDialog(getContext(),
-                                    dateListener1, getCurrTimeGMT.zdt.getYear(), (getCurrTimeGMT.zdt.getMonthValue()-1), getCurrTimeGMT.zdt.getDayOfMonth());
-                            datePicker1.getDatePicker().setMinDate(0);
-                            datePicker1.show();
-                        }
-                    };
-
-            DatePickerDialog.OnDateSetListener dateListener1 =
-                    new DatePickerDialog.OnDateSetListener() {
-                        @Override
-                        public void onDateSet(DatePicker datePicker, int year, int month, int dayOfMonth) {
-
-                            Calendar now = Calendar.getInstance();
-
-                            now.set(year, month, dayOfMonth);
-
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
-                            binding.tvData3.setText(simpleDateFormat.format(now.getTime()));
-
-                        }
-                    };
-
-        });*/
 
         // Application of the Array to the Spinner
         getMultipldeDocuments(DDBB.collection("usuaris"), this::obtenerUsuarios);
 
-        binding.button.setOnClickListener(l -> getMultipldeDocuments(DDBB.collection("horari"), this::exportarCSVGeneral));
+        binding.button.setOnClickListener(l -> {
+            if (binding.spnTreballador.getSelectedItem().equals(getString(R.string.tots)))
+                getMultipldeDocuments(DDBB.collection("horari"), this::exportarCSVGeneral);
+            else
+                getMultipldeDocuments(DDBB.collection("horari"), this::exportarCSVUsuari);
+
+        });
 
         binding.constraintLayout.bringToFront();
 
         binding.spnTreballador.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (!binding.spnTreballador.getSelectedItem().equals(getString(R.string.tots))) {
-                    binding.cardViewHistorial.setVisibility(View.VISIBLE);
-                    getMultipldeDocuments(DDBB.collection("horari"), this::mostrarInfoReport);
-                } else {
-                    binding.cardViewHistorial.setVisibility(View.INVISIBLE);
-                }
+
+
+                    if (binding.cardViewHistorial.getVisibility() == View.VISIBLE && !binding.spnTreballador.getSelectedItem().equals(getString(R.string.tots))) {
+                        TranslateAnimation animate = new TranslateAnimation(
+                                0,                 // fromXDelta
+                                binding.cardViewHistorial.getWidth() + 50,                 // toXDelta
+                                0,  // fromYDelta
+                                0);                // toYDelta
+                        animate.setDuration(500);
+                        animate.setFillAfter(true);
+                        binding.cardViewHistorial.setVisibility(View.INVISIBLE);
+                        binding.cardViewHistorial.startAnimation(animate);
+                        binding.cardViewHistorial.postDelayed(() -> {
+
+                            getMultipldeDocuments(DDBB.collection("horari"), this::mostrarInfoReportMesActual);
+
+                            TranslateAnimation animate2 = new TranslateAnimation(
+                                    -(binding.cardViewHistorial.getWidth()),                 // fromXDelta
+                                    0,                 // toXDelta
+                                    0,  // fromYDelta
+                                    0);                // toYDelta
+                            animate2.setDuration(500);
+                            animate2.setFillAfter(true);
+                            binding.cardViewHistorial.setVisibility(View.VISIBLE);
+                            binding.cardViewHistorial.startAnimation(animate2);
+                        }, 500);
+
+
+                    } else {
+                        if (!binding.spnTreballador.getSelectedItem().equals(getString(R.string.tots))) {
+
+                            getMultipldeDocuments(DDBB.collection("horari"), this::mostrarInfoReportMesActual);
+
+                            TranslateAnimation animate2 = new TranslateAnimation(
+                                    -(binding.cardViewHistorial.getWidth()),                 // fromXDelta
+                                    0,                 // toXDelta
+                                    0,  // fromYDelta
+                                    0);                // toYDelta
+                            animate2.setDuration(500);
+                            animate2.setFillAfter(true);
+                            binding.cardViewHistorial.setVisibility(View.VISIBLE);
+                            binding.cardViewHistorial.startAnimation(animate2);
+                        }
+                    }
+
+                    if (binding.cardViewHistorial.getVisibility() == View.VISIBLE && binding.spnTreballador.getSelectedItem().equals(getString(R.string.tots))) {
+                        TranslateAnimation animate = new TranslateAnimation(
+                                0,                 // fromXDelta
+                                binding.cardViewHistorial.getWidth() + 50,                 // toXDelta
+                                0,  // fromYDelta
+                                0);                // toYDelta
+                        animate.setDuration(500);
+                        animate.setFillAfter(true);
+                        binding.cardViewHistorial.setVisibility(View.INVISIBLE);
+                        binding.cardViewHistorial.startAnimation(animate);
+                    }
+
+
             }
 
             @Override
@@ -149,58 +167,35 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
             }
 
-            private void mostrarInfoReport(Task<QuerySnapshot> querySnapshotTask) {
+            private void mostrarInfoReportMesActual(Task<QuerySnapshot> querySnapshotTask) {
+
+                int horesTreballades = 0, horesMensuals;
 
                 Usuario usuari = usuarios.get(binding.spnTreballador.getSelectedItem());
-
-                int horesTreballades = 0, horesMensuals, residu;
-                int cont = 0;
+                horesMensuals = Integer.parseInt(usuari.getHoresMensuals()) * 60;
 
                 for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
 
                     Horario temp = documentSnapshot.toObject(Horario.class);
 
                     if (temp.getUsuario().getUid().equals(usuari.getUid())
-                            && temp.getDiaAny() > (getCurrTimeGMT.zdt.getDayOfYear() - documentsRecuperar)) {
-                        System.out.println("COINCIDE");
+                            && temp.getMesEntrada() == getCurrTimeGMT.zdt.getMonthValue()
+                            && temp.getAnioEntrada() == getCurrTimeGMT.zdt.getYear()) {
+
                         horesTreballades += temp.getTotalMinutsTreballats();
-                        cont++;
-                    } else {
-                        System.out.println("NO COINCIDE: " + temp.getUsuario().getUid() + " --> " + usuari.getUid());
+
                     }
 
                 }
 
-                horesMensuals = Integer.parseInt(usuari.getHoresMensuals()) * 60;
-                binding.tvHoresMensuals.setText(usuari.getHoresMensuals());
+                mostrarInformacio(usuari, horesTreballades, horesMensuals);
 
-                binding.documents.setText("DOCUMENTS: " + cont);
-
-                if (horesMensuals > horesTreballades) {
-                    residu = horesMensuals - horesTreballades;
-                    binding.tvResiduHores.setText(String.format("-%01dh",residu/60));
-                    binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.end_btn));
-
-                    //si els minuts a treballar son menors als minuts treballats
-                    //mostrem en positiu el residu d'hores.
-                } else if (horesTreballades > horesMensuals) {
-                    residu = horesTreballades - horesMensuals;
-                    binding.tvResiduHores.setText(String.format("+%01dh",residu/60));
-                    binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.start_btn));
-                    //mostrem el residu a 00:00
-                } else {
-                    binding.tvResiduHores.setText("0h");
-                    binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.black));
-                }
-
-                binding.tvTotalHores.setText(String.format("%01dh", horesTreballades/60));;
 
             }
 
         });
-        //binding.button.setOnClickListener(l -> getMultipldeDocuments(DDBB.collection("horari"), this::mostrarInfoReport));
 
-        binding.btnSeleccionaFranja.setOnClickListener(l -> mostrarSelectorData(binding.constraintLayout));
+        binding.imageButton.setOnClickListener(l -> mostrarSelectorData(binding.constraintLayout));
 
         binding.textView6.setOnClickListener(l -> ocultarSelectorData(binding.textView6, binding.constraintLayout));
         binding.textView7.setOnClickListener(l -> ocultarSelectorData(binding.textView7, binding.constraintLayout));
@@ -208,6 +203,211 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         binding.textView9.setOnClickListener(l -> ocultarSelectorData(binding.textView9, binding.constraintLayout));
         binding.textView10.setOnClickListener(l -> ocultarSelectorData(binding.textView10, binding.constraintLayout));
     }
+
+    private void calcularHoresGeneric(Task<QuerySnapshot> querySnapshotTask) {
+
+        int horesTreballades = 0, horesMensuals;
+
+        Usuario usuari = usuarios.get(binding.spnTreballador.getSelectedItem());
+        horesMensuals = Integer.parseInt(usuari.getHoresMensuals()) * 60;
+
+        switch (documentsRecuperar) {
+            case 1:
+                horesMensuals = (horesMensuals / 4) / Integer.parseInt(usuari.getDiesSetmana());
+                break;
+            case 7:
+                horesMensuals = (horesMensuals / 4);
+                break;
+            case 365:
+                horesMensuals = horesMensuals * 12;
+                break;
+        }
+
+        System.out.println("HORES: " + horesMensuals);
+        System.out.println("DOCUMENTS: " + documentsRecuperar);
+
+        for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
+
+            Horario temp = documentSnapshot.toObject(Horario.class);
+
+            if (temp.getUsuario().getUid().equals(usuari.getUid())
+                    && temp.getDiaAny() > (getCurrTimeGMT.zdt.getDayOfYear() - documentsRecuperar)) {
+
+                horesTreballades += temp.getTotalMinutsTreballats();
+
+            }
+
+        }
+
+        mostrarInformacio(usuari, horesTreballades, horesMensuals);
+
+    }
+
+    public void mostrarInformacio(Usuario usuari, int horesTreballades, int horesMensuals) {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
+        int residu;
+
+        if (horesMensuals > horesTreballades) {
+            residu = horesMensuals - horesTreballades;
+
+            if (residu > 6000) {
+                binding.tvResiduHores.setText(String.format("-%01dh", residu / 60));
+                binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.end_btn));
+            } else {
+                binding.tvResiduHores.setText(String.format("-%01dh %02dm", residu / 60, residu % 60));
+                binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.end_btn));
+            }
+            //si els minuts a treballar son menors als minuts treballats
+            //mostrem en positiu el residu d'hores.
+        } else if (horesTreballades > horesMensuals) {
+            residu = horesTreballades - horesMensuals;
+            if (residu > 6000) {
+                binding.tvResiduHores.setText(String.format("+%01dh", residu / 60));
+                binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.start_btn));
+            } else {
+                binding.tvResiduHores.setText(String.format("+%01dh %02dm", residu / 60, residu % 60));
+                binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.start_btn));
+            }
+            //mostrem el residu a 00:00
+        } else {
+            binding.tvResiduHores.setText("0h 0m");
+            binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.black));
+        }
+
+
+
+        if (horesMensuals > 6000) {
+            binding.tvHoresMensuals.setText(String.format("%01dh", horesMensuals / 60));
+        } else {
+            binding.tvHoresMensuals.setText(String.format("%01dh %02dm", horesMensuals/60, horesMensuals%60));
+        }
+
+        if (horesTreballades > 6000) {
+            binding.tvTotalHores.setText(String.format("%01dh", horesTreballades / 60));
+        } else {
+            binding.tvTotalHores.setText(String.format("%01dh %02dm", horesTreballades / 60, horesTreballades % 60));
+        }
+
+        binding.progressBar2.setMax(horesMensuals);
+        binding.progressBar2.setProgress(horesTreballades);
+        binding.progressBar2.getIndeterminateDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
+        binding.progressBar2.getProgressDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
+
+        binding.percentatgeJornada.setText((horesTreballades * 100) / horesMensuals + "%");
+
+        if (documentsRecuperar != 0) {
+            documentsRecuperar--;
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_YEAR, (getCurrTimeGMT.zdt.getDayOfYear() - documentsRecuperar));
+
+
+        binding.tvData2.setText(sdf.format(calendar.getTime()) + " - " +  getCurrTimeGMT.zdt.getDayOfMonth() + "/" + getCurrTimeGMT.zdt.getMonthValue() + "/" + getCurrTimeGMT.zdt.getYear());
+
+    }
+
+    private void calcularHorespersonalitzat(Task<QuerySnapshot> querySnapshotTask) {
+
+        int horesTreballades = 0, horesMensuals;
+
+        Date max = calendariFinal.getTime(), min = calendariInici.getTime();
+
+
+        Usuario usuari = usuarios.get(binding.spnTreballador.getSelectedItem());
+
+
+        horesMensuals = Integer.parseInt(usuari.getHoresMensuals()) * 60;
+
+
+
+        for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
+
+            Horario temp = documentSnapshot.toObject(Horario.class);
+
+            if (temp.getUsuario().getUid().equals(usuari.getUid())) {
+
+                Date data = null;
+                try {
+                    data = new SimpleDateFormat("yyyy-MM-dd").parse(temp.getAnioEntrada() + "-" + temp.getMesEntrada() +"-" + temp.getDiaEntrada());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                if (data.after(min) && data.before(max)) {
+
+                    horesTreballades += temp.getTotalMinutsTreballats();
+
+                }
+
+            }
+
+        }
+
+        mostrarInformacioPersonalitzada(usuari, horesTreballades, horesMensuals);
+
+
+    }
+
+    private void mostrarInformacioPersonalitzada(Usuario usuari, int horesTreballades, int horesMensuals) {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
+        int residu;
+
+        if (horesMensuals > horesTreballades) {
+            residu = horesMensuals - horesTreballades;
+
+            if (residu > 6000) {
+                binding.tvResiduHores.setText(String.format("-%01dh", residu / 60));
+                binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.end_btn));
+            } else {
+                binding.tvResiduHores.setText(String.format("-%01dh %02dm", residu / 60, residu % 60));
+                binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.end_btn));
+            }
+            //si els minuts a treballar son menors als minuts treballats
+            //mostrem en positiu el residu d'hores.
+        } else if (horesTreballades > horesMensuals) {
+            residu = horesTreballades - horesMensuals;
+            if (residu > 6000) {
+                binding.tvResiduHores.setText(String.format("+%01dh", residu / 60));
+                binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.start_btn));
+            } else {
+                binding.tvResiduHores.setText(String.format("+%01dh %02dm", residu / 60, residu % 60));
+                binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.start_btn));
+            }
+            //mostrem el residu a 00:00
+        } else {
+            binding.tvResiduHores.setText("0h 0m");
+            binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.black));
+        }
+
+
+
+        if (horesMensuals > 6000) {
+            binding.tvHoresMensuals.setText(String.format("%01dh", horesMensuals / 60));
+        } else {
+            binding.tvHoresMensuals.setText(String.format("%01dh %02dm", horesMensuals/60, horesMensuals%60));
+        }
+        if (horesTreballades > 6000) {
+            binding.tvTotalHores.setText(String.format("%01dh", horesTreballades / 60));
+        } else {
+            binding.tvTotalHores.setText(String.format("%01dh %02dm", horesTreballades / 60, horesTreballades % 60));
+        }
+
+        binding.progressBar2.setMax(horesMensuals);
+        binding.progressBar2.setProgress(horesTreballades);
+        binding.progressBar2.getIndeterminateDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
+        binding.progressBar2.getProgressDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
+
+        binding.percentatgeJornada.setText((horesTreballades * 100) / horesMensuals + "%");
+
+
+        binding.tvData2.setText(sdf.format(calendariInici.getTime()) + " - " +  sdf.format(calendariFinal.getTime()));
+
+
+    }
+
 
     public void mostrarSelectorData(View view) {
 
@@ -229,13 +429,10 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
             view.startAnimation(animate);
 
 
-
         }
     }
 
     public void ocultarSelectorData(TextView item, View view) {
-
-        binding.tvData2.setText(item.getText());
 
         TranslateAnimation animate = new TranslateAnimation(
                 0,                 // fromXDelta
@@ -259,12 +456,60 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         } else if (getString(R.string.setmana).equals(text)) {
             documentsRecuperar = 7;
         } else if (getString(R.string.mes).equals(text)) {
-            documentsRecuperar = 31;
+            documentsRecuperar = 30;
         } else if (getString(R.string.any).equals(text)) {
             documentsRecuperar = 365;
         } else if (getString(R.string.personalitzat).equals(text)) {
-            documentsRecuperar = 10000;
+
+            DatePickerDialog.OnDateSetListener dateListener1 =
+                    (datePicker, year, month, dayOfMonth) -> {
+
+                        Calendar now = Calendar.getInstance();
+
+                        now.set(year, month, dayOfMonth);
+
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/YYYY");
+
+                        binding.tvData2.setText(binding.tvData2.getText() + " - " + simpleDateFormat.format(now.getTime()));
+
+                        calendariFinal = now;
+
+                        getMultipldeDocuments(DDBB.collection("horari"), this::calcularHorespersonalitzat);
+
+                    };
+
+            DatePickerDialog.OnDateSetListener dateListener =
+                    (datePicker, year, month, dayOfMonth) -> {
+
+                        Calendar now = Calendar.getInstance();
+
+                        now.set(year, month, dayOfMonth);
+
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+                        System.out.println(now.getTime());
+
+                        binding.tvData2.setText(simpleDateFormat.format(now.getTime()));
+
+                        calendariInici = now;
+
+                        DatePickerDialog datePicker1 = new DatePickerDialog(getContext(),
+                                dateListener1, getCurrTimeGMT.zdt.getYear(), (getCurrTimeGMT.zdt.getMonthValue()-1), getCurrTimeGMT.zdt.getDayOfMonth());
+                        datePicker1.getDatePicker().setMinDate(0);
+                        datePicker1.show();
+                    };
+
+
+            DatePickerDialog datePicker1 = new DatePickerDialog(getContext(),
+                    dateListener, getCurrTimeGMT.zdt.getYear(), (getCurrTimeGMT.zdt.getMonthValue()-1), getCurrTimeGMT.zdt.getDayOfMonth());
+            datePicker1.getDatePicker().setMinDate(0);
+            datePicker1.show();
         }
+
+        if (!getString(R.string.personalitzat).equals(text))
+            getMultipldeDocuments(DDBB.collection("horari"), this::calcularHoresGeneric);
+
+
     }
 
     public void pedirPermisos() {

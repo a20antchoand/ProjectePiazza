@@ -49,6 +49,8 @@
     <string name="mes">ULTIM MES</string>
     <string name="any">ULTIM ANY</string>
     <string name="personalitzat">PERSONALITZADA</string>
+    <string name="mesActual">MES ACTUAL</string>
+    <string name="diesSetmana_perfil">DIES SETMANA</string>
 
     <string-array name="dlangs">
         <item>treballador</item>

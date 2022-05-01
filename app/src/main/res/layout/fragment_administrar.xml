@@ -159,6 +159,29 @@
                             android:background="?android:attr/listDivider" />
 
                         <TextView
+                            android:id="@+id/textView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/diesSetmana_perfil" />
+
+                        <EditText
+                            android:id="@+id/diesSetmana"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:background="@color/white"
+                            android:ems="14"
+                            android:inputType="number"
+                            tools:ignore="SpeakableTextPresentCheck" />
+
+                        <View
+                            android:id="@+id/divider11"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:background="?android:attr/listDivider" />
+
+                        <TextView
                             android:id="@+id/textView14"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

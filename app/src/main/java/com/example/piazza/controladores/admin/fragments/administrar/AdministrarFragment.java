@@ -54,9 +54,10 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
             String telefon = binding.telefon.getText().toString();
             String rol = binding.spn2.getSelectedItem().toString();
             String horesMensuals = binding.horesMensuals.getText().toString();
+            String diesSetmana = binding.diesSetmana.getText().toString();
             String urlPerfil = "";
 
-            if (email.equals("") || nom.equals("") || nom.equals("") || nom.equals("") || nom.equals("") || nom.equals("") || nom.equals("")) {
+            if (email.equals("") || nom.equals("") || cognom.equals("") || telefon.equals("") || rol.equals("") || horesMensuals.equals("") || diesSetmana.equals("")) {
                 Toast.makeText(getActivity().getApplication(), "Recuerda rellenar todos los campos.",
                         Toast.LENGTH_SHORT).show();
             } else {
@@ -82,7 +83,7 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
                                 Toast.makeText(getActivity().getApplication(), "Usuario dado de alta correctamente.",
                                         Toast.LENGTH_SHORT).show();
 
-                                GuardarUsuarioBBDD(new Usuario(task.getResult().getUser().getUid(), email, nom, cognom, telefon, rol, horesMensuals, urlPerfil));
+                                GuardarUsuarioBBDD(new Usuario(task.getResult().getUser().getUid(), email, nom, cognom, telefon, rol, horesMensuals, diesSetmana, urlPerfil));
 
                                 mAuth2.signOut();
 
@@ -91,6 +92,7 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
                                 binding.cognom.setText("");
                                 binding.telefon.setText("");
                                 binding.horesMensuals.setText("");
+                                binding.diesSetmana.setText("");
 
                             } else {
                                 // If sign in fails, display a message to the user.
