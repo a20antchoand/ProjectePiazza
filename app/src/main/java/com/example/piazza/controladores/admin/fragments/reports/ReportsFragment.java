@@ -193,6 +193,64 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
             }
 
+            public void mostrarInformacio(Usuario usuari, int horesTreballades, int horesMensuals) {
+
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
+                int residu;
+
+                if (horesMensuals > horesTreballades) {
+                    residu = horesMensuals - horesTreballades;
+
+                    if (residu > 6000) {
+                        binding.tvResiduHores.setText(String.format("-%01dh", residu / 60));
+                        binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.end_btn));
+                    } else {
+                        binding.tvResiduHores.setText(String.format("-%01dh %02dm", residu / 60, residu % 60));
+                        binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.end_btn));
+                    }
+                    //si els minuts a treballar son menors als minuts treballats
+                    //mostrem en positiu el residu d'hores.
+                } else if (horesTreballades > horesMensuals) {
+                    residu = horesTreballades - horesMensuals;
+                    if (residu > 6000) {
+                        binding.tvResiduHores.setText(String.format("+%01dh", residu / 60));
+                        binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.start_btn));
+                    } else {
+                        binding.tvResiduHores.setText(String.format("+%01dh %02dm", residu / 60, residu % 60));
+                        binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.start_btn));
+                    }
+                    //mostrem el residu a 00:00
+                } else {
+                    binding.tvResiduHores.setText("0h 0m");
+                    binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.black));
+                }
+
+
+
+                if (horesMensuals > 6000) {
+                    binding.tvHoresMensuals.setText(String.format("%01dh", horesMensuals / 60));
+                } else {
+                    binding.tvHoresMensuals.setText(String.format("%01dh %02dm", horesMensuals/60, horesMensuals%60));
+                }
+
+                if (horesTreballades > 6000) {
+                    binding.tvTotalHores.setText(String.format("%01dh", horesTreballades / 60));
+                } else {
+                    binding.tvTotalHores.setText(String.format("%01dh %02dm", horesTreballades / 60, horesTreballades % 60));
+                }
+
+                binding.progressBar2.setMax(horesMensuals);
+                binding.progressBar2.setProgress(horesTreballades);
+                binding.progressBar2.getIndeterminateDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
+                binding.progressBar2.getProgressDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
+
+                binding.percentatgeJornada.setText((horesTreballades * 100) / horesMensuals + "%");
+
+
+                binding.tvData2.setText(1 + "/" + getCurrTimeGMT.zdt.getMonthValue() + "/" + getCurrTimeGMT.zdt.getYear() + " - " +  getCurrTimeGMT.zdt.getDayOfMonth() + "/" + getCurrTimeGMT.zdt.getMonthValue() + "/" + getCurrTimeGMT.zdt.getYear());
+
+            }
+
         });
 
         binding.imageButton.setOnClickListener(l -> mostrarSelectorData(binding.constraintLayout));
@@ -211,7 +269,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         Usuario usuari = usuarios.get(binding.spnTreballador.getSelectedItem());
         horesMensuals = Integer.parseInt(usuari.getHoresMensuals()) * 60;
 
-        switch (documentsRecuperar) {
+/*        switch (documentsRecuperar) {
             case 1:
                 horesMensuals = (horesMensuals / 4) / Integer.parseInt(usuari.getDiesSetmana());
                 break;
@@ -221,7 +279,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
             case 365:
                 horesMensuals = horesMensuals * 12;
                 break;
-        }
+        }*/
 
         System.out.println("HORES: " + horesMensuals);
         System.out.println("DOCUMENTS: " + documentsRecuperar);
