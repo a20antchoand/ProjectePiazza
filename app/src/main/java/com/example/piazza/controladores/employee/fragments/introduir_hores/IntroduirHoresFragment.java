@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -42,6 +43,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     private int mInterval = 5000; // 5 seconds by default, can be changed later
     public static Handler HandlerIntroduirHores = new Handler();
 
+    float x, y;
 
     TextView benvinguda;
     Button iniciarJornadaBtn;
@@ -121,6 +123,34 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         getMultipldeDocuments(query, this::totalMinutsDiaris);
 
         //FirebaseMessaging.getInstance().subscribeToTopic("40hores");
+
+        binding.imageView6.bringToFront();
+        binding.imageView6.setX(1);
+        binding.imageView6.setOnTouchListener((view, motionEvent) -> {
+
+            switch (motionEvent.getActionMasked()) {
+                case MotionEvent.ACTION_DOWN:
+                    x = motionEvent.getX();
+                    System.out.println("DOWN: " + x);
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    float dx;
+                    float parentDiff = binding.textLL.getX();
+                    dx = motionEvent.getX() - x;
+
+                    if ((binding.imageView6.getX() + dx)  <= binding.textLL.getWidth() - (binding.imageView6.getWidth() + binding.textLL.getX() - parentDiff) &&
+                         binding.imageView6.getX() + dx >= 1)
+
+                            binding.imageView6.setX(binding.imageView6.getX() + dx);
+
+                    System.out.println("IMAGE: " + binding.imageView6.getX());
+                    System.out.println("PAREN: " + binding.textLL.getX());
+                    break;
+            }
+
+
+            return true;
+        });
 
     }
 
@@ -506,6 +536,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         super.onDestroy();
         stopRepeatingTask();
     }
-    
+
+
     
 }
