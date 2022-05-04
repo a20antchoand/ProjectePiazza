@@ -56,6 +56,8 @@
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/drawable/rounded_logo.xml" value="0.3828125" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/drawable/rounded_recycler_view.xml" value="0.3828125" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/drawable/selector_bkg.xml" value="0.3828125" />
+        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/drawable/selector_end.xml" value="0.3828125" />
+        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/drawable/selector_start.xml" value="0.3828125" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/drawable/sh.xml" value="0.3828125" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/drawable/side_nav_bar.xml" value="0.2796875" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/drawable/spinner_bkg.xml" value="0.39479166666666665" />
@@ -69,7 +71,7 @@
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/activity_piazza_home.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/fragment_administrar.xml" value="0.2296875" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/fragment_historial.xml" value="0.22083333333333333" />
-        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/fragment_introduir_hores.xml" value="0.2792207792207792" />
+        <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/fragment_introduir_hores.xml" value="0.67" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/fragment_perfil.xml" value="0.13694267515923567" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/fragment_reports.xml" value="0.33" />
         <entry key="..\:/Users/Toni/AndroidStudioProjects/ProjectePiazza/app/src/main/res/layout/fragment_treballadors.xml" value="0.25" />

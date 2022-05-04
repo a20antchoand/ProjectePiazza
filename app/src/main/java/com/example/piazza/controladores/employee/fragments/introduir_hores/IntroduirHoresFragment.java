@@ -2,6 +2,7 @@ package com.example.piazza.controladores.employee.fragments.introduir_hores;
 
 import static com.google.firebase.crashlytics.internal.Logger.TAG;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -74,6 +75,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         return root;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     public void setup () {
 
         switch(getFirstTimeRun()) {
@@ -125,7 +127,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         //FirebaseMessaging.getInstance().subscribeToTopic("40hores");
 
         binding.imageView6.bringToFront();
-        binding.imageView6.setX(1);
+        binding.imageView6.setX(4);
         binding.imageView6.setOnTouchListener((view, motionEvent) -> {
 
             switch (motionEvent.getActionMasked()) {
@@ -138,19 +140,64 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                     float parentDiff = binding.textLL.getX();
                     dx = motionEvent.getX() - x;
 
-                    if ((binding.imageView6.getX() + dx)  <= binding.textLL.getWidth() - (binding.imageView6.getWidth() + binding.textLL.getX() - parentDiff) &&
-                         binding.imageView6.getX() + dx >= 1)
+                    binding.imageView6.setX(binding.imageView6.getX() + dx);
 
-                            binding.imageView6.setX(binding.imageView6.getX() + dx);
+                    if (binding.imageView6.getX() < 4)
+                        binding.imageView6.setX(4);
 
+                    if (binding.imageView6.getX() > binding.textLL.getWidth() - (binding.imageView6.getWidth() + 4))
+                        binding.imageView6.setX(binding.textLL.getWidth() - (binding.imageView6.getWidth() + 4));
                     System.out.println("IMAGE: " + binding.imageView6.getX());
-                    System.out.println("PAREN: " + binding.textLL.getX());
+                    System.out.println("PAREN: " + (binding.textLL.getX() - parentDiff) + " / " + ((binding.textLL.getWidth() - parentDiff) - binding.imageView6.getWidth()));
                     break;
+                case MotionEvent.ACTION_UP:
+
+                    System.out.println(binding.imageView6.getX() + " -------- " + binding.textLL.getWidth() / 2);
+
+                    if (binding.imageView6.getX() + (binding.imageView6.getWidth() / 2) < binding.textLL.getWidth() / 2) {
+
+                        binding.imageView6.setX(4);
+                        binding.imageView6.setImageDrawable(getContext().getDrawable(R.drawable.ic_round_arrow_forward_24));
+                        binding.textTextLL.setText("Desliza para entrar");
+
+                        if (horarioUsuario.getDiaEntrada() != -1) {
+                            System.out.println("ACABAR");
+                            acabarJornada(binding.imageView6);
+                        }
+
+
+                    } else {
+
+                        binding.imageView6.setX(binding.textLL.getWidth() - (binding.imageView6.getWidth() + 4));
+                        binding.imageView6.setImageDrawable(getContext().getDrawable(R.drawable.ic_round_arrow_back_24));
+                        binding.textTextLL.setText("Desliza para salir");
+                        System.out.println("Horario usuario: " + horarioUsuario.getDiaEntrada());
+
+                        if (horarioUsuario.getDiaEntrada() == -1) {
+                            System.out.println("INICIAR");
+                            iniciarJornada(binding.imageView6);
+                        }
+
+                    }
             }
 
 
             return true;
         });
+
+    }
+
+    public void acabarJornadaSwipe() {
+        binding.imageView6.setX(4);
+        binding.imageView6.setImageDrawable(getContext().getDrawable(R.drawable.ic_round_arrow_forward_24));
+        binding.textTextLL.setText("Desliza para entrar");
+    }
+
+    public void iniciarJornadaSwipe() {
+
+        binding.imageView6.setX(binding.textLL.getWidth() - (binding.imageView6.getWidth() + 4));
+        binding.imageView6.setImageDrawable(getContext().getDrawable(R.drawable.ic_round_arrow_back_24));
+        binding.textTextLL.setText("Desliza para salir");
 
     }
 
@@ -190,7 +237,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         //amagem e lboto d'inici i mostrem el d'acabar
         changeStateButtons.hideButton(iniciarJornadaBtn);
         changeStateButtons.showButton(acabarJornadaBtn);
-
+        iniciarJornadaSwipe();
         //iniciem el handler que actualitzara el contador
         startRepeatingTask();
     }
@@ -203,6 +250,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         //cambiem els botons ocultant el d'acabar i mostrant el d'iniciar
         changeStateButtons.hideButton(acabarJornadaBtn);
         changeStateButtons.showButton(iniciarJornadaBtn);
+        acabarJornadaSwipe();
 
         //agafem la dada actual i guardem la informacio
         getFechaActual(false);
@@ -212,6 +260,8 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
         //parem el handler
         stopRepeatingTask();
+
+        horarioUsuario = new Horario();
     }
 
 /*    private void escoltarBBDD() {
@@ -349,6 +399,8 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             //modifiquem els butons
             changeStateButtons.hideButton(iniciarJornadaBtn);
             changeStateButtons.showButton(acabarJornadaBtn);
+            iniciarJornadaSwipe();
+
 
             //si l'horari te hora d'entrada i la jornada esta acabada
             if (horarioUsuario.getHoraEntrada() != -1 && horarioUsuario.isEstatJornada()) {
@@ -359,6 +411,8 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                 //cambiem els butons
                 changeStateButtons.hideButton(acabarJornadaBtn);
                 changeStateButtons.showButton(iniciarJornadaBtn);
+                acabarJornadaSwipe();
+
 
                 //calculem les hores totals
                 calcularHores();
@@ -367,8 +421,9 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             } else {
 
                 //cambiem els butons
-                changeStateButtons.showButton(acabarJornadaBtn);
                 changeStateButtons.hideButton(iniciarJornadaBtn);
+                changeStateButtons.showButton(acabarJornadaBtn);
+                iniciarJornadaSwipe();
 
                 //iniciem el Handler
                 startRepeatingTask();

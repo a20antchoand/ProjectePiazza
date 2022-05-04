@@ -5,6 +5,7 @@
     style="@style/Theme.TestAuth"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="2dp"
     tools:context="com.example.piazza.controladores.employee.EmployeeActivity">
 
     <TextView
@@ -64,9 +65,6 @@
                         android:layout_width="75dp"
                         android:layout_height="75dp"
                         android:layout_margin="15dp"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginBottom="15dp"
                         android:background="@drawable/bkg_img"
                         app:srcCompat="@mipmap/imatge_butons_round" />
 
@@ -109,10 +107,7 @@
                 <View
                     android:id="@+id/divider6"
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
+                    android:layout_height="0.5dp"
                     android:background="?android:attr/listDivider" />
 
                 <LinearLayout
@@ -155,22 +150,34 @@
                     <FrameLayout
                         android:id="@+id/textLL"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="55dp"
                         android:layout_marginStart="32dp"
                         android:layout_marginEnd="32dp"
                         android:layout_marginBottom="16dp"
                         android:background="@drawable/selector_bkg"
+                        android:padding="2dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
 
-                        <ImageView
+                        <TextView
+                            android:id="@+id/textTextLL"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="Desliza para entrar"
+                            android:textSize="14sp" />
+
+                        <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/imageView6"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
+                            android:layout_width="75dp"
+                            android:layout_height="match_parent"
                             android:layout_gravity="left"
-                            app:srcCompat="@drawable/start_button_pressed" />
+                            android:background="#FFFFFF"
+                            android:padding="4dp"
+                            app:shapeAppearanceOverlay="@style/circular"
+                            app:srcCompat="@drawable/ic_round_arrow_forward_24" />
                     </FrameLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -190,7 +197,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cvResidu"/>
+        app:layout_constraintTop_toBottomOf="@+id/cvResidu" />
 
     <!-- <LinearLayout
         android:id="@+id/introduirHoresLinearLayout"
