@@ -12,7 +12,7 @@
     </style>
 
     <style name="circular_small">
-        <item name="cornerSize">20%</item>
+        <item name="cornerSize">25%</item>
     </style>
 
 </resources>
