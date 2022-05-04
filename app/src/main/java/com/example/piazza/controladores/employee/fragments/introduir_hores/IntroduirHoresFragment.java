@@ -614,7 +614,9 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
         System.out.println(horarioUsuario.getTotalMinutsTreballats());
 
-        if (horarioUsuario.getTotalMinutsTreballats() == 2 ) {
+        System.out.println("Minuts: " + ((Integer.parseInt(userAuth.getHoresMensuals()) / 4) / Integer.parseInt(userAuth.getDiesSetmana()) * 60));
+
+        if (horarioUsuario.getTotalMinutsTreballats() == (Integer.parseInt(userAuth.getHoresMensuals()) / 4) / Integer.parseInt(userAuth.getDiesSetmana())) {
 
             System.out.println(horarioUsuario.getTotalMinutsTreballats());
 
