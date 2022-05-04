@@ -620,7 +620,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
             System.out.println(horarioUsuario.getTotalMinutsTreballats());
 
-            Notificacio.Notificar(getContext(), "Portes 3 hores treballant", "Recorda marcar la sortida", 2);
+            Notificacio.Notificar(getContext(), "Portes " + horarioUsuario.getTotalMinutsTreballats() / 60 + ":" + horarioUsuario.getTotalMinutsTreballats() % 60 + " hores treballant", "Recorda marcar la sortida", 2);
         }
 
     }
