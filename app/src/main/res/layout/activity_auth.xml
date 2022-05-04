@@ -66,7 +66,8 @@
                 android:drawablePadding="5dp"
                 android:ems="10"
                 android:hint="@string/email"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:paddingLeft="10dp" />
 
             <Space
                 android:layout_width="match_parent"
@@ -83,7 +84,8 @@
                 android:drawablePadding="5dp"
                 android:ems="10"
                 android:hint="@string/contrasenya"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:paddingLeft="10dp" />
 
             <Space
                 android:layout_width="match_parent"

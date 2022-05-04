@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.example.piazza.fireBase.data.WriteData;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.databinding.FragmentPerfilBinding;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,7 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class PerfilFragment extends Fragment implements AuthUserSession{
+public class PerfilFragment extends Fragment implements AuthUserSession, WriteData {
 
     private static final int RESULT_OK = -1;
     private FragmentPerfilBinding binding;
@@ -54,6 +55,14 @@ public class PerfilFragment extends Fragment implements AuthUserSession{
 
         binding.imatgePerfil.setOnClickListener(view -> openGallery());
 
+        binding.btnGuardar.setOnClickListener(l -> {
+
+            userAuth.setNom(binding.nom.getText().toString());
+            userAuth.setCognom(binding.cognom.getText().toString());
+            userAuth.setTelefono(binding.telefon.getText().toString());
+
+            writeOneDocument(DDBB.collection("usuaris").document(userAuth.getUid()), userAuth);
+        });
     }
 
     /**

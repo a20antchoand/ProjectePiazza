@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:elevation="5dp"
     android:theme="@style/Theme.TestAuth">
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -199,6 +198,18 @@
         </ScrollView>
 
     </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/btnGuardar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/login_btn"
+        android:text="Guardar"
+        app:icon="@drawable/lum_soft_02"
+        app:layout_constraintBottom_toBottomOf="@+id/imatgePerfil"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imatgePerfil"
+        app:layout_constraintTop_toTopOf="@+id/imatgePerfil" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

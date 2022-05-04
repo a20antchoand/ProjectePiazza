@@ -158,7 +158,6 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
                         binding.imageView6.setX(4);
                         binding.imageView6.setImageDrawable(getContext().getDrawable(R.drawable.ic_round_arrow_forward_24));
-                        binding.textTextLL.setText("Desliza para entrar");
 
                         if (horarioUsuario.getDiaEntrada() != -1) {
                             System.out.println("ACABAR");
@@ -170,34 +169,81 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
                         binding.imageView6.setX(binding.textLL.getWidth() - (binding.imageView6.getWidth() + 4));
                         binding.imageView6.setImageDrawable(getContext().getDrawable(R.drawable.ic_round_arrow_back_24));
-                        binding.textTextLL.setText("Desliza para salir");
-                        System.out.println("Horario usuario: " + horarioUsuario.getDiaEntrada());
 
                         if (horarioUsuario.getDiaEntrada() == -1) {
                             System.out.println("INICIAR");
                             iniciarJornada(binding.imageView6);
+
                         }
 
                     }
             }
 
-
             return true;
         });
+
+
+    }
+
+    private void cargarEfecteTextEntrar() {
+
+        binding.textTextLL.setText("");
+
+        new Handler().postDelayed(() -> binding.textTextLL.setText("S"), 300);
+        new Handler().postDelayed(() -> binding.textTextLL.append("w"), 400);
+        new Handler().postDelayed(() -> binding.textTextLL.append("i"), 500);
+        new Handler().postDelayed(() -> binding.textTextLL.append("p"), 600);
+        new Handler().postDelayed(() -> binding.textTextLL.append("e"), 700);
+        new Handler().postDelayed(() -> binding.textTextLL.append(" "), 800);
+        new Handler().postDelayed(() -> binding.textTextLL.append("p"), 900);
+        new Handler().postDelayed(() -> binding.textTextLL.append("a"), 1000);
+        new Handler().postDelayed(() -> binding.textTextLL.append("r"), 1100);
+        new Handler().postDelayed(() -> binding.textTextLL.append("a"), 1200);
+        new Handler().postDelayed(() -> binding.textTextLL.append(" "), 1300);
+        new Handler().postDelayed(() -> binding.textTextLL.append("e"), 1400);
+        new Handler().postDelayed(() -> binding.textTextLL.append("n"), 1500);
+        new Handler().postDelayed(() -> binding.textTextLL.append("t"), 1600);
+        new Handler().postDelayed(() -> binding.textTextLL.append("r"), 1700);
+        new Handler().postDelayed(() -> binding.textTextLL.append("a"), 1800);
+        new Handler().postDelayed(() -> binding.textTextLL.append("r"), 1900);
+
+    }
+
+    private void cargarEfecteTextSalir() {
+
+        binding.textTextLL.setText("");
+
+        new Handler().postDelayed(() -> binding.textTextLL.setText("S"), 300);
+        new Handler().postDelayed(() -> binding.textTextLL.append("w"), 400);
+        new Handler().postDelayed(() -> binding.textTextLL.append("i"), 500);
+        new Handler().postDelayed(() -> binding.textTextLL.append("p"), 600);
+        new Handler().postDelayed(() -> binding.textTextLL.append("e"), 700);
+        new Handler().postDelayed(() -> binding.textTextLL.append(" "), 800);
+        new Handler().postDelayed(() -> binding.textTextLL.append("p"), 900);
+        new Handler().postDelayed(() -> binding.textTextLL.append("a"), 1000);
+        new Handler().postDelayed(() -> binding.textTextLL.append("r"), 1100);
+        new Handler().postDelayed(() -> binding.textTextLL.append("a"), 1200);
+        new Handler().postDelayed(() -> binding.textTextLL.append(" "), 1300);
+        new Handler().postDelayed(() -> binding.textTextLL.append("s"), 1400);
+        new Handler().postDelayed(() -> binding.textTextLL.append("a"), 1500);
+        new Handler().postDelayed(() -> binding.textTextLL.append("l"), 1600);
+        new Handler().postDelayed(() -> binding.textTextLL.append("i"), 1700);
+        new Handler().postDelayed(() -> binding.textTextLL.append("r"), 1800);
 
     }
 
     public void acabarJornadaSwipe() {
         binding.imageView6.setX(4);
         binding.imageView6.setImageDrawable(getContext().getDrawable(R.drawable.ic_round_arrow_forward_24));
-        binding.textTextLL.setText("Desliza para entrar");
+        cargarEfecteTextEntrar();
+
     }
 
     public void iniciarJornadaSwipe() {
 
         binding.imageView6.setX(binding.textLL.getWidth() - (binding.imageView6.getWidth() + 4));
         binding.imageView6.setImageDrawable(getContext().getDrawable(R.drawable.ic_round_arrow_back_24));
-        binding.textTextLL.setText("Desliza para salir");
+        cargarEfecteTextSalir();
 
     }
 
