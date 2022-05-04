@@ -2,12 +2,17 @@ package com.example.piazza.controladores.admin.fragments.administrar;
 
 import static android.content.ContentValues.TAG;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.RippleDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +34,10 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
     private FragmentAdministrarBinding binding;
     View root;
     private FirebaseAuth mAuth2;
+    private Drawable selected;
+    private Drawable not_selected;
+    private int diesSetmana = 0;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -44,6 +53,16 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
 
     private void setup() {
 
+        selected = getContext().getDrawable(R.drawable.color_selected);
+        not_selected = getContext().getDrawable(R.drawable.color_not_selected);
+
+        binding.button18.setOnClickListener(this::colorea);
+        binding.button19.setOnClickListener(this::colorea);
+        binding.button20.setOnClickListener(this::colorea);
+        binding.button21.setOnClickListener(this::colorea);
+        binding.button22.setOnClickListener(this::colorea);
+        binding.button23.setOnClickListener(this::colorea);
+        binding.button24.setOnClickListener(this::colorea);
 
 
         binding.alta.setOnClickListener(view -> {
@@ -54,10 +73,10 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
             String telefon = binding.telefon.getText().toString();
             String rol = binding.spn2.getSelectedItem().toString();
             String horesMensuals = binding.horesMensuals.getText().toString();
-            String diesSetmana = binding.diesSetmana.getText().toString();
+            String diesSetmanaStr = diesSetmana + "";
             String urlPerfil = "";
 
-            if (email.equals("") || nom.equals("") || cognom.equals("") || telefon.equals("") || rol.equals("") || horesMensuals.equals("") || diesSetmana.equals("")) {
+            if (email.equals("") || nom.equals("") || cognom.equals("") || telefon.equals("") || rol.equals("") || horesMensuals.equals("") || diesSetmana == 0) {
                 Toast.makeText(getActivity().getApplication(), "Recuerda rellenar todos los campos.",
                         Toast.LENGTH_SHORT).show();
             } else {
@@ -83,7 +102,7 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
                                 Toast.makeText(getActivity().getApplication(), "Usuario dado de alta correctamente.",
                                         Toast.LENGTH_SHORT).show();
 
-                                GuardarUsuarioBBDD(new Usuario(task.getResult().getUser().getUid(), email, nom, cognom, telefon, rol, horesMensuals, diesSetmana, urlPerfil));
+                                GuardarUsuarioBBDD(new Usuario(task.getResult().getUser().getUid(), email, nom, cognom, telefon, rol, horesMensuals, diesSetmanaStr, urlPerfil));
 
                                 mAuth2.signOut();
 
@@ -92,7 +111,20 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
                                 binding.cognom.setText("");
                                 binding.telefon.setText("");
                                 binding.horesMensuals.setText("");
-                                binding.diesSetmana.setText("");
+
+                                for (int i = 0; i < binding.constraintLayoutSetmana.getChildCount(); i++) {
+
+                                    View button = binding.constraintLayoutSetmana.getChildAt(i);
+
+                                    if (button instanceof Button) {
+
+                                        Button btn = (Button) button;
+
+                                        btn.setBackground(getContext().getDrawable(R.drawable.color_not_selected));
+
+                                    }
+
+                                }
 
                             } else {
                                 // If sign in fails, display a message to the user.
@@ -107,5 +139,24 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
 
 
     }
+
+    private void colorea(View view) {
+
+        Button button = (Button) view;
+
+
+        if (button.getBackground() == selected) {
+            button.setBackground(not_selected);
+            diesSetmana--;
+        } else {
+            button.setBackground(selected);
+            diesSetmana++;
+        }
+
+        System.out.println("Button: " + diesSetmana);
+
+    }
+
+
 
 }

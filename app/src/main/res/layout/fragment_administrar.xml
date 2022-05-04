@@ -164,14 +164,172 @@
                             android:layout_height="wrap_content"
                             android:text="@string/diesSetmana_perfil" />
 
-                        <EditText
-                            android:id="@+id/diesSetmana"
+                        <androidx.cardview.widget.CardView
                             android:layout_width="match_parent"
-                            android:layout_height="48dp"
-                            android:background="@color/white"
-                            android:ems="14"
-                            android:inputType="number"
-                            tools:ignore="SpeakableTextPresentCheck" />
+                            android:layout_height="match_parent"
+                            android:layout_margin="8dp"
+                            android:elevation="8dp"
+                            android:padding="16dp"
+                            app:cardCornerRadius="16dp">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:id="@+id/constraintLayoutSetmana"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <Button
+                                    android:id="@+id/button19"
+                                    style="@style/Widget.AppCompat.Button.Borderless"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:onClick="colorea"
+                                    android:text="L"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toStartOf="@+id/button20"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <View
+                                    android:id="@+id/divider12"
+                                    android:layout_width="1dp"
+                                    android:layout_height="0dp"
+                                    android:background="?android:attr/listDivider"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="@+id/button19"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <Button
+                                    android:id="@+id/button20"
+                                    style="@style/Widget.AppCompat.Button.Borderless"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:onClick="colorea"
+                                    android:text="M"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toStartOf="@+id/button21"
+                                    app:layout_constraintStart_toEndOf="@+id/button19"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <View
+                                    android:id="@+id/divider13"
+                                    android:layout_width="1dp"
+                                    android:layout_height="0dp"
+                                    android:background="?android:attr/listDivider"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="@+id/button20"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <Button
+                                    android:id="@+id/button21"
+                                    style="@style/Widget.AppCompat.Button.Borderless"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:onClick="colorea"
+                                    android:text="M"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toStartOf="@+id/button22"
+                                    app:layout_constraintStart_toEndOf="@+id/button20"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <View
+                                    android:id="@+id/divider14"
+                                    android:layout_width="1dp"
+                                    android:layout_height="0dp"
+                                    android:background="?android:attr/listDivider"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="@+id/button21"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <Button
+                                    android:id="@+id/button22"
+                                    style="@style/Widget.AppCompat.Button.Borderless"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:onClick="colorea"
+                                    android:text="J"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toStartOf="@+id/button23"
+                                    app:layout_constraintStart_toEndOf="@+id/button21"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <View
+                                    android:id="@+id/divider15"
+                                    android:layout_width="1dp"
+                                    android:layout_height="0dp"
+                                    android:background="?android:attr/listDivider"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="@+id/button22"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <Button
+                                    android:id="@+id/button23"
+                                    style="@style/Widget.AppCompat.Button.Borderless"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:onClick="colorea"
+                                    android:text="V"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toStartOf="@+id/button24"
+                                    app:layout_constraintStart_toEndOf="@+id/button22"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <View
+                                    android:id="@+id/divider16"
+                                    android:layout_width="1dp"
+                                    android:layout_height="0dp"
+                                    android:background="?android:attr/listDivider"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="@+id/button23"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <Button
+                                    android:id="@+id/button24"
+                                    style="@style/Widget.AppCompat.Button.Borderless"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:onClick="colorea"
+                                    android:text="S"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toStartOf="@+id/button18"
+                                    app:layout_constraintStart_toEndOf="@+id/button23"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <View
+                                    android:id="@+id/divider19"
+                                    android:layout_width="1dp"
+                                    android:layout_height="0dp"
+                                    android:background="?android:attr/listDivider"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="@+id/button24"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <Button
+                                    android:id="@+id/button18"
+                                    style="@style/Widget.AppCompat.Button.Borderless"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:onClick="colorea"
+                                    android:text="D"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toEndOf="@+id/button24"
+                                    app:layout_constraintTop_toTopOf="parent" />
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        </androidx.cardview.widget.CardView>
 
                         <View
                             android:id="@+id/divider11"
