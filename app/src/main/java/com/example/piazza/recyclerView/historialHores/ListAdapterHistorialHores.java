@@ -70,16 +70,18 @@ public class ListAdapterHistorialHores extends RecyclerView.Adapter<ListAdapterH
         }
 
         void bindData (final ListElementHistorialHores item) {
-            total.setText(item.getTotal());
-            data.setText(item.getData());
-            entrada.setText(item.getEntrada());
-            sortida.setText(item.getSortida());
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    listener.onItemClickListener(item);
-                }
-            });
+
+            String dataStr = String.format("%4d/%02d/%02d",item.getHorario().getAnioEntrada(), item.getHorario().getMesEntrada(), item.getHorario().getDiaEntrada());
+            String entradaStr = String.format("%d:%02d",item.getHorario().getHoraEntrada(),item.getHorario().getMinutEntrada()) ;
+            String sortidaStr = String.format("%d:%02d",item.getHorario().getHoraSalida(), item.getHorario().getMinutSalida());
+            String totalFinalStr = String.format("%dh %02dm",item.getHorario().getTotalMinutsTreballats()/60, item.getHorario().getTotalMinutsTreballats()%60);
+
+            total.setText(totalFinalStr);
+            data.setText(dataStr);
+            entrada.setText(entradaStr);
+            sortida.setText(sortidaStr);
+
+            itemView.setOnClickListener(view -> listener.onItemClickListener(item));
 
         }
     }

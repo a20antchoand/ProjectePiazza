@@ -1,6 +1,7 @@
 package com.example.piazza.controladores.auth;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -8,11 +9,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.piazza.classes.ExampleDialog;
 import com.example.piazza.classes.Horario;
 import com.example.piazza.classes.Usuario;
 import com.example.piazza.commons.getCurrTimeGMT;
@@ -30,11 +33,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-public class AuthActivity extends AppCompatActivity implements ReadData, AuthUserSession{
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
+public class AuthActivity extends AppCompatActivity implements ReadData, AuthUserSession, ExampleDialog.ExampleDialogListener {
 
     Button logIn;
     TextView errorLogin, recuperarContrasenya;
-    ProgressBar pbLogin;
+    SweetAlertDialog pDialog;
 
     DocumentReference docRefUsuari;
     private String TAG = "RECUPERAR: ";
@@ -51,18 +56,13 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
     public void setup() {
 
         logIn = findViewById(R.id.logIn);
-        errorLogin = findViewById(R.id.errorLogin);
         recuperarContrasenya = findViewById(R.id.recuperarContrasenya);
-        pbLogin = findViewById(R.id.pbLogin);
 
         recuperarContrasenya.setOnClickListener(l -> {
 
-            FirebaseAuth.getInstance().sendPasswordResetEmail(((EditText) findViewById(R.id.editTextEmail)).getText().toString())
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "Email sent.");
-                        }
-                    });
+            ExampleDialog exampleDialog = new ExampleDialog();
+            exampleDialog.show(getSupportFragmentManager(), "example dialog");
+
 
         });
 
@@ -76,16 +76,17 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
 
                 if (!email.equals("") && !password.equals("")) {
 
-                    //retirem missatge d'error per si de cas i mostrem progress bar
-                    errorLogin.setVisibility(View.GONE);
-                    pbLogin.setVisibility(View.VISIBLE);
-
                     //Fem un login amb l'usuari i password
                     FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
 
                         //si funciona cargem les dades de l'usauri
                         if (task.isSuccessful()) {
 
+                            pDialog = new SweetAlertDialog(AuthActivity.this, SweetAlertDialog.PROGRESS_TYPE);
+                            pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+                            pDialog.setTitleText("Preparant sistema...");
+                            pDialog.setCancelable(true);
+                            pDialog.show();
                             /* ======================================
                              * Cargamos datos del usuario actual
                              * ======================================
@@ -98,16 +99,18 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
 
 
                         } else {
+                            new SweetAlertDialog(AuthActivity.this, SweetAlertDialog.ERROR_TYPE)
+                                    .setTitleText("Oops...")
+                                    .setContentText("El correu o la contrasenya no son correctes!")
+                                    .show();
 
-                            //sino mostrem missatge d'error
-                            showAlert("El usuario o la contrasenya no són correctes.");
                         }
                     });
                 } else {
-                    //mostrem error eliminem progressbar
-                    errorLogin.setVisibility(View.VISIBLE);
-                    pbLogin.setVisibility(View.GONE);
-
+                    new SweetAlertDialog(AuthActivity.this, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText("Oops...")
+                            .setContentText("El correu o la contrasenya estan buits!")
+                            .show();
                 }
             }
 
@@ -192,14 +195,35 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
 
     private void showAdmin() {
         Intent intent = new Intent(this, AdminActivity.class);
+        pDialog.cancel();
         startActivity(intent);
         finish();
     }
 
     private void showEmployee () {
         Intent intent = new Intent(this, EmployeeActivity.class);
+        pDialog.cancel();
         startActivity(intent);
         finish();
     }
 
+    @Override
+    public void recuperarText(String email) {
+
+        if (email.equals(""))
+            Toast.makeText(this, "El correu no pot estar buit", Toast.LENGTH_SHORT).show();
+        else
+            FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d("RECOVER", "Email sent.");
+                    }
+                }).addOnCompleteListener(task -> {
+                   if (task.isSuccessful())
+                       Toast.makeText(this, "S'ha enviat un correu per recuperar la contrasenya", Toast.LENGTH_SHORT).show();
+                   else
+                       Toast.makeText(this, "El correu introduit no es valid!", Toast.LENGTH_SHORT).show();
+
+            });
+    }
 }

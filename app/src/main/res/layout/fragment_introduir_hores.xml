@@ -176,6 +176,7 @@
                             android:layout_gravity="left"
                             android:background="#FFFFFF"
                             android:padding="4dp"
+                            app:strokeColor="@null"
                             app:shapeAppearanceOverlay="@style/circular"
                             app:srcCompat="@drawable/ic_round_arrow_forward_24" />
                     </FrameLayout>

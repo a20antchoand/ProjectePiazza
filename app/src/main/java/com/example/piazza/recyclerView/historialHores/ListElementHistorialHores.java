@@ -1,50 +1,32 @@
 package com.example.piazza.recyclerView.historialHores;
 
+import com.example.piazza.classes.Horario;
+
 import java.io.Serializable;
 
 public class ListElementHistorialHores implements Serializable {
 
-    String data;
-    String entrada;
-    String sortida;
-    String total;
+    Horario horario;
+    String id;
 
-    public ListElementHistorialHores(String data, String entrada, String sortida, String total) {
-        this.data = data;
-        this.entrada = entrada;
-        this.sortida = sortida;
-        this.total = total;
+    public ListElementHistorialHores(Horario horario, String id) {
+        this.horario = horario;
+        this.id = id;
     }
 
-    public String getData() {
-        return data;
+    public Horario getHorario() {
+        return horario;
     }
 
-    public void setData(String data) {
-        this.data = data;
+    public void setHorario(Horario horario) {
+        this.horario = horario;
     }
 
-    public String getEntrada() {
-        return entrada;
+    public String getId() {
+        return id;
     }
 
-    public void setEntrada(String entrada) {
-        this.entrada = entrada;
-    }
-
-    public String getSortida() {
-        return sortida;
-    }
-
-    public void setSortida(String sortida) {
-        this.sortida = sortida;
-    }
-
-    public String getTotal() {
-        return total;
-    }
-
-    public void setTotal(String total) {
-        this.total = total;
+    public void setId(String id) {
+        this.id = id;
     }
 }

@@ -1,13 +1,18 @@
 package com.example.piazza.controladores.employee.fragments.historial;
 
+import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,10 +36,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class HistorialFragment extends Fragment implements ReadData, AuthUserSession{
 
     private int mInterval = 5000; // 5 seconds by default, can be changed later
     public static Handler HandlerHistorial = new Handler();
+
+    private int horaEntrada, minutEntrada, horaSortida, minutSortida;
 
     private static final String TAG = "HistorialFragment: ";
     private FragmentHistorialBinding binding;
@@ -85,7 +94,7 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
                     //si la jornada esta acabada
                     if (horario.isEstatJornada())
                         //creem l'item de la recycler view i l'afegim a un array list d'elements
-                        listElements.add(bindDataElementHistorial(horario));
+                        listElements.add(bindDataElementHistorial(horario, historialDocument.getId()));
                 }
             }
 
@@ -126,15 +135,61 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
         binding.horesTreballadesTotal.setVisibility(View.VISIBLE);
 
         //Creem l'adaptador de la recyclerview
-        ListAdapterHistorialHores listAdapter = new ListAdapterHistorialHores(listElements, root.getContext(), item -> {
-            //moveToDescription(item);
-        });
+        ListAdapterHistorialHores listAdapter = new ListAdapterHistorialHores(listElements, root.getContext(), this::showInfo);
 
         //creem la recyclerview
         RecyclerView recyclerView = root.findViewById(R.id.recyclerViewHistorial);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
         recyclerView.setAdapter(listAdapter);
+
+    }
+
+    private void showInfo(ListElementHistorialHores listElementHistorialHores) {
+
+        new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Estas segur que vols modificar el registre?")
+                .setContentText("L'administrador decidira si la mante o no!")
+                .setConfirmText("Si")
+                .setCancelText("No")
+                .setConfirmClickListener(sDialog -> {
+
+
+                    TimePickerDialog.OnTimeSetListener mTimeListenerEntrada =
+                            new TimePickerDialog.OnTimeSetListener() {
+
+                                int hora, minut;
+
+                                public void onTimeSet(TimePicker view, int hour, int minute) {
+                                    hora = hour;
+                                    minut = minute;
+                                    updateDisplay(hora, minut);
+                                }
+                            };
+
+
+                    TimePickerDialog.OnTimeSetListener mTimeListenerSortida =
+                            new TimePickerDialog.OnTimeSetListener() {
+
+                                int hora, minut;
+
+                                public void onTimeSet(TimePicker view, int hour, int minute) {
+                                    hora = hour;
+                                    minut = minute;
+                                    updateDisplay(hora, minut);
+                                }
+                            };
+
+
+                    sDialog.dismissWithAnimation();
+                })
+                .show();
+
+    }
+
+    private void updateDisplay(int hora, int minut) {
+
+        System.out.println(hora + ":" + minut);
 
     }
 
@@ -156,22 +211,9 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
 
     }
 
-    private ListElementHistorialHores bindDataElementHistorial(Horario horario) {
+    private ListElementHistorialHores bindDataElementHistorial(Horario horario, String id) {
 
-        String data2 = String.format("%02d",horario.getHoraEntrada());
-
-        System.out.println("DATA2: " + data2);
-
-        String data = String.format("%4d/%02d/%02d",horario.getAnioEntrada(), horario.getMesEntrada(), horario.getDiaEntrada());
-        String entrada = String.format("%d:%02d",horario.getHoraEntrada(),horario.getMinutEntrada()) ;
-        String sortida = String.format("%d:%02d",horario.getHoraSalida(), horario.getMinutSalida());
-        String totalFinal = String.format("%dh %02dm",horario.getTotalMinutsTreballats()/60, horario.getTotalMinutsTreballats()%60);
-
-        return new ListElementHistorialHores(
-                data,
-                entrada + "  ",
-                sortida,
-                totalFinal);
+        return new ListElementHistorialHores(horario, id);
 
     }
 

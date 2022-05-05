@@ -461,7 +461,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
 
                 //calculem les hores totals
-                calcularHores();
+                calcularHores(horarioUsuario);
 
             //si te entrada i no sortida
             } else {
@@ -509,7 +509,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             horarioUsuario.setMinutSalida(getCurrTimeGMT.zdt.getMinute());
 
             //calculem les hores
-            calcularHores();
+            calcularHores(horarioUsuario);
         }
 
     }
@@ -523,11 +523,11 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     }
 
 
-    private void calcularHores() {
+    private Horario calcularHores(Horario horario) {
 
         //agafem la data d'entrada i la de sortida
-        LocalDateTime entrada = formatarDateTime(horarioUsuario.getAnioEntrada(), horarioUsuario.getMesEntrada(), horarioUsuario.getDiaEntrada(), horarioUsuario.getHoraEntrada(), horarioUsuario.getMinutEntrada());
-        LocalDateTime sortida = formatarDateTime(horarioUsuario.getAnioSalida(), horarioUsuario.getMesSalida(), horarioUsuario.getDiaSalida(), horarioUsuario.getHoraSalida(), horarioUsuario.getMinutSalida());
+        LocalDateTime entrada = formatarDateTime(horario.getAnioEntrada(), horario.getMesEntrada(), horario.getDiaEntrada(), horario.getHoraEntrada(), horario.getMinutEntrada());
+        LocalDateTime sortida = formatarDateTime(horario.getAnioSalida(), horario.getMesSalida(), horario.getDiaSalida(), horario.getHoraSalida(), horario.getMinutSalida());
 
         //calculem la diferencia entre entrada i sortida
         Duration diff = Duration.between(entrada, sortida);
@@ -536,12 +536,12 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         long diffMinuts = diff.toMinutes();
 
         //afegim al horari el total de minuts treballats
-        horarioUsuario.setTotalMinutsTreballats(diffMinuts);
+        horario.setTotalMinutsTreballats(diffMinuts);
 
         //guardem registre a la BBDD
         GuardarRegistroBBDD();
 
-
+        return horario;
 
     }
 
