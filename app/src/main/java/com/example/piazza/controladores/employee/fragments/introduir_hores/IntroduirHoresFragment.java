@@ -439,15 +439,6 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         //Creem l'objecte Horari del document recuperat
         horarioUsuario = document.toObject(Horario.class);
 
-        //Si l'horari te hora d'entrada
-        if (horarioUsuario.getHoraEntrada() != -1) {
-
-            //modifiquem els butons
-            changeStateButtons.hideButton(iniciarJornadaBtn);
-            changeStateButtons.showButton(acabarJornadaBtn);
-            iniciarJornadaSwipe();
-
-
             //si l'horari te hora d'entrada i la jornada esta acabada
             if (horarioUsuario.getHoraEntrada() != -1 && horarioUsuario.isEstatJornada()) {
 
@@ -459,6 +450,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                 changeStateButtons.showButton(iniciarJornadaBtn);
                 acabarJornadaSwipe();
 
+                writeOneDocument(DDBB.collection("REGISTRE").document("VEGADES LINEA 453"), 1);
 
                 //calculem les hores totals
                 calcularHores(horarioUsuario);
@@ -475,7 +467,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                 startRepeatingTask();
 
             }
-        }
+
 
 
     }

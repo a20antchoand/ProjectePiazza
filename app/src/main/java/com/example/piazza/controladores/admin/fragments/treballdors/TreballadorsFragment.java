@@ -52,7 +52,7 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
 
     public void setup() {
 
-        Query query = DDBB.collection("usuaris");
+        Query query = DDBB.collection("usuaris").whereEqualTo("empresa", userAuth.getEmpresa());
 
         getMultipldeDocuments( query, this::setElements);
 

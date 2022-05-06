@@ -63,6 +63,7 @@ public interface AuthUserSession {
         userAuth.setHoresMensuals(user.getHoresMensuals());
         userAuth.setDiesSetmana(user.getDiesSetmana());
         userAuth.setUrlPerfil(user.getUrlPerfil());
+        userAuth.setEmpresa(user.getEmpresa());
 
         if (userAuth.getUrlPerfil() != null && !userAuth.getUrlPerfil().equals("")) {
 

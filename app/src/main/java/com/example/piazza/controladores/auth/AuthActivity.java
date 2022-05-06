@@ -211,7 +211,9 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
     public void recuperarText(String email) {
 
         if (email.equals(""))
-            Toast.makeText(this, "El correu no pot estar buit", Toast.LENGTH_SHORT).show();
+            new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Error, el correu no pot estar buit")
+                    .show();
         else
             FirebaseAuth.getInstance().sendPasswordResetEmail(email)
                 .addOnCompleteListener(task -> {
@@ -220,9 +222,13 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
                     }
                 }).addOnCompleteListener(task -> {
                    if (task.isSuccessful())
-                       Toast.makeText(this, "S'ha enviat un correu per recuperar la contrasenya", Toast.LENGTH_SHORT).show();
+                       new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
+                               .setTitleText("Correu enviat correctament!")
+                               .show();
                    else
-                       Toast.makeText(this, "El correu introduit no es valid!", Toast.LENGTH_SHORT).show();
+                       new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
+                               .setTitleText("Error al enviar el correu!")
+                               .show();
 
             });
     }

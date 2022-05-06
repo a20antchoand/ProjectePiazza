@@ -26,6 +26,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class PerfilFragment extends Fragment implements AuthUserSession, WriteData {
 
     private static final int RESULT_OK = -1;
@@ -62,6 +64,10 @@ public class PerfilFragment extends Fragment implements AuthUserSession, WriteDa
             userAuth.setTelefono(binding.telefon.getText().toString());
 
             writeOneDocument(DDBB.collection("usuaris").document(userAuth.getUid()), userAuth);
+
+            new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
+                    .setTitleText("S'ha actualitzat la informació correctament!")
+                    .show();
         });
     }
 

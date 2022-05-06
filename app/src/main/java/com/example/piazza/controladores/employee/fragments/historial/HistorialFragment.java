@@ -21,24 +21,30 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.piazza.classes.Horario;
 import com.example.piazza.controladores.employee.fragments.introduir_hores.IntroduirHoresFragment;
 import com.example.piazza.fireBase.data.ReadData;
+import com.example.piazza.fireBase.data.WriteData;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.piazza.recyclerView.historialHores.ListAdapterHistorialHores;
 import com.example.piazza.recyclerView.historialHores.ListElementHistorialHores;
 import com.example.testauth.R;
 import com.example.piazza.commons.*;
 import com.example.testauth.databinding.FragmentHistorialBinding;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class HistorialFragment extends Fragment implements ReadData, AuthUserSession{
+public class HistorialFragment extends Fragment implements ReadData, WriteData, AuthUserSession{
 
     private int mInterval = 5000; // 5 seconds by default, can be changed later
     public static Handler HandlerHistorial = new Handler();
@@ -147,41 +153,102 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
 
     private void showInfo(ListElementHistorialHores listElementHistorialHores) {
 
+        Horario horario = listElementHistorialHores.getHorario();
+
         new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
                 .setTitleText("Estas segur que vols modificar el registre?")
                 .setContentText("L'administrador decidira si la mante o no!")
-                .setConfirmText("Si")
-                .setCancelText("No")
+                .setConfirmText("Editar")
+                .setCancelText("Eliminar")
                 .setConfirmClickListener(sDialog -> {
 
+                    TimePickerDialog.OnTimeSetListener mTimeListenerSortida =
+                            (view, hour, minute) -> {
+                                /**
+                                 * MODIFICAR PER ATRIBUT TEMPORAL (A CREAR ENCARA)
+                                 */
+                                horario.setHoraSalida(hour);
+                                horario.setMinutSalida(minute);
+
+                                LocalDateTime dataEntrada = LocalDateTime.of(horario.getAnioEntrada(), horario.getMesEntrada(), horario.getDiaEntrada(), horario.getHoraEntrada(), horario.getMinutEntrada());
+                                LocalDateTime dataSalida = LocalDateTime.of(horario.getAnioSalida(), horario.getMesSalida(), horario.getDiaSalida(), horario.getHoraSalida(), horario.getMinutSalida());
+
+                                    //calculem la diferencia entre entrada i sortida
+                                    Duration diff = Duration.between(dataEntrada, dataSalida);
+
+                                    //ho passem a minuts
+                                    long diffMinuts = diff.toMinutes();
+
+                                    //afegim al horari el total de minuts treballats
+                                    horario.setTotalMinutsTreballats(diffMinuts);
+
+                                writeOneDocument(DDBB.collection("horari").document(listElementHistorialHores.getId()),horario);
+
+                                new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
+                                        .setTitleText("S'ha enviat la modificació a validar!")
+                                        .show();
+
+                                binding.recyclerViewHistorial.getAdapter().notifyDataSetChanged();
+                            };
 
                     TimePickerDialog.OnTimeSetListener mTimeListenerEntrada =
-                            new TimePickerDialog.OnTimeSetListener() {
+                            (view, hour, minute) -> {
+                                /**
+                                 * MODIFICAR PER ATRIBUT TEMPORAL (A CREAR ENCARA)
+                                 */
+                                listElementHistorialHores.getHorario().setHoraEntrada(hour);
+                                listElementHistorialHores.getHorario().setMinutEntrada(minute);
+                                writeOneDocument(DDBB.collection("horari").document(listElementHistorialHores.getId()),listElementHistorialHores.getHorario());
 
-                                int hora, minut;
-
-                                public void onTimeSet(TimePicker view, int hour, int minute) {
-                                    hora = hour;
-                                    minut = minute;
-                                    updateDisplay(hora, minut);
-                                }
+                                int hourSortida = listElementHistorialHores.getHorario().getHoraSalida();
+                                int minuteSortida = listElementHistorialHores.getHorario().getMinutSalida();
+                                TimePickerDialog mTimePicker2;
+                                mTimePicker2 = new TimePickerDialog(getContext(), mTimeListenerSortida, hourSortida, minuteSortida, true);//Yes 24 hour time
+                                mTimePicker2.setTitle("Select Time");
+                                mTimePicker2.show();
                             };
 
 
-                    TimePickerDialog.OnTimeSetListener mTimeListenerSortida =
-                            new TimePickerDialog.OnTimeSetListener() {
+                    int hour = listElementHistorialHores.getHorario().getHoraEntrada();
+                    int minute = listElementHistorialHores.getHorario().getMinutEntrada();
+                    TimePickerDialog mTimePicker;
+                    mTimePicker = new TimePickerDialog(getContext(), mTimeListenerEntrada, hour, minute, true);//Yes 24 hour time
+                    mTimePicker.setTitle("Select Time");
+                    mTimePicker.setIcon(getResources().getDrawable(R.drawable.lum_soft_02));
+                    mTimePicker.show();
 
-                                int hora, minut;
-
-                                public void onTimeSet(TimePicker view, int hour, int minute) {
-                                    hora = hour;
-                                    minut = minute;
-                                    updateDisplay(hora, minut);
-                                }
-                            };
 
 
                     sDialog.dismissWithAnimation();
+                })
+                .setCancelClickListener(sweetAlertDialog -> {
+
+                    DDBB.collection("horari").document(listElementHistorialHores.getId())
+                            .delete()
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
+                                            .setTitleText("S'ha eliminat el registre correctament!")
+                                            .show();
+
+                                    listElements.remove(listElementHistorialHores);
+
+                                    binding.recyclerViewHistorial.getAdapter().notifyDataSetChanged();
+
+                                }
+
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
+                                            .setTitleText("No s'ha pogut editar el registre!")
+                                            .show();
+                                }
+                            });
+
+                    sweetAlertDialog.dismissWithAnimation();
                 })
                 .show();
 
@@ -189,7 +256,7 @@ public class HistorialFragment extends Fragment implements ReadData, AuthUserSes
 
     private void updateDisplay(int hora, int minut) {
 
-        System.out.println(hora + ":" + minut);
+        System.out.println("UPDATE TIME: " + hora + ":" + minut);
 
     }
 

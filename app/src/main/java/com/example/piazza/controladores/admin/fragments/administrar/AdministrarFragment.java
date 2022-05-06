@@ -29,6 +29,8 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class AdministrarFragment extends Fragment implements AuthUserSession{
 
     private FragmentAdministrarBinding binding;
@@ -99,10 +101,12 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "createUserWithEmail:success");
-                                Toast.makeText(getActivity().getApplication(), "Usuario dado de alta correctamente.",
-                                        Toast.LENGTH_SHORT).show();
 
-                                GuardarUsuarioBBDD(new Usuario(task.getResult().getUser().getUid(), email, nom, cognom, telefon, rol, horesMensuals, diesSetmanaStr, urlPerfil));
+                                new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
+                                        .setTitleText("Usuari donat d'alta correctament")
+                                        .show();
+
+                                GuardarUsuarioBBDD(new Usuario(task.getResult().getUser().getUid(), email, nom, cognom, telefon, rol, horesMensuals, diesSetmanaStr, urlPerfil, userAuth.getEmpresa()));
 
                                 mAuth2.signOut();
 
@@ -129,8 +133,9 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                Toast.makeText(getActivity().getApplication(), "No se a podido dar de alta al usuario.",
-                                        Toast.LENGTH_SHORT).show();
+                                new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
+                                        .setTitleText("Error al donar d'alta a l'usuari...")
+                                        .show();
 
                             }
                         });

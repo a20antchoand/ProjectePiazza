@@ -11,6 +11,7 @@ public class Usuario {
     String diesSetmana;
     String rol;
     String urlPerfil;
+    String empresa;
 
     /**
      * Constructor per defecte d'Usuari
@@ -31,7 +32,7 @@ public class Usuario {
      * @param urlPerfil url de la imatge de perfil de l'usuarfi
      */
 
-    public Usuario(String uid, String email, String nom, String cognom, String telefono, String rol, String horesMensuals, String diesSetmana, String urlPerfil) {
+    public Usuario(String uid, String email, String nom, String cognom, String telefono, String rol, String horesMensuals, String diesSetmana, String urlPerfil, String empresa) {
         this.uid = uid;
         this.email = email;
         this.telefono = telefono;
@@ -41,6 +42,7 @@ public class Usuario {
         this.horesMensuals = horesMensuals;
         this.diesSetmana = diesSetmana;
         this.urlPerfil = urlPerfil;
+        this.empresa = empresa;
     }
 
     public String getUid() {
@@ -113,5 +115,13 @@ public class Usuario {
 
     public void setUrlPerfil(String urlPerfil) {
         this.urlPerfil = urlPerfil;
+    }
+
+    public String getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(String empresa) {
+        this.empresa = empresa;
     }
 }

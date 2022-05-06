@@ -55,6 +55,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class ReportsFragment extends Fragment implements ReadData, WriteData, AuthUserSession {
 
     private FragmentReportsBinding binding;
@@ -87,7 +89,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
 
         // Application of the Array to the Spinner
-        getMultipldeDocuments(DDBB.collection("usuaris"), this::obtenerUsuarios);
+        getMultipldeDocuments(DDBB.collection("usuaris").whereEqualTo("empresa", userAuth.getEmpresa()), this::obtenerUsuarios);
 
         binding.button.setOnClickListener(l -> {
             if (binding.spnTreballador.getSelectedItem().equals(getString(R.string.tots)))
@@ -241,8 +243,8 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
                 binding.progressBar2.setMax(horesMensuals);
                 binding.progressBar2.setProgress(horesTreballades);
-                binding.progressBar2.getIndeterminateDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
-                binding.progressBar2.getProgressDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
+                binding.progressBar2.getIndeterminateDrawable().setColorFilter(getContext().getColor(R.color.start_btn), PorterDuff.Mode.SRC_IN);
+                binding.progressBar2.getProgressDrawable().setColorFilter(getContext().getColor(R.color.start_btn), PorterDuff.Mode.SRC_IN);
 
                 binding.percentatgeJornada.setText((horesTreballades * 100) / horesMensuals + "%");
 
@@ -648,15 +650,20 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
             }
 
-            Toast.makeText(this.getContext(), "SE CREO EL ARCHIVO CSV EXITOSAMENTE", Toast.LENGTH_SHORT).show();
-
             fileWriter.close();
 
-            compartirFitxer(file);
+            new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
+                    .setTitleText("Registre generat correctament, vols enviar-lo?")
+                    .setConfirmText("Compartir")
+                    .setCancelText("No")
+                    .setConfirmClickListener(l -> compartirFitxer(file))
+                    .show();
 
         } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this.getContext(), "ERROR \"PERMISOS\"", Toast.LENGTH_SHORT).show();
+            new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Error al generar l'informe... \n" + e.getLocalizedMessage())
+                    .setConfirmClickListener(l -> compartirFitxer(file))
+                    .show();
 
         }
     }
@@ -683,11 +690,20 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
             fileWriter.close();
 
-            compartirFitxer(file);
+            new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
+                    .setTitleText("Registre generat correctament, vols enviar-lo?")
+                    .setConfirmText("Compartir")
+                    .setCancelText("No")
+                    .setConfirmClickListener(l -> {
+                        compartirFitxer(file);
+                    })
+                    .show();
 
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(this.getContext(), "ERROR \"PERMISOS\"", Toast.LENGTH_SHORT).show();
+            new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Error al generar l'informe... \n" + e.getLocalizedMessage())
+                    .show();
 
         }
     }
