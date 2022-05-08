@@ -25,7 +25,7 @@
         android:layout_height="175dp"
         android:adjustViewBounds="false"
         android:background="@drawable/rounded_logo"
-        android:src="@mipmap/piazza_splash"
+        android:src="@drawable/lum_soft_09"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
