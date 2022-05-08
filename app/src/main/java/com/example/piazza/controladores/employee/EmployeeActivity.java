@@ -11,6 +11,7 @@ import android.text.SpannableString;
 import android.text.style.AlignmentSpan;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.piazza.classes.Usuario;
@@ -44,7 +45,12 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
         binding = ActivityEmployeeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        setSupportActionBar(findViewById(R.id.my_toolbar));
+        Toolbar toolbar = findViewById(R.id.my_toolbar);
+        ImageView logo = findViewById(R.id.yourlogo);
+        logo.setImageDrawable(getResources().getDrawable(R.drawable.mipmap_piazza));
+        /*toolbar.setBackgroundColor(getResources().getColor(R.color.start_btn));*/
+
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
 

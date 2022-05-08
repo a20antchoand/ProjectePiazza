@@ -52,12 +52,18 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:background="?background"
+                    android:padding="10dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="10dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="?background"
                         android:orientation="vertical">
 
                         <TextView
@@ -70,9 +76,10 @@
                             android:id="@+id/email"
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
-                            android:background="@color/white"
+                            android:background="@drawable/edit_text_bg"
                             android:ems="14"
                             android:inputType="textPersonName"
+                            android:padding="10dp"
                             android:singleLine="false"
                             tools:ignore="SpeakableTextPresentCheck" />
 
@@ -94,9 +101,10 @@
                             android:id="@+id/nom"
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
-                            android:background="@color/white"
+                            android:background="@drawable/edit_text_bg"
                             android:ems="14"
                             android:inputType="textPersonName"
+                            android:padding="10dp"
                             tools:ignore="SpeakableTextPresentCheck" />
 
                         <View
@@ -117,9 +125,10 @@
                             android:id="@+id/cognom"
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
-                            android:background="@color/white"
+                            android:background="@drawable/edit_text_bg"
                             android:ems="14"
                             android:inputType="textPersonName"
+                            android:padding="10dp"
                             tools:ignore="SpeakableTextPresentCheck" />
 
                         <View
@@ -140,9 +149,10 @@
                             android:id="@+id/telefon"
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
-                            android:background="@color/white"
+                            android:background="@drawable/edit_text_bg"
                             android:ems="14"
                             android:inputType="textPersonName"
+                            android:padding="10dp"
                             tools:ignore="SpeakableTextPresentCheck" />
 
                         <View
@@ -163,10 +173,11 @@
                             android:id="@+id/horesMensuals"
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
-                            android:background="@color/white"
+                            android:background="@drawable/edit_text_bg"
                             android:ems="14"
                             android:enabled="false"
                             android:inputType="textPersonName"
+                            android:padding="10dp"
                             tools:ignore="SpeakableTextPresentCheck" />
 
                         <View
@@ -187,9 +198,10 @@
                             android:id="@+id/rol"
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
-                            android:background="@color/white"
+                            android:background="@drawable/edit_text_bg"
                             android:ems="14"
                             android:inputType="textPersonName"
+                            android:padding="10dp"
                             tools:ignore="SpeakableTextPresentCheck" />
 
                     </LinearLayout>

@@ -45,7 +45,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="De quin treballador vols treure l'informe?" />
+                    android:text="De quin treballador vols treure l'informe?"
+                    android:textColor="@color/black" />
 
             </LinearLayout>
 
@@ -78,6 +79,8 @@
                         android:id="@+id/spnTreballador"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
+                        android:background="#A6A6A6"
+                        android:popupBackground="#A6A6A6"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -229,7 +232,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:elevation="8dp"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:cardCornerRadius="8dp"
         app:layout_constraintBottom_toTopOf="@+id/button"
         app:layout_constraintEnd_toEndOf="parent"
@@ -256,6 +259,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="25dp"
                 android:layout_marginTop="8dp"
+                android:textColor="@android:color/background_dark"
                 android:textSize="20sp"
                 android:textStyle="bold|italic"
                 app:layout_constraintStart_toStartOf="@+id/tvMensuals2"
@@ -389,6 +393,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="TextView"
+                android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="@+id/progressBar2"
                 app:layout_constraintTop_toBottomOf="@+id/progressBar2" />
 
@@ -492,7 +497,7 @@
         android:layout_marginEnd="8dp"
         android:background="@drawable/login_constraint"
         android:translationZ="90dp"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

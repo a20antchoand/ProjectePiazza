@@ -6,6 +6,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.piazza.controladores.auth.AuthActivity;
@@ -36,7 +38,10 @@ public class AdminActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         Toolbar toolbar = findViewById(R.id.my_toolbar_admin);
+        ImageView logo = findViewById(R.id.yourlogo);
+        logo.setImageDrawable(getResources().getDrawable(R.drawable.mipmap_piazza));
         /*toolbar.setBackgroundColor(getResources().getColor(R.color.start_btn));*/
+
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);

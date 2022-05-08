@@ -120,7 +120,6 @@
                 android:layout_weight="1"
                 android:background="@drawable/login_btn"
                 android:text="@string/login"
-                android:textColor="@color/text_color"
                 android:visibility="visible" />
 
         </LinearLayout>
