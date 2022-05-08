@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -37,6 +39,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.concurrent.ExecutionException;
 
 public class IntroduirHoresFragment extends Fragment implements ReadData, WriteData, AuthUserSession{
@@ -187,48 +190,14 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
     private void cargarEfecteTextEntrar() {
 
-        binding.textTextLL.setText("");
-
-        new Handler().postDelayed(() -> binding.textTextLL.setText("S"), 300);
-        new Handler().postDelayed(() -> binding.textTextLL.append("w"), 400);
-        new Handler().postDelayed(() -> binding.textTextLL.append("i"), 500);
-        new Handler().postDelayed(() -> binding.textTextLL.append("p"), 600);
-        new Handler().postDelayed(() -> binding.textTextLL.append("e"), 700);
-        new Handler().postDelayed(() -> binding.textTextLL.append(" "), 800);
-        new Handler().postDelayed(() -> binding.textTextLL.append("p"), 900);
-        new Handler().postDelayed(() -> binding.textTextLL.append("a"), 1000);
-        new Handler().postDelayed(() -> binding.textTextLL.append("r"), 1100);
-        new Handler().postDelayed(() -> binding.textTextLL.append("a"), 1200);
-        new Handler().postDelayed(() -> binding.textTextLL.append(" "), 1300);
-        new Handler().postDelayed(() -> binding.textTextLL.append("e"), 1400);
-        new Handler().postDelayed(() -> binding.textTextLL.append("n"), 1500);
-        new Handler().postDelayed(() -> binding.textTextLL.append("t"), 1600);
-        new Handler().postDelayed(() -> binding.textTextLL.append("r"), 1700);
-        new Handler().postDelayed(() -> binding.textTextLL.append("a"), 1800);
-        new Handler().postDelayed(() -> binding.textTextLL.append("r"), 1900);
+        binding.textTextLL.setText("Swipe para entrar");
 
     }
 
     private void cargarEfecteTextSalir() {
 
-        binding.textTextLL.setText("");
+        binding.textTextLL.setText("Swipe para salir");
 
-        new Handler().postDelayed(() -> binding.textTextLL.setText("S"), 300);
-        new Handler().postDelayed(() -> binding.textTextLL.append("w"), 400);
-        new Handler().postDelayed(() -> binding.textTextLL.append("i"), 500);
-        new Handler().postDelayed(() -> binding.textTextLL.append("p"), 600);
-        new Handler().postDelayed(() -> binding.textTextLL.append("e"), 700);
-        new Handler().postDelayed(() -> binding.textTextLL.append(" "), 800);
-        new Handler().postDelayed(() -> binding.textTextLL.append("p"), 900);
-        new Handler().postDelayed(() -> binding.textTextLL.append("a"), 1000);
-        new Handler().postDelayed(() -> binding.textTextLL.append("r"), 1100);
-        new Handler().postDelayed(() -> binding.textTextLL.append("a"), 1200);
-        new Handler().postDelayed(() -> binding.textTextLL.append(" "), 1300);
-        new Handler().postDelayed(() -> binding.textTextLL.append("s"), 1400);
-        new Handler().postDelayed(() -> binding.textTextLL.append("a"), 1500);
-        new Handler().postDelayed(() -> binding.textTextLL.append("l"), 1600);
-        new Handler().postDelayed(() -> binding.textTextLL.append("i"), 1700);
-        new Handler().postDelayed(() -> binding.textTextLL.append("r"), 1800);
 
     }
 
@@ -540,7 +509,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     public void totalMinutsDiaris(Task<QuerySnapshot> horarisDocuments) {
 
         //si el resultat es successful
-        if (horarisDocuments.isSuccessful()) {
+        if (horarisDocuments.isSuccessful() && getCurrTimeGMT.zdt != null) {
 
             int totalTempsTreballat = 0;
 
@@ -551,7 +520,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                     //Creem l'objecte Horari del registre que hem recuperat
                     Horario horario = historialDocument.toObject(Horario.class);
                     //si el dia de entrada recuperat es el mateix que el dia actual
-                    if (horario.getDiaEntrada() == getCurrTimeGMT.zdt.getDayOfMonth()) {
+                    if (horario.getDiaEntrada() >= getCurrTimeGMT.zdt.getDayOfMonth()) {
                         //calculem el total de temps treballat
                         totalTempsTreballat += horario.getTotalMinutsTreballats();
                     }
@@ -564,6 +533,30 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
         } else {
             Log.d(TAG, "Error al recuperar varios documentos.");
+
+            //demana el temps actual i espera resposta d ela asynk task
+
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    //demana el temps actual i espera resposta d ela asynk task
+                    String s = null;
+                    try {
+                        s = new getCurrTimeGMT().execute().get();
+                        //emmagatzema el resultat passant la cadena que hem recuperat a ZonedDateTime
+                        getCurrTimeGMT.zdt = getCurrTimeGMT.getZoneDateTime(s);
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                        Toast.makeText(getContext(), "Error al coger la fecha", Toast.LENGTH_SHORT).show();
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        Toast.makeText(getContext(), "Error al coger la fecha", Toast.LENGTH_SHORT).show();
+
+                    }
+
+                });
+
+            //emmagatzema el resultat passant la cadena que hem recuperat a ZonedDateTime
+
         }
 
     }
@@ -604,13 +597,9 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
         getFechaActual(false);
 
-        System.out.println(horarioUsuario.getTotalMinutsTreballats());
+        System.out.println(((Integer.parseInt(userAuth.getHoresMensuals()) / 4) / Integer.parseInt(userAuth.getDiesSetmana())) * 60);
 
-        System.out.println("Minuts: " + ((Integer.parseInt(userAuth.getHoresMensuals()) / 4) / Integer.parseInt(userAuth.getDiesSetmana()) * 60));
-
-        if (horarioUsuario.getTotalMinutsTreballats() == (Integer.parseInt(userAuth.getHoresMensuals()) / 4) / Integer.parseInt(userAuth.getDiesSetmana())) {
-
-            System.out.println(horarioUsuario.getTotalMinutsTreballats());
+        if (horarioUsuario.getTotalMinutsTreballats() == ((Integer.parseInt(userAuth.getHoresMensuals()) / 4) / Integer.parseInt(userAuth.getDiesSetmana())) * 60) {
 
             Notificacio.Notificar(getContext(), "Portes " + horarioUsuario.getTotalMinutsTreballats() / 60 + ":" + horarioUsuario.getTotalMinutsTreballats() % 60 + " hores treballant", "Recorda marcar la sortida", 2);
         }

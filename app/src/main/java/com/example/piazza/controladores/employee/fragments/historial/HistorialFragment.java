@@ -4,6 +4,7 @@ import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -223,32 +225,48 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
                 })
                 .setCancelClickListener(sweetAlertDialog -> {
 
-                    DDBB.collection("horari").document(listElementHistorialHores.getId())
-                            .delete()
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
-                                            .setTitleText("S'ha eliminat el registre correctament!")
-                                            .show();
+                    sweetAlertDialog
+                            .setTitleText("Estas segur? No podras recuperar-lo")
+                            .setConfirmText("Segur")
+                            .setCancelText("No")
+                            .setConfirmClickListener(l -> {
 
-                                    listElements.remove(listElementHistorialHores);
 
-                                    binding.recyclerViewHistorial.getAdapter().notifyDataSetChanged();
 
-                                }
+                                DDBB.collection("horari").document(listElementHistorialHores.getId())
+                                        .delete()
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
+                                                        .setTitleText("S'ha eliminat el registre correctament!")
+                                                        .show();
+
+                                                listElements.remove(listElementHistorialHores);
+
+                                                binding.recyclerViewHistorial.getAdapter().notifyDataSetChanged();
+
+
+                                            }
+
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
+                                                        .setTitleText("No s'ha pogut editar el registre!")
+                                                        .show();
+
+                                            }
+                                        });
+
+                                sweetAlertDialog.dismissWithAnimation();
 
                             })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
-                                            .setTitleText("No s'ha pogut editar el registre!")
-                                            .show();
-                                }
-                            });
+                            .show();
 
-                    sweetAlertDialog.dismissWithAnimation();
+
+
                 })
                 .show();
 
@@ -289,7 +307,7 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
         int totalTempsMes = 0;
 
         //si el resultat es successful
-        if (historialsDocuments.isSuccessful()) {
+        if (historialsDocuments.isSuccessful() && getCurrTimeGMT.zdt != null) {
             //recorrem els documents
             for (QueryDocumentSnapshot historialDocument : historialsDocuments.getResult()) {
                 //si el document pertany a l'usuari
@@ -303,13 +321,38 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
 
                 }
             }
+
+            //es mostra el total de temps treballat durant el mes
+            binding.tvTotalHores.setText(String.format("%01dh %02dm",totalTempsMes/60,totalTempsMes%60));
+
+            //calculem el residu d'hores
+            calcularResiduHores(totalTempsMes);
+
+        } else {
+
+            new Handler(Looper.getMainLooper()).post(() -> {
+                //demana el temps actual i espera resposta d ela asynk task
+                String s = null;
+                try {
+                    s = new getCurrTimeGMT().execute().get();
+                    //emmagatzema el resultat passant la cadena que hem recuperat a ZonedDateTime
+                    getCurrTimeGMT.zdt = getCurrTimeGMT.getZoneDateTime(s);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "Error al coger la fecha", Toast.LENGTH_SHORT).show();
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "Error al coger la fecha", Toast.LENGTH_SHORT).show();
+
+                }
+
+                calcularHoresTreballades(historialsDocuments);
+
+            });
+
         }
 
-        //es mostra el total de temps treballat durant el mes
-        binding.tvTotalHores.setText(String.format("%01dh %02dm",totalTempsMes/60,totalTempsMes%60));
-
-        //calculem el residu d'hores
-        calcularResiduHores(totalTempsMes);
 
     }
 

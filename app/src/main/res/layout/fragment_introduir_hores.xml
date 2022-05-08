@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
         android:layout_marginBottom="60dp"
+        android:textColor="@color/text_color"
         android:textSize="34sp"
         app:layout_constraintBottom_toTopOf="@+id/cvResidu"
         app:layout_constraintEnd_toEndOf="parent"
@@ -27,6 +28,7 @@
         android:layout_marginStart="15dp"
         android:layout_marginTop="8dp"
         android:text="Recorda fichar al entrar a treballar"
+        android:textColor="@color/text_color"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/benvingudaIntoduirHores" />
@@ -87,7 +89,7 @@
                             android:id="@+id/totalTempsTreballat"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textColor="#000000"
+                            android:textColor="@color/text_color"
                             android:textSize="34sp" />
                     </LinearLayout>
 
@@ -167,6 +169,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:text="Desliza para entrar"
+                            android:textColor="@color/text_color"
                             android:textSize="14sp" />
 
                         <com.google.android.material.imageview.ShapeableImageView

@@ -1,9 +1,12 @@
 package com.example.piazza.controladores.admin;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.piazza.controladores.auth.AuthActivity;
 import com.example.testauth.R;
@@ -32,7 +35,10 @@ public class AdminActivity extends AppCompatActivity {
         binding = ActivityAdminBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        setSupportActionBar(findViewById(R.id.my_toolbar_admin));
+        Toolbar toolbar = findViewById(R.id.my_toolbar_admin);
+        /*toolbar.setBackgroundColor(getResources().getColor(R.color.start_btn));*/
+
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
 

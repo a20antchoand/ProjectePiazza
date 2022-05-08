@@ -168,6 +168,7 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
                     }
                 }
 
+                pDialog.cancel();
                 if (userAuth.getRol().equals("admin")) {
                     showAdmin();
                 } else if (userAuth.getRol().equals("treballador")) {

@@ -3,6 +3,9 @@ package com.example.piazza.controladores.auth;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.widget.Toast;
 
 import com.example.piazza.classes.Horario;
 import com.example.piazza.classes.Usuario;
@@ -38,17 +41,24 @@ public class SplashScreen extends Activity implements ReadData, AuthUserSession 
      */
     private void setup() {
 
-        try {
-            //demana el temps actual i espera resposta d ela asynk task
-            String s = new getCurrTimeGMT().execute().get();
 
-            //emmagatzema el resultat passant la cadena que hem recuperat a ZonedDateTime
-            getCurrTimeGMT.zdt = getCurrTimeGMT.getZoneDateTime(s);
+        new Handler(Looper.getMainLooper()).post(() -> {
+                //demana el temps actual i espera resposta d ela asynk task
+                String s = null;
+                try {
+                    s = new getCurrTimeGMT().execute().get();
+                    getCurrTimeGMT.zdt = getCurrTimeGMT.getZoneDateTime(s);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Error al coger la fecha", Toast.LENGTH_SHORT).show();
 
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Error al coger la fecha", Toast.LENGTH_SHORT).show();
 
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
+                }
+                //emmagatzema el resultat passant la cadena que hem recuperat a ZonedDateTime
+        });
 
         //Cargem la informació de l'usauri actual
         user = FirebaseAuth.getInstance().getCurrentUser();

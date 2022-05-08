@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -14,6 +15,8 @@ import androidx.core.app.ShareCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
 import android.util.Log;
@@ -24,13 +27,17 @@ import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.example.piazza.classes.Horario;
 import com.example.piazza.classes.Usuario;
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.data.WriteData;
 import com.example.piazza.fireBase.session.AuthUserSession;
+import com.example.piazza.recyclerView.historialHores.ListAdapterHistorialHores;
+import com.example.piazza.recyclerView.historialHores.ListElementHistorialHores;
+import com.example.piazza.recyclerView.reportHores.ListAdapterReportHores;
+import com.example.piazza.recyclerView.reportHores.ListElementReportHores;
 import com.example.testauth.BuildConfig;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentReportsBinding;
@@ -45,8 +52,9 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -54,6 +62,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -118,7 +127,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
                         binding.cardViewHistorial.startAnimation(animate);
                         binding.cardViewHistorial.postDelayed(() -> {
 
-                            getMultipldeDocuments(DDBB.collection("horari"), this::mostrarInfoReportMesActual);
+                            getMultipldeDocuments(DDBB.collection("horari"), this::recopilarHoresTreballadesMesActual);
 
                             TranslateAnimation animate2 = new TranslateAnimation(
                                     -(binding.cardViewHistorial.getWidth()),                 // fromXDelta
@@ -135,7 +144,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
                     } else {
                         if (!binding.spnTreballador.getSelectedItem().equals(getString(R.string.tots))) {
 
-                            getMultipldeDocuments(DDBB.collection("horari"), this::mostrarInfoReportMesActual);
+                            getMultipldeDocuments(DDBB.collection("horari"), this::recopilarHoresTreballadesMesActual);
 
                             TranslateAnimation animate2 = new TranslateAnimation(
                                     -(binding.cardViewHistorial.getWidth()),                 // fromXDelta
@@ -169,7 +178,9 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
             }
 
-            private void mostrarInfoReportMesActual(Task<QuerySnapshot> querySnapshotTask) {
+            private void recopilarHoresTreballadesMesActual(Task<QuerySnapshot> querySnapshotTask) {
+
+                Map<String, Horario> registres = new HashMap<>();
 
                 int horesTreballades = 0, horesMensuals;
 
@@ -186,16 +197,18 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
                         horesTreballades += temp.getTotalMinutsTreballats();
 
+                        registres.put(documentSnapshot.getId(), temp);
+
                     }
 
                 }
 
-                mostrarInformacio(usuari, horesTreballades, horesMensuals);
+                mostrarInformacioMesActual(usuari, horesTreballades, horesMensuals, registres);
 
 
             }
 
-            public void mostrarInformacio(Usuario usuari, int horesTreballades, int horesMensuals) {
+            public void mostrarInformacioMesActual(Usuario usuari, int horesTreballades, int horesMensuals, Map<String, Horario> registres) {
 
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
                 int residu;
@@ -248,8 +261,9 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
                 binding.percentatgeJornada.setText((horesTreballades * 100) / horesMensuals + "%");
 
-
                 binding.tvData2.setText(1 + "/" + getCurrTimeGMT.zdt.getMonthValue() + "/" + getCurrTimeGMT.zdt.getYear() + " - " +  getCurrTimeGMT.zdt.getDayOfMonth() + "/" + getCurrTimeGMT.zdt.getMonthValue() + "/" + getCurrTimeGMT.zdt.getYear());
+
+                mostrarRegistres(registres);
 
             }
 
@@ -264,14 +278,16 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         binding.textView10.setOnClickListener(l -> ocultarSelectorData(binding.textView10, binding.constraintLayout));
     }
 
-    private void calcularHoresGeneric(Task<QuerySnapshot> querySnapshotTask) {
+    private void recopilarHoresTreballadesOpcio(Task<QuerySnapshot> querySnapshotTask) {
+
+        Map<String, Horario> registres = new HashMap<>();
 
         int horesTreballades = 0, horesMensuals;
 
         Usuario usuari = usuarios.get(binding.spnTreballador.getSelectedItem());
         horesMensuals = Integer.parseInt(usuari.getHoresMensuals()) * 60;
 
-/*        switch (documentsRecuperar) {
+        switch (documentsRecuperar) {
             case 1:
                 horesMensuals = (horesMensuals / 4) / Integer.parseInt(usuari.getDiesSetmana());
                 break;
@@ -281,7 +297,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
             case 365:
                 horesMensuals = horesMensuals * 12;
                 break;
-        }*/
+        }
 
         System.out.println("HORES: " + horesMensuals);
         System.out.println("DOCUMENTS: " + documentsRecuperar);
@@ -295,15 +311,17 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
                 horesTreballades += temp.getTotalMinutsTreballats();
 
+                registres.put(documentSnapshot.getId(), temp);
+
             }
 
         }
 
-        mostrarInformacio(usuari, horesTreballades, horesMensuals);
+        mostrarInformacioOpcio(usuari, horesTreballades, horesMensuals, registres);
 
     }
 
-    public void mostrarInformacio(Usuario usuari, int horesTreballades, int horesMensuals) {
+    public void mostrarInformacioOpcio(Usuario usuari, int horesTreballades, int horesMensuals, Map<String, Horario> registres) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
         int residu;
@@ -366,22 +384,33 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
         binding.tvData2.setText(sdf.format(calendar.getTime()) + " - " +  getCurrTimeGMT.zdt.getDayOfMonth() + "/" + getCurrTimeGMT.zdt.getMonthValue() + "/" + getCurrTimeGMT.zdt.getYear());
 
+        mostrarRegistres(registres);
+
     }
 
-    private void calcularHorespersonalitzat(Task<QuerySnapshot> querySnapshotTask) {
+    private void recopilarHoresTreballadesPersonalitzat(Task<QuerySnapshot> querySnapshotTask) {
+
+        Map<String, Horario> registres = new HashMap<>();
 
         int horesTreballades = 0, horesMensuals;
 
         Date max = calendariFinal.getTime(), min = calendariInici.getTime();
 
-
         Usuario usuari = usuarios.get(binding.spnTreballador.getSelectedItem());
-
 
         horesMensuals = Integer.parseInt(usuari.getHoresMensuals()) * 60;
 
+        horesMensuals = horesMensuals / 4;
 
+        int differenceWeek = (int) (max.getTime() - min.getTime());
 
+        int dies = (int) ChronoUnit.DAYS.between(min.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), max.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+
+        horesMensuals = horesMensuals / Integer.parseInt(usuari.getDiesSetmana());
+
+        horesMensuals = horesMensuals * dies;
+
+        System.out.println("TEMPS: " + differenceWeek);
         for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
 
             Horario temp = documentSnapshot.toObject(Horario.class);
@@ -401,16 +430,18 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
                 }
 
+                registres.put(documentSnapshot.getId(), temp);
+
             }
 
         }
 
-        mostrarInformacioPersonalitzada(usuari, horesTreballades, horesMensuals);
+        mostrarInformacioPersonalitzada(usuari, horesTreballades, horesMensuals, registres);
 
 
     }
 
-    private void mostrarInformacioPersonalitzada(Usuario usuari, int horesTreballades, int horesMensuals) {
+    private void mostrarInformacioPersonalitzada(Usuario usuari, int horesTreballades, int horesMensuals, Map<String, Horario> registres) {
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
         int residu;
@@ -465,8 +496,32 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
         binding.tvData2.setText(sdf.format(calendariInici.getTime()) + " - " +  sdf.format(calendariFinal.getTime()));
 
+        mostrarRegistres(registres);
 
     }
+
+    private void mostrarRegistres(Map<String, Horario> registres) {
+
+        List<ListElementReportHores> listRegistres = new ArrayList<>();
+
+        for (Map.Entry<String, Horario> map : registres.entrySet()) {
+
+            listRegistres.add(new ListElementReportHores(map.getValue(), map.getKey()));
+
+        }
+
+        //Creem l'adaptador de la recyclerview
+        ListAdapterReportHores listAdapter = new ListAdapterReportHores(listRegistres, getContext(), null);
+
+        //creem la recyclerview
+        RecyclerView recyclerView = binding.rceyclerViewReport;
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(listAdapter);
+
+    }
+
+
 
 
     public void mostrarSelectorData(View view) {
@@ -534,7 +589,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
                         calendariFinal = now;
 
-                        getMultipldeDocuments(DDBB.collection("horari"), this::calcularHorespersonalitzat);
+                        getMultipldeDocuments(DDBB.collection("horari"), this::recopilarHoresTreballadesPersonalitzat);
 
                     };
 
@@ -543,7 +598,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
                         Calendar now = Calendar.getInstance();
 
-                        now.set(year, month, dayOfMonth);
+                        now.set(year, month, dayOfMonth-1);
 
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -567,7 +622,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         }
 
         if (!getString(R.string.personalitzat).equals(text))
-            getMultipldeDocuments(DDBB.collection("horari"), this::calcularHoresGeneric);
+            getMultipldeDocuments(DDBB.collection("horari"), this::recopilarHoresTreballadesOpcio);
 
 
     }
