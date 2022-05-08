@@ -3,6 +3,8 @@ package com.example.piazza.controladores.admin.fragments.treballdors;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +16,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.piazza.classes.Horario;
 import com.example.piazza.classes.Usuario;
+import com.example.piazza.commons.Notificacio;
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.piazza.recyclerView.treballadors.ListAdapterTreballadors;
@@ -22,6 +26,8 @@ import com.example.piazza.recyclerView.treballadors.ListElementTreballadors;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentTreballadorsBinding;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -37,6 +43,7 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
 
     private static final String TAG = "TREBALLADORS_FRAGMENT: ";
     private FragmentTreballadorsBinding binding;
+    private List<String> treballadors = new ArrayList<>();
     private List<ListElementTreballadors> listElements = new ArrayList<>();
     private View root;
 
@@ -46,19 +53,73 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
         binding = FragmentTreballadorsBinding.inflate(inflater, container, false);
         root = binding.getRoot();
 
-        setup();
+        new Handler(Looper.getMainLooper()).post(() -> setup());
+
         return root;
     }
 
     public void setup() {
 
-        Query query = DDBB.collection("usuaris").whereEqualTo("empresa", userAuth.getEmpresa());
+        new Handler(Looper.getMainLooper()).post(() -> getMultipldeDocuments(DDBB.collection("horari"), this::mostrarCampModificat));
 
-        getMultipldeDocuments( query, this::setElements);
+        getListenerDocument(DDBB.collection("horari"), this::mostrarCampModificat);
+
+    }
+
+    private void mostrarCampModificat(Task<QuerySnapshot> querySnapshotTask) {
+
+        if (querySnapshotTask.isSuccessful()) {
+
+            for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult().getDocuments()) {
+
+                Horario temp = documentSnapshot.toObject(Horario.class);
+
+                if (!temp.isEstatJornada()) {
+
+                    System.out.println("JORNADA INICIADA: " + temp.getUsuario().getNom());
+
+                    treballadors.add(temp.getUsuario().getUid());
+
+
+                }
+
+            }
+
+            getMultipldeDocuments(DDBB.collection("usuaris").whereEqualTo("empresa", userAuth.getEmpresa()), this::setElements);
+
+        }
+
+    }
+
+    private void mostrarCampModificat(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
+
+        if (!queryDocumentSnapshots.isEmpty()) {
+
+            for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+
+                Horario temp = documentSnapshot.toObject(Horario.class);
+
+                if (!temp.isEstatJornada()) {
+
+                    System.out.println("JORNADA INICIADA: " + temp.getUsuario().getNom());
+
+                    treballadors.add(temp.getUsuario().getUid());
+
+                    new Handler(Looper.getMainLooper()).post(() -> Notificacio.Notificar(getContext(), "Inici de jornada!", "Usuari: " + temp.getUsuario().getNom() + " ha iniciat jornada.", (int) Math.random()));
+
+                }
+
+            }
+
+            getMultipldeDocuments(DDBB.collection("usuaris").whereEqualTo("empresa", userAuth.getEmpresa()), this::setElements);
+
+        }
 
     }
 
     public void setElements(Task<QuerySnapshot> querySnapshotTask) {
+
+        listElements.clear();
 
         if (querySnapshotTask.isSuccessful()) {
 
@@ -66,7 +127,12 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
                 Usuario usuari = documentSnapshot.toObject(Usuario.class);
 
                 if (!usuari.getRol().equals("admin"))
-                    addListElementTreballadors(usuari);
+
+                    if (treballadors.size() != 0 && treballadors.contains(usuari.getUid()))
+                        addListElementTreballadors(usuari, true);
+                    else
+                        addListElementTreballadors(usuari, false);
+
 
             }
 
@@ -84,7 +150,7 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
 
     }
 
-    private void addListElementTreballadors(Usuario usuario) {
+    private void addListElementTreballadors(Usuario usuario, Boolean treballant) {
 
         String nom = usuario.getNom().substring(0, 1).toUpperCase() + usuario.getNom().substring(1);
         String cognom = usuario.getCognom();
@@ -92,16 +158,13 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
         listElements.add(new ListElementTreballadors(
                 nom ,
                 cognom,
-                uid));
+                uid, treballant));
 
     }
 
     private void showName(ListElementTreballadors item, View itemview) {
 
         Toast.makeText(root.getContext(), "Empleat:  " + item.getNom(), Toast.LENGTH_SHORT).show();
-
-        System.out.println(itemview.findViewById(R.id.constraint_table).getVisibility() + " " + View.VISIBLE);
-
 
 
     }

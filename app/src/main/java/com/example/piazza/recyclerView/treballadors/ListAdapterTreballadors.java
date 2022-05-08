@@ -58,35 +58,24 @@ public class ListAdapterTreballadors extends RecyclerView.Adapter<ListAdapterTre
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView iconImage;
+        ImageView iconImage, estat;
         TextView nom;
 
         ViewHolder(View itemView) {
             super(itemView);
             iconImage = itemView.findViewById(R.id.iconImageView);
             nom = itemView.findViewById(R.id.nom);
-
-
+            estat = itemView.findViewById(R.id.estatJornada);
 
         }
 
         void bindData (final ListElementTreballadors item) {
             nom.setText(item.getNom() + " " + item.getCognom());
-            itemView.setOnClickListener(view -> {
-                try {
-                    listener.onItemClickListener(item, itemView);
 
-                    if (itemView.findViewById(R.id.constraint_table).getVisibility() == View.GONE)
-                        itemView.findViewById(R.id.constraint_table).setVisibility(View.VISIBLE);
-                    else
-                        itemView.findViewById(R.id.constraint_table).setVisibility(View.GONE);
-
-                } catch (FirebaseAuthException e) {
-                    e.printStackTrace();
-                }
-            });
-
-
+            if (item.getTreballant())
+                estat.setBackgroundColor(Color.parseColor("#AEED8C"));
+            else
+                estat.setBackgroundColor(Color.parseColor("#C8C8C9"));
 
         }
 

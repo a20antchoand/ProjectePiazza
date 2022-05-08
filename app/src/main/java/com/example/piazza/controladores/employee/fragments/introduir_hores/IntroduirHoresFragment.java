@@ -42,6 +42,8 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.concurrent.ExecutionException;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class IntroduirHoresFragment extends Fragment implements ReadData, WriteData, AuthUserSession{
 
     private int mInterval = 5000; // 5 seconds by default, can be changed later
@@ -190,13 +192,13 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
     private void cargarEfecteTextEntrar() {
 
-        binding.textTextLL.setText("Swipe para entrar");
+        binding.textTextLL.setText(getResources().getString(R.string.iniciarJornadaStr));
 
     }
 
     private void cargarEfecteTextSalir() {
 
-        binding.textTextLL.setText("Swipe para salir");
+        binding.textTextLL.setText(getResources().getString(R.string.acabarJornadaStr));
 
 
     }
@@ -275,6 +277,11 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
         //parem el handler
         stopRepeatingTask();
+
+        new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
+                .setTitleText("Jornada guardada!")
+                .setContentText("La jornada ha durat: " + horarioUsuario.getTotalMinutsTreballats() / 60 + "h " + horarioUsuario.getTotalMinutsTreballats() % 60 + "m.")
+                .show();
 
         horarioUsuario = new Horario();
     }

@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">Piazza</string>
     <string name="title_activity_piazza_home">Piazza - Time control</string>
-
     <string name="menu_inici">Home</string>
     <string name="menu_treballadors">Workers</string>
     <string name="menu_historial">History</string>
-
     <string name="emptyTime">--:--</string>
     <string name="slash">-</string>
-
     <string name="email">Email</string>
     <string name="contrasenya">Password</string>
     <string name="title_inici">Validate</string>
@@ -35,16 +31,24 @@
     <string name="entrada">Enter</string>
     <string name="data">Date</string>
     <string name="estat">Status</string>
-
     <string name="email_perfil">EMAIL</string>
     <string name="nom_perfil">NAME</string>
     <string name="cognom_perfil">SECOND NAME</string>
     <string name="telefon_perfil">PHONE</string>
     <string name="rol_perfil">ROL</string>
-    <string name="horesMensuals_perfil">HORES MENSUALS</string>
-
-
+    <string name="horesMensuals_perfil">MONTHLY HOURES</string>
+    <string name="dia">TODAY</string>
+    <string name="setmana">LAST WEEK</string>
+    <string name="mes">LAST MONTH</string>
+    <string name="any">LAST YEAR</string>
+    <string name="personalitzat">CUSTOM</string>
+    <string name="mesActual">CURR. MONTH</string>
+    <string name="diesSetmana_perfil">DAYS WEEK</string>
+    <string name="iniciarJornadaStr">Swipe to enter</string>
+    <string name="acabarJornadaStr">Swipe to leave</string>
     <string name="spn_title">Rol</string>
-
-
+    <string-array name="dlangs">
+        <item>worker</item>
+        <item>administrator</item>
+    </string-array>
 </resources>

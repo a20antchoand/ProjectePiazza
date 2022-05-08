@@ -1,24 +1,19 @@
 <resources>
     <string name="app_name">Piazza</string>
     <string name="title_activity_piazza_home">Piazza - Control Horari</string>
-
     <string name="menu_inici">Inici</string>
     <string name="menu_treballadors">Treballador</string>
     <string name="menu_historial">Historial</string>
-
     <string name="emptyTime">--:--</string>
     <string name="slash">-</string>
-
     <string name="email">Email</string>
     <string name="contrasenya">Contrasenya</string>
-
     <string name="title_inici">Validar</string>
     <string name="title_treballadors">Treballadors</string>
     <string name="title_administrar">Administrar</string>
     <string name="title_historial">Historial</string>
     <string name="title_introduir_hores">Inici</string>
     <string name="title_perfil">Perfil</string>
-
     <string name="nom_empleat">Nom empleat</string>
     <string name="hores_mensuals">Hores mensuals</string>
     <string name="sou">Sou</string>
@@ -35,7 +30,6 @@
     <string name="entrada">Entrada</string>
     <string name="data">Data</string>
     <string name="estat">Estat</string>
-
     <string name="email_perfil">EMAIL</string>
     <string name="nom_perfil">NOM</string>
     <string name="cognom_perfil">COGNOM</string>
@@ -51,11 +45,10 @@
     <string name="personalitzat">PERSONALITZADA</string>
     <string name="mesActual">MES ACTUAL</string>
     <string name="diesSetmana_perfil">DIES SETMANA</string>
-
+    <string name="iniciarJornadaStr">Llisca per entrar</string>
+    <string name="acabarJornadaStr">Llisca per sortir</string>
     <string-array name="dlangs">
         <item>treballador</item>
         <item>admin</item>
     </string-array>
-
-
 </resources>

@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,7 +88,8 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         binding = FragmentReportsBinding.inflate(inflater, container, false);
         root = binding.getRoot();
 
-        setup();
+
+        new Handler(Looper.getMainLooper()).post(() -> setup());
 
         // Inflate the layout for this fragment
         return root;
@@ -96,12 +99,12 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
         pedirPermisos();
 
-
         // Application of the Array to the Spinner
         getMultipldeDocuments(DDBB.collection("usuaris").whereEqualTo("empresa", userAuth.getEmpresa()), this::obtenerUsuarios);
 
+
         binding.button.setOnClickListener(l -> {
-            if (binding.spnTreballador.getSelectedItem().equals(getString(R.string.tots)))
+            if (binding.spnTreballador.getSelectedItem().equals(getActivity().getString(R.string.tots)))
                 getMultipldeDocuments(DDBB.collection("horari"), this::exportarCSVGeneral);
             else
                 getMultipldeDocuments(DDBB.collection("horari"), this::exportarCSVUsuari);
@@ -115,7 +118,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
 
-                    if (binding.cardViewHistorial.getVisibility() == View.VISIBLE && !binding.spnTreballador.getSelectedItem().equals(getString(R.string.tots))) {
+                    if (binding.cardViewHistorial.getVisibility() == View.VISIBLE && !binding.spnTreballador.getSelectedItem().equals(getActivity().getString(R.string.tots))) {
                         TranslateAnimation animate = new TranslateAnimation(
                                 0,                 // fromXDelta
                                 binding.cardViewHistorial.getWidth() + 50,                 // toXDelta
@@ -142,7 +145,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
 
                     } else {
-                        if (!binding.spnTreballador.getSelectedItem().equals(getString(R.string.tots))) {
+                        if (!binding.spnTreballador.getSelectedItem().equals(getActivity().getString(R.string.tots))) {
 
                             getMultipldeDocuments(DDBB.collection("horari"), this::recopilarHoresTreballadesMesActual);
 
@@ -158,7 +161,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
                         }
                     }
 
-                    if (binding.cardViewHistorial.getVisibility() == View.VISIBLE && binding.spnTreballador.getSelectedItem().equals(getString(R.string.tots))) {
+                    if (binding.cardViewHistorial.getVisibility() == View.VISIBLE && binding.spnTreballador.getSelectedItem().equals(getActivity().getString(R.string.tots))) {
                         TranslateAnimation animate = new TranslateAnimation(
                                 0,                 // fromXDelta
                                 binding.cardViewHistorial.getWidth() + 50,                 // toXDelta
@@ -566,15 +569,15 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         binding.textView10.setVisibility(View.INVISIBLE);
 
         String text = item.getText().toString();
-        if (getString(R.string.dia).equals(text)) {
+        if (getActivity().getString(R.string.dia).equals(text)) {
             documentsRecuperar = 1;
-        } else if (getString(R.string.setmana).equals(text)) {
+        } else if (getActivity().getString(R.string.setmana).equals(text)) {
             documentsRecuperar = 7;
-        } else if (getString(R.string.mes).equals(text)) {
+        } else if (getActivity().getString(R.string.mes).equals(text)) {
             documentsRecuperar = 30;
-        } else if (getString(R.string.any).equals(text)) {
+        } else if (getActivity().getString(R.string.any).equals(text)) {
             documentsRecuperar = 365;
-        } else if (getString(R.string.personalitzat).equals(text)) {
+        } else if (getActivity().getString(R.string.personalitzat).equals(text)) {
 
             DatePickerDialog.OnDateSetListener dateListener1 =
                     (datePicker, year, month, dayOfMonth) -> {
@@ -621,7 +624,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
             datePicker1.show();
         }
 
-        if (!getString(R.string.personalitzat).equals(text))
+        if (!getActivity().getString(R.string.personalitzat).equals(text))
             getMultipldeDocuments(DDBB.collection("horari"), this::recopilarHoresTreballadesOpcio);
 
 
@@ -652,10 +655,9 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
     private void obtenerUsuarios(Task<QuerySnapshot> querySnapshotTask) {
 
-        listaUsuarios.clear();
-        usuarios.clear();
 
-        noms.add(getString(R.string.tots));
+
+        noms.add("Tots");
 
         if (querySnapshotTask.isSuccessful()) {
 
@@ -671,10 +673,11 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
             }
 
-            ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getActivity(),   android.R.layout.simple_spinner_item, noms.stream().toArray(String[]::new));
-            spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
-            binding.spnTreballador.setAdapter(spinnerArrayAdapter);
-
+            if (getContext() != null) {
+                ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, noms.toArray(new String[0]));
+                spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
+                binding.spnTreballador.setAdapter(spinnerArrayAdapter);
+            }
         }
 
     }

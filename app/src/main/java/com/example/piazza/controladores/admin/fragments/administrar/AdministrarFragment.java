@@ -7,6 +7,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,7 +50,7 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
         binding = FragmentAdministrarBinding.inflate(inflater, container, false);
         root = binding.getRoot();
 
-        setup();
+        new Handler(Looper.getMainLooper()).post(() -> setup());
 
         return root;
     }
