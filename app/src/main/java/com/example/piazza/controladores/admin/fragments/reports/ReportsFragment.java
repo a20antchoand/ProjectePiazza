@@ -14,6 +14,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.ShareCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -44,6 +45,7 @@ import com.example.testauth.BuildConfig;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentReportsBinding;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.example.piazza.commons.*;
@@ -64,6 +66,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -579,6 +582,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
             documentsRecuperar = 365;
         } else if (getActivity().getString(R.string.personalitzat).equals(text)) {
 
+
             DatePickerDialog.OnDateSetListener dateListener1 =
                     (datePicker, year, month, dayOfMonth) -> {
 
@@ -622,6 +626,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
                     dateListener, getCurrTimeGMT.zdt.getYear(), (getCurrTimeGMT.zdt.getMonthValue()-1), getCurrTimeGMT.zdt.getDayOfMonth());
             datePicker1.getDatePicker().setMinDate(0);
             datePicker1.show();
+
         }
 
         if (!getActivity().getString(R.string.personalitzat).equals(text))

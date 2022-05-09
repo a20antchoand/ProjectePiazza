@@ -10,6 +10,7 @@ public class Usuario {
     String horesMensuals;
     String diesSetmana;
     String rol;
+    Boolean treballant = false;
     String urlPerfil;
     String empresa;
 
@@ -42,6 +43,16 @@ public class Usuario {
         this.horesMensuals = horesMensuals;
         this.diesSetmana = diesSetmana;
         this.urlPerfil = urlPerfil;
+        this.empresa = empresa;
+    }
+
+    public Usuario(String uid, String email, String nom, String cognom, String telefono, String rol, String empresa) {
+        this.uid = uid;
+        this.email = email;
+        this.telefono = telefono;
+        this.nom = nom;
+        this.cognom = cognom;
+        this.rol = rol;
         this.empresa = empresa;
     }
 
@@ -123,5 +134,13 @@ public class Usuario {
 
     public void setEmpresa(String empresa) {
         this.empresa = empresa;
+    }
+
+    public Boolean getTreballant() {
+        return treballant;
+    }
+
+    public void setTreballant(Boolean treballant) {
+        this.treballant = treballant;
     }
 }

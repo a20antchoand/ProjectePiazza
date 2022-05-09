@@ -55,7 +55,6 @@ public class PerfilFragment extends Fragment implements AuthUserSession, WriteDa
 
         mostrarDatosPerfil();
 
-        binding.imatgePerfil.setOnClickListener(view -> openGallery());
 
         binding.btnGuardar.setOnClickListener(l -> {
 
@@ -71,61 +70,9 @@ public class PerfilFragment extends Fragment implements AuthUserSession, WriteDa
         });
     }
 
-    /**
-     * Funcio per obrir la galeria del dispositiu i poder modificar la imatge de perfil de l'usuari
-     */
-    private void openGallery(){
-        Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-        startActivityForResult(gallery, PICK_IMAGE);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
 
 
-        if(resultCode == RESULT_OK && requestCode == PICK_IMAGE){
-            imageUri = data.getData();
 
-            try {
-                bitmap = getThumbnail(imageUri);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            System.out.println("btmp  " + bitmap);
-
-
-            if (bitmap != null) {
-
-                perfil.setBitmap(bitmap);
-                binding.imatgePerfil.setImageBitmap(perfil.getBitmap());
-
-                //transformem la imatge recuperada en byteArray
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                byte[] bitmapData = baos.toByteArray();
-
-                //iniciem la referencia a firebase storage
-                StorageReference ImagesRef = STORAGE.getReference().child(userAuth.getUid());
-                //Creem la tasca d'actualització de storage
-                UploadTask uploadTask = ImagesRef.putBytes(bitmapData);
-                //executem la tasca i al acabar modifiquem la informació de l'usuari per que es modifiqui permanentment
-                //la imatge de perfil.
-                uploadTask.addOnSuccessListener(taskSnapshot -> {
-
-                    userAuth.setUrlPerfil(ImagesRef.getRoot() + ImagesRef.getPath());
-
-                    GuardarUsuarioBBDD(userAuth);
-                    guardarDatosGlobalesJugador(userAuth);
-
-                }).addOnFailureListener(taskSnapshot -> {
-                    System.out.println("failure");
-                });
-            } else {
-                Toast.makeText(getContext(), "No es una imatge", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
 
     /**
      * Funcio per mostrar dades del perfil mostrant la informacio que tenim
@@ -141,42 +88,6 @@ public class PerfilFragment extends Fragment implements AuthUserSession, WriteDa
         binding.rol.setEnabled(false);
         binding.horesMensuals.setText(userAuth.getHoresMensuals());
 
-        binding.imatgePerfil.setImageBitmap(perfil.getBitmap());
-
-    }
-
-    public Bitmap getThumbnail(Uri uri) throws IOException {
-        InputStream input = getContext().getContentResolver().openInputStream(uri);
-
-        BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options();
-        onlyBoundsOptions.inJustDecodeBounds = true;
-        onlyBoundsOptions.inDither=true;//optional
-        onlyBoundsOptions.inPreferredConfig=Bitmap.Config.ARGB_8888;//optional
-        BitmapFactory.decodeStream(input, null, onlyBoundsOptions);
-        input.close();
-
-        if ((onlyBoundsOptions.outWidth == -1) || (onlyBoundsOptions.outHeight == -1)) {
-            return null;
-        }
-
-        int originalSize = (onlyBoundsOptions.outHeight > onlyBoundsOptions.outWidth) ? onlyBoundsOptions.outHeight : onlyBoundsOptions.outWidth;
-
-        double ratio = (originalSize > 150) ? (originalSize / 150) : 1.0;
-
-        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-        bitmapOptions.inSampleSize = getPowerOfTwoForSampleRatio(ratio);
-        bitmapOptions.inDither = true; //optional
-        bitmapOptions.inPreferredConfig=Bitmap.Config.ARGB_8888;//
-        input = getContext().getContentResolver().openInputStream(uri);
-        Bitmap bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions);
-        input.close();
-        return bitmap;
-    }
-
-    private static int getPowerOfTwoForSampleRatio(double ratio){
-        int k = Integer.highestOneBit((int)Math.floor(ratio));
-        if(k==0) return 1;
-        else return k;
     }
 
     @Override

@@ -47,8 +47,13 @@
     <string name="diesSetmana_perfil">DIES SETMANA</string>
     <string name="iniciarJornadaStr">Llisca per entrar</string>
     <string name="acabarJornadaStr">Llisca per sortir</string>
+    <string name="recordatoriFicharEntrada">Recorda fichar al entrar a treballar</string>
+    <string name="recordatoriFicharSortida">Recorda marcar la sortida quan pleguis</string>
     <string-array name="dlangs">
         <item>treballador</item>
         <item>admin</item>
     </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="empresa_perfil">EMPRESA</string>
 </resources>

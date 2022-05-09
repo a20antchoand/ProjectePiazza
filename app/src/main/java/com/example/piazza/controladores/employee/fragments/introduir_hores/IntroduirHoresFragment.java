@@ -29,8 +29,6 @@ import com.example.testauth.BuildConfig;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentIntroduirHoresBinding;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
@@ -39,7 +37,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.concurrent.ExecutionException;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -87,7 +84,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             case 0:
                 Log.d("appPreferences", "Es la primera vez!");
 
-                
+
 
                 break;
             case 1:
@@ -203,14 +200,17 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
     }
 
-    public void acabarJornadaSwipe() {
+    public void iniciarJornadaSwipe() {
+        binding.txtViewrecordatori.setText(getResources().getString(R.string.recordatoriFicharEntrada));
+
         binding.imageView6.setX(4);
         binding.imageView6.setImageDrawable(getContext().getDrawable(R.drawable.ic_round_arrow_forward_24));
         cargarEfecteTextEntrar();
 
     }
 
-    public void iniciarJornadaSwipe() {
+    public void acabarJornadaSwipe() {
+        binding.txtViewrecordatori.setText(getResources().getString(R.string.recordatoriFicharSortida));
 
         binding.imageView6.setX(binding.textLL.getWidth() - (binding.imageView6.getWidth() + 4));
         binding.imageView6.setImageDrawable(getContext().getDrawable(R.drawable.ic_round_arrow_back_24));
@@ -232,6 +232,8 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
     public void iniciarJornada (View view) {
 
+        userAuth.setTreballant(true);
+        writeOneDocument(DDBB.collection("usuaris").document(userAuth.getUid()), userAuth);
         //iniciem l'horari de l'usuari
         horarioUsuario = new Horario();
         //indiquem l'usuari a l'horari
@@ -254,20 +256,22 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         //amagem e lboto d'inici i mostrem el d'acabar
         changeStateButtons.hideButton(iniciarJornadaBtn);
         changeStateButtons.showButton(acabarJornadaBtn);
-        iniciarJornadaSwipe();
+        acabarJornadaSwipe();
         //iniciem el handler que actualitzara el contador
         startRepeatingTask();
     }
 
     public void acabarJornada (View view) {
 
+        userAuth.setTreballant(false);
+        writeOneDocument(DDBB.collection("usuaris").document(userAuth.getUid()), userAuth);
         //indiquem que la jornada esta acabada
         horarioUsuario.setEstatJornada(true);
 
         //cambiem els botons ocultant el d'acabar i mostrant el d'iniciar
         changeStateButtons.hideButton(acabarJornadaBtn);
         changeStateButtons.showButton(iniciarJornadaBtn);
-        acabarJornadaSwipe();
+        iniciarJornadaSwipe();
 
         //agafem la dada actual i guardem la informacio
         getFechaActual(false);
@@ -285,53 +289,6 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
         horarioUsuario = new Horario();
     }
-
-/*    private void escoltarBBDD() {
-
-        Query docRefHorari = DDBB.collection("horari").whereEqualTo("estatJornada", false);
-
-        getListenerDocument(docRefHorari, this::resultatEscoltarBBDD);
-
-    }
-
-    private void resultatEscoltarBBDD(Object o, FirebaseFirestoreException e) {
-
-        QuerySnapshot snapshot = (QuerySnapshot) o;
-
-        if (e != null) {
-            Log.w(TAG, "ESCOLTA FAILED.", e);
-            return;
-        }
-
-        for (DocumentSnapshot d : snapshot) {
-
-            System.out.println(userAuth.getUid() + " --> " + d.getId());
-
-            if (d.getId().contains(userAuth.getUid())) {
-                getMultipldeDocuments(query, this::totalMinutsDiaris);
-                getMultipldeDocuments(query, this::updateDocumentNumber);
-
-                System.out.println("iepa: " + snapshot.size());
-
-                if (d.getBoolean("estatJornada")) {
-
-                    System.out.println("num document: " + numeroDocument);
-
-                    changeStateButtons.hideButton(acabarJornadaBtn);
-                    changeStateButtons.showButton(iniciarJornadaBtn);
-
-                } else if (snapshot.size() != 0) {
-
-                    System.out.println("DOCUMENTS AMB SORIDA -1: " + snapshot.size());
-
-                    changeStateButtons.hideButton(iniciarJornadaBtn);
-                    changeStateButtons.showButton(acabarJornadaBtn);
-
-                }
-            }
-        }
-
-    }*/
 
     private void RecuperarRegistroUsuariBBDD() {
 
@@ -364,6 +321,10 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
             }
 
+        }
+
+        if (horarisDocuments.getResult().isEmpty()) {
+            binding.txtViewrecordatori.setText(getResources().getString(R.string.recordatoriFicharEntrada));
         }
 
     }
@@ -416,28 +377,14 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         horarioUsuario = document.toObject(Horario.class);
 
             //si l'horari te hora d'entrada i la jornada esta acabada
-            if (horarioUsuario.getHoraEntrada() != -1 && horarioUsuario.isEstatJornada()) {
-
-                //parem el Handler
-                stopRepeatingTask();
-
-                //cambiem els butons
-                changeStateButtons.hideButton(acabarJornadaBtn);
-                changeStateButtons.showButton(iniciarJornadaBtn);
-                acabarJornadaSwipe();
-
-                writeOneDocument(DDBB.collection("REGISTRE").document("VEGADES LINEA 453"), 1);
-
-                //calculem les hores totals
-                calcularHores(horarioUsuario);
-
-            //si te entrada i no sortida
-            } else {
+            if (!horarioUsuario.isEstatJornada()) {
 
                 //cambiem els butons
                 changeStateButtons.hideButton(iniciarJornadaBtn);
                 changeStateButtons.showButton(acabarJornadaBtn);
-                iniciarJornadaSwipe();
+                acabarJornadaSwipe();
+
+                writeOneDocument(DDBB.collection("REGISTRE").document("VEGADES LINEA 442"), userAuth);
 
                 //iniciem el Handler
                 startRepeatingTask();

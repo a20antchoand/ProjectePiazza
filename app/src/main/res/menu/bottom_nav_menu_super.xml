@@ -12,7 +12,7 @@
         android:title="Reports" />
     
     <item
-        android:id="@+id/navigation_administrar"
+        android:id="@+id/navigation_alta_administradors"
         android:icon="@drawable/ic_baseline_settings_24"
         android:title="@string/title_administrar" />
 

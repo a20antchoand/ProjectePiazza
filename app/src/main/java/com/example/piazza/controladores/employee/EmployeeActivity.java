@@ -5,6 +5,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Layout;
 import android.text.SpannableString;
@@ -24,6 +25,7 @@ import com.example.testauth.databinding.ActivityEmployeeBinding;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.StorageReference;
 
 import androidx.appcompat.widget.ActionMenuView;
 import androidx.appcompat.widget.Toolbar;
@@ -47,7 +49,11 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
 
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         ImageView logo = findViewById(R.id.yourlogo);
-        logo.setImageDrawable(getResources().getDrawable(R.drawable.mipmap_piazza));
+
+        StorageReference storageRef = STORAGE.getReferenceFromUrl("gs://testauth-f5eb4.appspot.com/" + userAuth.getEmpresa() + ".png");
+        storageRef.getBytes(1024 * 1024)
+                .addOnSuccessListener(bytes -> logo.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length)));
+
         /*toolbar.setBackgroundColor(getResources().getColor(R.color.start_btn));*/
 
         setSupportActionBar(toolbar);

@@ -124,18 +124,20 @@ public class SplashScreen extends Activity implements ReadData, AuthUserSession 
      */
     private void setNumeroDocument(Task<QuerySnapshot> horarisDocuments) {
 
-        //recorrem tots els documents recuperats
-        for (DocumentSnapshot horariDocument : horarisDocuments.getResult()) {
+        if (horarisDocuments.isSuccessful() && !horarisDocuments.getResult().isEmpty()) {
+            //recorrem tots els documents recuperats
+            for (DocumentSnapshot horariDocument : horarisDocuments.getResult()) {
 
-            Horario horarioTemp = horariDocument.toObject(Horario.class);
+                Horario horarioTemp = horariDocument.toObject(Horario.class);
 
-            //per cada document que pertany a l'usuari i és del dia a ctual augmentem per 1 el document
-            if (horariDocument.getId().contains(userAuth.getUid()) && horarioTemp.getDiaEntrada() == getCurrTimeGMT.zdt.getDayOfMonth()) {
-                IntroduirHoresFragment.numeroDocument++;
+                //per cada document que pertany a l'usuari i és del dia a ctual augmentem per 1 el document
+                if (horariDocument.getId().contains(userAuth.getUid()) && horarioTemp.getDiaEntrada() == getCurrTimeGMT.zdt.getDayOfMonth()) {
+                    IntroduirHoresFragment.numeroDocument++;
+                }
             }
         }
 
-        if (userAuth.getRol().equals("admin")) {
+        if (userAuth.getRol().equals("admin") || userAuth.getRol().equals("superadmin")) {
             showAdmin();
         } else if (userAuth.getRol().equals("treballador")) {
             showEmployee();

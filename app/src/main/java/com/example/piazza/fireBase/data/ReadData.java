@@ -44,7 +44,14 @@ public interface ReadData {
 
     }
 
-    default void getListenerDocument(Query docRef, EventListener<QuerySnapshot> action) {
+    default void getListenerCollections(Query docRef, EventListener<QuerySnapshot> action) {
+
+        docRef.
+                addSnapshotListener(action);
+
+    }
+
+    default void getListenerDocument(DocumentReference docRef, EventListener<DocumentSnapshot> action) {
 
         docRef.
                 addSnapshotListener(action);

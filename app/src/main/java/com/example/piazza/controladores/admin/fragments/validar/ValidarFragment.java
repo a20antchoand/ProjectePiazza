@@ -55,7 +55,7 @@ public class ValidarFragment extends Fragment implements AuthUserSession, ReadDa
 
         getMultipldeDocuments(DDBB.collection("horari").whereEqualTo("estatJornada", false), this::mostrarEstat);
 
-        getListenerDocument(DDBB.collection("horari"), this::escoltarBBDD);
+        getListenerCollections(DDBB.collection("horari"), this::escoltarBBDD);
 
     }
 

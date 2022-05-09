@@ -1,7 +1,5 @@
 package com.example.piazza.controladores.admin.fragments.treballdors;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -16,7 +14,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.piazza.classes.Horario;
 import com.example.piazza.classes.Usuario;
 import com.example.piazza.commons.Notificacio;
 import com.example.piazza.fireBase.data.ReadData;
@@ -28,30 +25,27 @@ import com.example.testauth.databinding.FragmentTreballadorsBinding;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Random;
 
 public class TreballadorsFragment extends Fragment implements ReadData, AuthUserSession {
 
     private static final String TAG = "TREBALLADORS_FRAGMENT: ";
     private FragmentTreballadorsBinding binding;
-    private List<String> treballadors = new ArrayList<>();
     private List<ListElementTreballadors> listElements = new ArrayList<>();
     private View root;
+    private Boolean firstLoad;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentTreballadorsBinding.inflate(inflater, container, false);
         root = binding.getRoot();
+        firstLoad = true;
 
         new Handler(Looper.getMainLooper()).post(() -> setup());
 
@@ -60,28 +54,27 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
 
     public void setup() {
 
-        new Handler(Looper.getMainLooper()).post(() -> getMultipldeDocuments(DDBB.collection("horari"), this::mostrarCampModificat));
+        getMultipldeDocuments(DDBB.collection("usuaris").whereEqualTo("empresa", userAuth.getEmpresa()), this::mostrarCampModificat);
 
-        getListenerDocument(DDBB.collection("horari"), this::mostrarCampModificat);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            firstLoad = false;
+        }, 5000);
 
     }
 
+
     private void mostrarCampModificat(Task<QuerySnapshot> querySnapshotTask) {
 
-        if (querySnapshotTask.isSuccessful()) {
+        if (querySnapshotTask.isSuccessful() && !querySnapshotTask.getResult().isEmpty()) {
+
+            System.out.println("CAMPS: " + querySnapshotTask.getResult().size());
 
             for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult().getDocuments()) {
 
-                Horario temp = documentSnapshot.toObject(Horario.class);
+                Usuario temp = documentSnapshot.toObject(Usuario.class);
 
-                if (!temp.isEstatJornada()) {
-
-                    System.out.println("JORNADA INICIADA: " + temp.getUsuario().getNom());
-
-                    treballadors.add(temp.getUsuario().getUid());
-
-
-                }
+                if (temp.getRol().equals("treballador"))
+                    getListenerDocument(documentSnapshot.getReference(), this::notificarCanvi);
 
             }
 
@@ -91,26 +84,16 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
 
     }
 
-    private void mostrarCampModificat(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
+    private void notificarCanvi(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
 
-        if (!queryDocumentSnapshots.isEmpty()) {
-
-            for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-
-                Horario temp = documentSnapshot.toObject(Horario.class);
-
-                if (!temp.isEstatJornada()) {
-
-                    System.out.println("JORNADA INICIADA: " + temp.getUsuario().getNom());
-
-                    treballadors.add(temp.getUsuario().getUid());
-
-                    new Handler(Looper.getMainLooper()).post(() -> Notificacio.Notificar(getContext(), "Inici de jornada!", "Usuari: " + temp.getUsuario().getNom() + " ha iniciat jornada.", (int) Math.random()));
-
-                }
-
+        if (documentSnapshot.exists()) {
+            Usuario treballador = documentSnapshot.toObject(Usuario.class);
+            Random rand = new Random();
+            if (treballador.getTreballant())
+                Notificacio.Notificar(getContext(),"Jornada iniciada!", treballador.getNom() + " ha entrat a treballar", rand.nextInt(100-20)+20);
+            else if (!firstLoad){
+                Notificacio.Notificar(getContext(), "Jornada acabada!", treballador.getNom() + " ha sortit de treballar", rand.nextInt(100 - 20) + 20);
             }
-
             getMultipldeDocuments(DDBB.collection("usuaris").whereEqualTo("empresa", userAuth.getEmpresa()), this::setElements);
 
         }
@@ -126,9 +109,9 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
             for (QueryDocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
                 Usuario usuari = documentSnapshot.toObject(Usuario.class);
 
-                if (!usuari.getRol().equals("admin"))
+                if (!usuari.getRol().equals("admin") && !usuari.getRol().equals("superadmin"))
 
-                    if (treballadors.size() != 0 && treballadors.contains(usuari.getUid()))
+                    if (usuari.getTreballant())
                         addListElementTreballadors(usuari, true);
                     else
                         addListElementTreballadors(usuari, false);

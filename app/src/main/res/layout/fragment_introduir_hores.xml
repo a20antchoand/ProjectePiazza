@@ -12,22 +12,21 @@
         android:id="@+id/benvingudaIntoduirHores"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
         android:textColor="@color/text_color"
         android:textSize="34sp"
-        app:layout_constraintBottom_toTopOf="@+id/cvResidu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/txtViewrecordatori"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="8dp"
-        android:text="Recorda fichar al entrar a treballar"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
         android:textColor="@color/text_color"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,15 +36,15 @@
         android:id="@+id/cvResidu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:animateLayoutChanges="true"
         app:cardBackgroundColor="#FFFFFF"
         app:cardCornerRadius="10dp"
         app:cardElevation="10dp"
         app:cardUseCompatPadding="true"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/txtViewrecordatori">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -179,9 +178,9 @@
                             android:layout_gravity="left"
                             android:background="#FFFFFF"
                             android:padding="4dp"
-                            app:strokeColor="@null"
                             app:shapeAppearanceOverlay="@style/circular"
-                            app:srcCompat="@drawable/ic_round_arrow_forward_24" />
+                            app:srcCompat="@drawable/ic_round_arrow_forward_24"
+                            app:strokeColor="@null" />
                     </FrameLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

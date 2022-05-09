@@ -16,6 +16,11 @@
         tools:layout="@layout/fragment_administrar" />
 
     <fragment
+        android:id="@+id/navigation_alta_administradors"
+        android:name="com.example.piazza.controladores.admin.fragments.alta.AltaAdminReport"
+        tools:layout="@layout/fragment_alta_admin_report" />
+
+    <fragment
         android:id="@+id/navigation_reports"
         android:name="com.example.piazza.controladores.admin.fragments.reports.ReportsFragment"
         tools:layout="@layout/fragment_reports" />

@@ -51,6 +51,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_centerVertical="true"
+                    app:errorTextAppearance="@style/MyAppTheme.TextInputLayout"
                     app:srcCompat="@drawable/ic_baseline_person_24" />
 
                 <TextView

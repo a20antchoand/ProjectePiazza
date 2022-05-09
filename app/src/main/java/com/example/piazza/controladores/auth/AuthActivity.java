@@ -1,12 +1,14 @@
 package com.example.piazza.controladores.auth;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.piazza.classes.ExampleDialog;
 import com.example.piazza.classes.Horario;
 import com.example.piazza.classes.Usuario;
@@ -32,6 +35,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -40,6 +45,7 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
     Button logIn;
     TextView errorLogin, recuperarContrasenya;
     SweetAlertDialog pDialog;
+    ImageView imageView;
 
     DocumentReference docRefUsuari;
     private String TAG = "RECUPERAR: ";
@@ -57,7 +63,7 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
 
         logIn = findViewById(R.id.logIn);
         recuperarContrasenya = findViewById(R.id.recuperarContrasenya);
-
+        imageView = findViewById(R.id.imageView2);
         recuperarContrasenya.setOnClickListener(l -> {
 
             ExampleDialog exampleDialog = new ExampleDialog();
@@ -169,7 +175,7 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
                 }
 
                 pDialog.cancel();
-                if (userAuth.getRol().equals("admin")) {
+                if (userAuth.getRol().equals("admin") || userAuth.getRol().equals("superadmin")) {
                     showAdmin();
                 } else if (userAuth.getRol().equals("treballador")) {
                     showEmployee();
@@ -178,8 +184,6 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
             }
 
         });
-
-
 
     }
 

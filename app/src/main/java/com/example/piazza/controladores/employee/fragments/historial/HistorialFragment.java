@@ -151,6 +151,9 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
         recyclerView.setAdapter(listAdapter);
 
+        binding.shimmerLayout.setVisibility(View.INVISIBLE);
+        recyclerView.setVisibility(View.VISIBLE);
+
     }
 
     private void showInfo(ListElementHistorialHores listElementHistorialHores) {

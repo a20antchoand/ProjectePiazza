@@ -79,7 +79,6 @@
                         android:id="@+id/spnTreballador"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
-                        android:background="#A6A6A6"
                         android:popupBackground="#A6A6A6"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"

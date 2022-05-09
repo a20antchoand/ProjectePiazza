@@ -2,7 +2,6 @@ package com.example.piazza.fireBase.session;
 
 import android.graphics.BitmapFactory;
 
-import com.example.piazza.classes.Perfil;
 import com.example.piazza.classes.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.firestore.DocumentReference;
@@ -18,7 +17,6 @@ public interface AuthUserSession {
     FirebaseFirestore DDBB = FirebaseFirestore.getInstance();
     FirebaseStorage STORAGE = FirebaseStorage.getInstance();
     Usuario userAuth = new Usuario();
-    Perfil perfil = new Perfil();
 
     /**
      *Metode per cargar a la APP tota la informació del usuari.
@@ -64,22 +62,8 @@ public interface AuthUserSession {
         userAuth.setDiesSetmana(user.getDiesSetmana());
         userAuth.setUrlPerfil(user.getUrlPerfil());
         userAuth.setEmpresa(user.getEmpresa());
+        userAuth.setTreballant(user.getTreballant());
 
-        if (userAuth.getUrlPerfil() != null && !userAuth.getUrlPerfil().equals("")) {
-
-            //Recuperem la imatge del usuari del seu apartat de firebase storage amb la seva url
-
-            StorageReference storageRef = STORAGE.getReferenceFromUrl(userAuth.getUrlPerfil());
-            storageRef.getBytes(1024 * 1024)
-                    .addOnSuccessListener(bytes -> perfil.setBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length)));
-        } else {
-
-            //Si l'usuari no te url de foto de perfil encara, posem la imatge de perfil per defecte
-
-            StorageReference storageRef = STORAGE.getReferenceFromUrl("gs://testauth-f5eb4.appspot.com/ORF8060.jpg");
-            storageRef.getBytes(1024 * 1024)
-                    .addOnSuccessListener(bytes -> perfil.setBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length)));
-        }
     }
 
 
