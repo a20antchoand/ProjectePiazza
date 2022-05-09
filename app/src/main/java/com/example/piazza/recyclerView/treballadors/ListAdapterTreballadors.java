@@ -44,13 +44,13 @@ public class ListAdapterTreballadors extends RecyclerView.Adapter<ListAdapterTre
 
     @Override
     public ViewHolder onCreateViewHolder (ViewGroup parent, int ViewType) {
-        View view = mInflater.from(parent.getContext()).inflate(R.layout.list_element_treballadors, null);
+        View view = mInflater.inflate(R.layout.list_element_treballadors, null);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.bindData(mData.get(position));
+        holder.bindData(mData.get(position), context);
     }
 
     public void setItems(List<ListElementTreballadors> items) {
@@ -69,13 +69,13 @@ public class ListAdapterTreballadors extends RecyclerView.Adapter<ListAdapterTre
 
         }
 
-        void bindData (final ListElementTreballadors item) {
+        void bindData (final ListElementTreballadors item, Context context) {
             nom.setText(item.getNom() + " " + item.getCognom());
 
             if (item.getTreballant())
-                estat.setBackgroundColor(Color.parseColor("#AEED8C"));
+                estat.setBackgroundColor(context.getResources().getColor(R.color.treballant));
             else
-                estat.setBackgroundColor(Color.parseColor("#C8C8C9"));
+                estat.setBackgroundColor(context.getResources().getColor(R.color.parat));
 
         }
 

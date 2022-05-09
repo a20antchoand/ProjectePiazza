@@ -596,7 +596,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
                         calendariFinal = now;
 
-                        getMultipldeDocuments(DDBB.collection("horari"), this::recopilarHoresTreballadesPersonalitzat);
+                        getMultipldeDocuments(DDBB.collection("horari").orderBy("diaEntrada"), this::recopilarHoresTreballadesPersonalitzat);
 
                     };
 

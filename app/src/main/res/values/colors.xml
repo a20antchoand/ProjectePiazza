@@ -11,6 +11,8 @@
     <color name="start_btn">#AEED8C</color>
     <color name="end_btn">#DA9090</color>
 
+    <color name="treballant">#AEED8C</color>
+    <color name="parat">#C8C8C9</color>
 
     <color name="colorPrimary">#FFC46D</color>
     <color name="colorPrimaryDark">#BD7901</color>
