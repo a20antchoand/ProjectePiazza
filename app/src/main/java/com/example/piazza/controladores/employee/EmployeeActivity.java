@@ -1,21 +1,15 @@
 package com.example.piazza.controladores.employee;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.text.Layout;
-import android.text.SpannableString;
-import android.text.style.AlignmentSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.example.piazza.classes.Usuario;
 import com.example.piazza.controladores.auth.AuthActivity;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
@@ -23,11 +17,9 @@ import com.example.testauth.R;
 import com.example.testauth.databinding.ActivityEmployeeBinding;
 
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.StorageReference;
 
-import androidx.appcompat.widget.ActionMenuView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -82,7 +74,7 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.ajustesLogOut:
+            case R.id.introduirHores:
                 logOut();
                 break;
         }

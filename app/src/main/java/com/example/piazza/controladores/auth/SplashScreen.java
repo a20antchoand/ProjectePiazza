@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.piazza.classes.Horario;
@@ -40,7 +41,6 @@ public class SplashScreen extends Activity implements ReadData, AuthUserSession 
      * Prepara la app per funcionar
      */
     private void setup() {
-
 
         new Handler(Looper.getMainLooper()).post(() -> {
                 //demana el temps actual i espera resposta d ela asynk task
@@ -131,7 +131,7 @@ public class SplashScreen extends Activity implements ReadData, AuthUserSession 
                 Horario horarioTemp = horariDocument.toObject(Horario.class);
 
                 //per cada document que pertany a l'usuari i és del dia a ctual augmentem per 1 el document
-                if (horariDocument.getId().contains(userAuth.getUid()) && horarioTemp.getDiaEntrada() == getCurrTimeGMT.zdt.getDayOfMonth()) {
+                if (horarioTemp != null && horariDocument.getId().contains(userAuth.getUid()) && horarioTemp.getDiaEntrada() == getCurrTimeGMT.zdt.getDayOfMonth()) {
                     IntroduirHoresFragment.numeroDocument++;
                 }
             }

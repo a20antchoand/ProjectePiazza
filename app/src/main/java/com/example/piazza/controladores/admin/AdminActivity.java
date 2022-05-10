@@ -2,8 +2,6 @@ package com.example.piazza.controladores.admin;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,11 +9,9 @@ import android.widget.ImageView;
 
 import androidx.appcompat.widget.Toolbar;
 
-import com.bumptech.glide.Glide;
 import com.example.piazza.controladores.auth.AuthActivity;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -92,7 +88,7 @@ public class AdminActivity extends AppCompatActivity implements AuthUserSession 
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.ajustesLogOut:
+            case R.id.introduirHores:
                 logOut();
                 break;
         }

@@ -24,6 +24,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:text="MENSUALS"
+            android:textSize="12sp"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/cvHoresMensuals"
             app:layout_constraintEnd_toEndOf="@+id/cvHoresMensuals"
@@ -37,6 +38,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:text="EXTRES"
+            android:textSize="12sp"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/cvResidu"
             app:layout_constraintEnd_toEndOf="@+id/cvResidu"
@@ -50,6 +52,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:text="TREBALLADES"
+            android:textSize="12sp"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/horesTreballadesTotal"
             app:layout_constraintEnd_toEndOf="@+id/horesTreballadesTotal"
@@ -62,21 +65,32 @@
             android:layout_height="50dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/horesTreballadesTotal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/tvHoresMensuals"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:textColor="#000000"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:visibility="visible" />
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tvHoresMensuals"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:autoSizeTextType="uniform"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:textColor="#000000"
+                    android:textStyle="bold"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
@@ -86,21 +100,32 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:elevation="10dp"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/horesTreballadesTotal"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/tvResiduHores"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:textColor="#000000"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:visibility="visible" />
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tvResiduHores"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:autoSizeTextType="uniform"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:textColor="#000000"
+                    android:textStyle="bold"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
@@ -110,21 +135,33 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:elevation="10dp"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/tvTotalHores"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:textColor="#000000"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:visibility="visible" />
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/tvTotalHores"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:autoSizeTextType="uniform"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:textColor="#000000"
+                    android:textStyle="bold"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

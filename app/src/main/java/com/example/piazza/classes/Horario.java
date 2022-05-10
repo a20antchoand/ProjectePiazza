@@ -3,6 +3,7 @@ package com.example.piazza.classes;
 public class Horario {
 
     Usuario usuario;
+    Horario modificacio;
 
     int anioEntrada;
     int mesEntrada;
@@ -150,5 +151,13 @@ public class Horario {
 
     public void setDiaAny(int diaAny) {
         this.diaAny = diaAny;
+    }
+
+    public Horario getModificacio() {
+        return modificacio;
+    }
+
+    public void setModificacio(Horario modificacio) {
+        this.modificacio = modificacio;
     }
 }

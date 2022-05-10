@@ -76,6 +76,16 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
     private FragmentReportsBinding binding;
     private View root;
 
+    private final String FORMAT_DATA = "dd/MM/YYYY";
+    private final String HORES_NEGATIU = "-%01dh";
+    private final String HORES_POSITIU = "+%01dh";
+
+    private final String HORES_MINUTS_NEGATIU = "-%01dh %02dm";
+    private final String HORES_MINUTS_POSITIU = "+%01dh %02dm";
+
+    private final String HORES_NEUTRE = "%01dh";
+    private final String HORES_MINUTS_NEUTRE = "%01dh %02dm";
+
     private final String CAPCELERA_CSV = "NOM, DATA, ENTRADA, SORTIDA, TOTAL\n";
 
     Map<String, Usuario> usuarios = new HashMap<>();
@@ -223,10 +233,10 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
                     residu = horesMensuals - horesTreballades;
 
                     if (residu > 6000) {
-                        binding.tvResiduHores.setText(String.format("-%01dh", residu / 60));
+                        binding.tvResiduHores.setText(String.format(HORES_NEGATIU, residu / 60));
                         binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.end_btn));
                     } else {
-                        binding.tvResiduHores.setText(String.format("-%01dh %02dm", residu / 60, residu % 60));
+                        binding.tvResiduHores.setText(String.format(HORES_MINUTS_NEGATIU, residu / 60, residu % 60));
                         binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.end_btn));
                     }
                     //si els minuts a treballar son menors als minuts treballats
@@ -234,10 +244,10 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
                 } else if (horesTreballades > horesMensuals) {
                     residu = horesTreballades - horesMensuals;
                     if (residu > 6000) {
-                        binding.tvResiduHores.setText(String.format("+%01dh", residu / 60));
+                        binding.tvResiduHores.setText(String.format(HORES_POSITIU, residu / 60));
                         binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.start_btn));
                     } else {
-                        binding.tvResiduHores.setText(String.format("+%01dh %02dm", residu / 60, residu % 60));
+                        binding.tvResiduHores.setText(String.format(HORES_MINUTS_POSITIU, residu / 60, residu % 60));
                         binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.start_btn));
                     }
                     //mostrem el residu a 00:00
@@ -249,15 +259,15 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
 
                 if (horesMensuals > 6000) {
-                    binding.tvHoresMensuals.setText(String.format("%01dh", horesMensuals / 60));
+                    binding.tvHoresMensuals.setText(String.format(HORES_NEUTRE, horesMensuals / 60));
                 } else {
-                    binding.tvHoresMensuals.setText(String.format("%01dh %02dm", horesMensuals/60, horesMensuals%60));
+                    binding.tvHoresMensuals.setText(String.format(HORES_MINUTS_NEUTRE, horesMensuals/60, horesMensuals%60));
                 }
 
                 if (horesTreballades > 6000) {
-                    binding.tvTotalHores.setText(String.format("%01dh", horesTreballades / 60));
+                    binding.tvTotalHores.setText(String.format(HORES_NEUTRE, horesTreballades / 60));
                 } else {
-                    binding.tvTotalHores.setText(String.format("%01dh %02dm", horesTreballades / 60, horesTreballades % 60));
+                    binding.tvTotalHores.setText(String.format(HORES_MINUTS_NEUTRE, horesTreballades / 60, horesTreballades % 60));
                 }
 
                 binding.progressBar2.setMax(horesMensuals);
@@ -329,17 +339,17 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
     public void mostrarInformacioOpcio(Usuario usuari, int horesTreballades, int horesMensuals, Map<String, Horario> registres) {
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
+        SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATA);
         int residu;
 
         if (horesMensuals > horesTreballades) {
             residu = horesMensuals - horesTreballades;
 
             if (residu > 6000) {
-                binding.tvResiduHores.setText(String.format("-%01dh", residu / 60));
+                binding.tvResiduHores.setText(String.format(HORES_NEGATIU, residu / 60));
                 binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.end_btn));
             } else {
-                binding.tvResiduHores.setText(String.format("-%01dh %02dm", residu / 60, residu % 60));
+                binding.tvResiduHores.setText(String.format(HORES_MINUTS_NEGATIU, residu / 60, residu % 60));
                 binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.end_btn));
             }
             //si els minuts a treballar son menors als minuts treballats
@@ -347,10 +357,10 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         } else if (horesTreballades > horesMensuals) {
             residu = horesTreballades - horesMensuals;
             if (residu > 6000) {
-                binding.tvResiduHores.setText(String.format("+%01dh", residu / 60));
+                binding.tvResiduHores.setText(String.format(HORES_POSITIU, residu / 60));
                 binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.start_btn));
             } else {
-                binding.tvResiduHores.setText(String.format("+%01dh %02dm", residu / 60, residu % 60));
+                binding.tvResiduHores.setText(String.format(HORES_MINUTS_POSITIU, residu / 60, residu % 60));
                 binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.start_btn));
             }
             //mostrem el residu a 00:00
@@ -362,15 +372,15 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
 
         if (horesMensuals > 6000) {
-            binding.tvHoresMensuals.setText(String.format("%01dh", horesMensuals / 60));
+            binding.tvHoresMensuals.setText(String.format(HORES_NEUTRE, horesMensuals / 60));
         } else {
-            binding.tvHoresMensuals.setText(String.format("%01dh %02dm", horesMensuals/60, horesMensuals%60));
+            binding.tvHoresMensuals.setText(String.format(HORES_MINUTS_NEUTRE, horesMensuals/60, horesMensuals%60));
         }
 
         if (horesTreballades > 6000) {
-            binding.tvTotalHores.setText(String.format("%01dh", horesTreballades / 60));
+            binding.tvTotalHores.setText(String.format(HORES_NEUTRE, horesTreballades / 60));
         } else {
-            binding.tvTotalHores.setText(String.format("%01dh %02dm", horesTreballades / 60, horesTreballades % 60));
+            binding.tvTotalHores.setText(String.format(HORES_MINUTS_NEUTRE, horesTreballades / 60, horesTreballades % 60));
         }
 
         binding.progressBar2.setMax(horesMensuals);
@@ -449,17 +459,17 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
     private void mostrarInformacioPersonalitzada(Usuario usuari, int horesTreballades, int horesMensuals, Map<String, Horario> registres) {
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
+        SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATA);
         int residu;
 
         if (horesMensuals > horesTreballades) {
             residu = horesMensuals - horesTreballades;
 
             if (residu > 6000) {
-                binding.tvResiduHores.setText(String.format("-%01dh", residu / 60));
+                binding.tvResiduHores.setText(String.format(HORES_NEGATIU, residu / 60));
                 binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.end_btn));
             } else {
-                binding.tvResiduHores.setText(String.format("-%01dh %02dm", residu / 60, residu % 60));
+                binding.tvResiduHores.setText(String.format(HORES_MINUTS_NEGATIU, residu / 60, residu % 60));
                 binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.end_btn));
             }
             //si els minuts a treballar son menors als minuts treballats
@@ -467,10 +477,10 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         } else if (horesTreballades > horesMensuals) {
             residu = horesTreballades - horesMensuals;
             if (residu > 6000) {
-                binding.tvResiduHores.setText(String.format("+%01dh", residu / 60));
+                binding.tvResiduHores.setText(String.format(HORES_POSITIU, residu / 60));
                 binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.start_btn));
             } else {
-                binding.tvResiduHores.setText(String.format("+%01dh %02dm", residu / 60, residu % 60));
+                binding.tvResiduHores.setText(String.format(HORES_MINUTS_POSITIU, residu / 60, residu % 60));
                 binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.start_btn));
             }
             //mostrem el residu a 00:00
@@ -482,14 +492,14 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
 
         if (horesMensuals > 6000) {
-            binding.tvHoresMensuals.setText(String.format("%01dh", horesMensuals / 60));
+            binding.tvHoresMensuals.setText(String.format(HORES_NEUTRE, horesMensuals / 60));
         } else {
-            binding.tvHoresMensuals.setText(String.format("%01dh %02dm", horesMensuals/60, horesMensuals%60));
+            binding.tvHoresMensuals.setText(String.format(HORES_MINUTS_NEUTRE, horesMensuals/60, horesMensuals%60));
         }
         if (horesTreballades > 6000) {
-            binding.tvTotalHores.setText(String.format("%01dh", horesTreballades / 60));
+            binding.tvTotalHores.setText(String.format(HORES_NEUTRE, horesTreballades / 60));
         } else {
-            binding.tvTotalHores.setText(String.format("%01dh %02dm", horesTreballades / 60, horesTreballades % 60));
+            binding.tvTotalHores.setText(String.format(HORES_MINUTS_NEUTRE, horesTreballades / 60, horesTreballades % 60));
         }
 
         binding.progressBar2.setMax(horesMensuals);
@@ -590,7 +600,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
                         now.set(year, month, dayOfMonth);
 
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/YYYY");
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(FORMAT_DATA);
 
                         binding.tvData2.setText(binding.tvData2.getText() + " - " + simpleDateFormat.format(now.getTime()));
 
@@ -607,7 +617,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
                         now.set(year, month, dayOfMonth-1);
 
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(FORMAT_DATA);
 
                         System.out.println(now.getTime());
 
@@ -660,8 +670,6 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
     private void obtenerUsuarios(Task<QuerySnapshot> querySnapshotTask) {
 
-
-
         noms.add("Tots");
 
         if (querySnapshotTask.isSuccessful()) {
@@ -670,7 +678,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
                 Usuario temp = document.toObject(Usuario.class);
 
-                if (!temp.getRol().equals("admin") && temp.getNom() != null) {
+                if (temp.getRol().equals("treballador")) {
                     listaUsuarios.add(temp);
                     usuarios.put(temp.getNom(), temp);
                     noms.add(temp.getNom());

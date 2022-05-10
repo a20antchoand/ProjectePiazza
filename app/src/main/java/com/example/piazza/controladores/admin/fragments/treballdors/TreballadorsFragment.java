@@ -126,10 +126,12 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
         }
 
         ListAdapterTreballadors listAdapter = new ListAdapterTreballadors(listElements, root.getContext(), this::showName);
-        RecyclerView recyclerView = root.findViewById(R.id.recyclerViewTreballadors);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext()));
-        recyclerView.setAdapter(listAdapter);
+        binding.recyclerViewTreballadors.setHasFixedSize(true);
+        binding.recyclerViewTreballadors.setLayoutManager(new LinearLayoutManager(root.getContext()));
+        binding.recyclerViewTreballadors.setAdapter(listAdapter);
+
+        binding.shimmerTreballador.setVisibility(View.GONE);
+        binding.recyclerViewTreballadors.setVisibility(View.VISIBLE);
 
     }
 

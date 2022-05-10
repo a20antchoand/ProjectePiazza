@@ -1,7 +1,7 @@
 package com.example.piazza.controladores.employee.fragments.historial;
 
+import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -9,18 +9,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.example.piazza.classes.Horario;
-import com.example.piazza.controladores.employee.fragments.introduir_hores.IntroduirHoresFragment;
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.data.WriteData;
 import com.example.piazza.fireBase.session.AuthUserSession;
@@ -39,9 +36,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -100,7 +95,7 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
                     //Creem l'objecte Historial que hem rcuperat del document
                     Horario horario = historialDocument.toObject(Horario.class);
                     //si la jornada esta acabada
-                    if (horario.isEstatJornada())
+                    if (horario.isEstatJornada() && horario.getDiaEntrada() != -1)
                         //creem l'item de la recycler view i l'afegim a un array list d'elements
                         listElements.add(bindDataElementHistorial(horario, historialDocument.getId()));
                 }
@@ -143,7 +138,7 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
         binding.horesTreballadesTotal.setVisibility(View.VISIBLE);
 
         //Creem l'adaptador de la recyclerview
-        ListAdapterHistorialHores listAdapter = new ListAdapterHistorialHores(listElements, root.getContext(), this::showInfo);
+        ListAdapterHistorialHores listAdapter = new ListAdapterHistorialHores(listElements, root.getContext(), this::modificarRegistre);
 
         //creem la recyclerview
         RecyclerView recyclerView = root.findViewById(R.id.recyclerViewHistorial);
@@ -156,9 +151,10 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
 
     }
 
-    private void showInfo(ListElementHistorialHores listElementHistorialHores) {
+    private void modificarRegistre(ListElementHistorialHores listElementHistorialHores) {
 
         Horario horario = listElementHistorialHores.getHorario();
+        Horario modificacio = new Horario();
 
         new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
                 .setTitleText("Estas segur que vols modificar el registre?")
@@ -168,61 +164,102 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
                 .setConfirmClickListener(sDialog -> {
 
                     TimePickerDialog.OnTimeSetListener mTimeListenerSortida =
-                            (view, hour, minute) -> {
-                                /**
-                                 * MODIFICAR PER ATRIBUT TEMPORAL (A CREAR ENCARA)
-                                 */
-                                horario.setHoraSalida(hour);
-                                horario.setMinutSalida(minute);
+                    (view, hour, minute) -> {
+                        /**
+                         * MODIFICAR PER ATRIBUT TEMPORAL (A CREAR ENCARA)
+                         */
+                        modificacio.setHoraSalida(hour);
+                        modificacio.setMinutSalida(minute);
 
-                                LocalDateTime dataEntrada = LocalDateTime.of(horario.getAnioEntrada(), horario.getMesEntrada(), horario.getDiaEntrada(), horario.getHoraEntrada(), horario.getMinutEntrada());
-                                LocalDateTime dataSalida = LocalDateTime.of(horario.getAnioSalida(), horario.getMesSalida(), horario.getDiaSalida(), horario.getHoraSalida(), horario.getMinutSalida());
+                        LocalDateTime dataEntrada = LocalDateTime.of(modificacio.getAnioEntrada(), modificacio.getMesEntrada(), modificacio.getDiaEntrada(), modificacio.getHoraEntrada(), modificacio.getMinutEntrada());
+                        LocalDateTime dataSalida = LocalDateTime.of(modificacio.getAnioSalida(), modificacio.getMesSalida(), modificacio.getDiaSalida(), modificacio.getHoraSalida(), modificacio.getMinutSalida());
 
-                                    //calculem la diferencia entre entrada i sortida
-                                    Duration diff = Duration.between(dataEntrada, dataSalida);
+                            //calculem la diferencia entre entrada i sortida
+                            Duration diff = Duration.between(dataEntrada, dataSalida);
 
-                                    //ho passem a minuts
-                                    long diffMinuts = diff.toMinutes();
+                            //ho passem a minuts
+                            long diffMinuts = diff.toMinutes();
 
-                                    //afegim al horari el total de minuts treballats
-                                    horario.setTotalMinutsTreballats(diffMinuts);
+                            //afegim al horari el total de minuts treballats
+                            modificacio.setTotalMinutsTreballats(diffMinuts);
 
-                                writeOneDocument(DDBB.collection("horari").document(listElementHistorialHores.getId()),horario);
+                            modificacio.setUsuario(horario.getUsuario());
 
-                                new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
-                                        .setTitleText("S'ha enviat la modificació a validar!")
-                                        .show();
+                        horario.setModificacio(modificacio);
 
-                                binding.recyclerViewHistorial.getAdapter().notifyDataSetChanged();
-                            };
+                        writeOneDocument(DDBB.collection("horari").document(listElementHistorialHores.getId()),horario);
+                        writeOneDocument(DDBB.collection("modificacions").document(listElementHistorialHores.getId()),horario);
+                        new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
+                                .setTitleText("S'ha enviat la modificació a validar!")
+                                .show();
+
+                        binding.recyclerViewHistorial.getAdapter().notifyDataSetChanged();
+                    };
+
+                    DatePickerDialog.OnDateSetListener mDateListenerSortida = (view, year, month, day) -> {
+
+                        System.out.println(year + "/" + month + "/" + day);
+
+                        modificacio.setAnioSalida(year);
+                        modificacio.setMesSalida(month);
+                        modificacio.setDiaSalida(day);
+
+                        int hourSortida = listElementHistorialHores.getHorario().getHoraSalida();
+                        int minuteSortida = listElementHistorialHores.getHorario().getMinutSalida();
+                        TimePickerDialog mTimePicker;
+                        mTimePicker = new TimePickerDialog(getContext(), mTimeListenerSortida, hourSortida, minuteSortida, true);//Yes 24 hour time
+                        mTimePicker.setTitle("Select Time");
+                        mTimePicker.show();
+
+                    };
 
                     TimePickerDialog.OnTimeSetListener mTimeListenerEntrada =
-                            (view, hour, minute) -> {
-                                /**
-                                 * MODIFICAR PER ATRIBUT TEMPORAL (A CREAR ENCARA)
-                                 */
-                                listElementHistorialHores.getHorario().setHoraEntrada(hour);
-                                listElementHistorialHores.getHorario().setMinutEntrada(minute);
-                                writeOneDocument(DDBB.collection("horari").document(listElementHistorialHores.getId()),listElementHistorialHores.getHorario());
+                         (view, hour, minute) -> {
+                         /**
+                          * MODIFICAR PER ATRIBUT TEMPORAL (A CREAR ENCARA)
+                          */
+                         modificacio.setHoraEntrada(hour);
+                         modificacio.setMinutEntrada(minute);
 
-                                int hourSortida = listElementHistorialHores.getHorario().getHoraSalida();
-                                int minuteSortida = listElementHistorialHores.getHorario().getMinutSalida();
-                                TimePickerDialog mTimePicker2;
-                                mTimePicker2 = new TimePickerDialog(getContext(), mTimeListenerSortida, hourSortida, minuteSortida, true);//Yes 24 hour time
-                                mTimePicker2.setTitle("Select Time");
-                                mTimePicker2.show();
-                            };
+                             int year = listElementHistorialHores.getHorario().getAnioSalida();
+                             int month = listElementHistorialHores.getHorario().getMesSalida();
+                             int day = listElementHistorialHores.getHorario().getDiaSalida();
+
+                             DatePickerDialog mTimePicker;
+                             mTimePicker = new DatePickerDialog(getContext(), mDateListenerSortida, year, month, day);//Yes 24 hour time
+                             mTimePicker.setTitle("Select Time");
+                             mTimePicker.setIcon(getResources().getDrawable(R.drawable.lum_soft_02));
+                             mTimePicker.show();
+                    };
+
+                    DatePickerDialog.OnDateSetListener mDateListenerEntrada = (view, year, month, day) -> {
+
+                        System.out.println(year + "/" + month + "/" + day);
+
+                        modificacio.setAnioEntrada(year);
+                        modificacio.setMesEntrada(month);
+                        modificacio.setDiaEntrada(day);
 
 
-                    int hour = listElementHistorialHores.getHorario().getHoraEntrada();
-                    int minute = listElementHistorialHores.getHorario().getMinutEntrada();
-                    TimePickerDialog mTimePicker;
-                    mTimePicker = new TimePickerDialog(getContext(), mTimeListenerEntrada, hour, minute, true);//Yes 24 hour time
+                        int hour = listElementHistorialHores.getHorario().getHoraEntrada();
+                        int minute = listElementHistorialHores.getHorario().getMinutEntrada();
+                        TimePickerDialog mTimePicker;
+                        mTimePicker = new TimePickerDialog(getContext(), mTimeListenerEntrada, hour, minute, true);//Yes 24 hour time
+                        mTimePicker.setTitle("Select Time");
+                        mTimePicker.setIcon(getResources().getDrawable(R.drawable.lum_soft_02));
+                        mTimePicker.show();
+
+                    };
+
+                    int year = listElementHistorialHores.getHorario().getAnioEntrada();
+                    int month = listElementHistorialHores.getHorario().getMesEntrada();
+                    int day = listElementHistorialHores.getHorario().getDiaEntrada();
+
+                    DatePickerDialog mTimePicker;
+                    mTimePicker = new DatePickerDialog(getContext(), mDateListenerEntrada, year, month, day);//Yes 24 hour time
                     mTimePicker.setTitle("Select Time");
                     mTimePicker.setIcon(getResources().getDrawable(R.drawable.lum_soft_02));
                     mTimePicker.show();
-
-
 
                     sDialog.dismissWithAnimation();
                 })
