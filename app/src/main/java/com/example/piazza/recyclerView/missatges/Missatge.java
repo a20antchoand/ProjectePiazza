@@ -2,9 +2,11 @@ package com.example.piazza.recyclerView.missatges;
 
 import com.example.piazza.classes.Usuario;
 import com.example.piazza.commons.*;
+import com.google.firebase.Timestamp;
 
 import java.time.ZonedDateTime;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.concurrent.ExecutionException;
 
@@ -13,7 +15,7 @@ public class Missatge {
     int id;
     Usuario usuari;
     String missatge;
-    GregorianCalendar hora;
+    Timestamp hora;
 
     public Missatge () {}
 
@@ -31,8 +33,9 @@ public class Missatge {
             e.printStackTrace();
         }
 
-        ZonedDateTime zdt = getCurrTimeGMT.zdt;
-        this.hora = GregorianCalendar.from(zdt);
+
+        this.hora = new Timestamp(Date.from(getCurrTimeGMT.zdt.toInstant()));
+
     }
 
     public Usuario getUsuari() {
@@ -51,11 +54,11 @@ public class Missatge {
         this.missatge = missatge;
     }
 
-    public GregorianCalendar getHora() {
+    public Timestamp getHora() {
         return hora;
     }
 
-    public void setHora(GregorianCalendar hora) {
+    public void setHora(Timestamp hora) {
         this.hora = hora;
     }
 }

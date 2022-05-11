@@ -6,6 +6,19 @@
     android:layout_height="match_parent"
     tools:context="com.example.piazza.controladores.admin.fragments.treballdors.TreballadorsFragment">
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:src="@drawable/ic_baseline_check_24"
+        app:backgroundTint="@color/colorPrimary"
+        app:elevation="11dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/shimmerTreballador"
         android:layout_width="match_parent"

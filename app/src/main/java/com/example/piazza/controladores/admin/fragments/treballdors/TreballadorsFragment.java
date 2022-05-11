@@ -1,5 +1,7 @@
 package com.example.piazza.controladores.admin.fragments.treballdors;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,8 +16,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.piazza.classes.Horario;
 import com.example.piazza.classes.Usuario;
 import com.example.piazza.commons.Notificacio;
+import com.example.piazza.commons.getCurrTimeGMT;
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.piazza.recyclerView.treballadors.ListAdapterTreballadors;
@@ -28,9 +32,14 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class TreballadorsFragment extends Fragment implements ReadData, AuthUserSession {
 
@@ -59,6 +68,48 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             firstLoad = false;
         }, 5000);
+
+        binding.floatingActionButton.bringToFront();
+        binding.floatingActionButton.setOnClickListener(l -> {
+            getMultipldeDocuments(DDBB.collection("modificacions"), this::mostrarValidacions);
+        });
+
+    }
+
+    private void mostrarValidacions(Task<QuerySnapshot> querySnapshotTask) {
+
+        for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult().getDocuments()) {
+            Horario horario = documentSnapshot.toObject(Horario.class);
+            if (horario.getUsuario().getEmpresa().equals(userAuth.getEmpresa())) {
+
+                String titol;
+                String contingut = "Data: " + horario.getModificacio().getDiaEntrada() + "/" + horario.getModificacio().getMesEntrada() + " a " + horario.getModificacio().getDiaSalida() + "/" + horario.getModificacio().getMesSalida()
+                        + "\n\nHora entrada: " + horario.getModificacio().getHoraEntrada() + ":" + horario.getModificacio().getMinutEntrada()
+                        + "\n\nHora sortida: " + horario.getModificacio().getHoraSalida() + ":" + horario.getModificacio().getMinutSalida()
+                        + "\n\nTotal treballat: " + horario.getModificacio().getTotalMinutsTreballats() / 60 + ":" + horario.getModificacio().getTotalMinutsTreballats() % 60;
+
+                if (documentSnapshot.contains("afegit")) {
+                    titol = "L'empleat: " + horario.getUsuario().getNom() + " vol afegir el següent registre...";
+                } else {
+                    titol = "L'empleat: " + horario.getUsuario().getNom() + " vol modificar el següent registre...";
+
+                }
+
+                new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText(titol)
+                        .setContentText(contingut)
+                        .setConfirmText("Validar")
+                        .setCancelText("Denegar")
+                        .setConfirmClickListener(sweetAlertDialog -> {
+
+                            sweetAlertDialog.dismissWithAnimation();
+                        })
+                        .setCancelClickListener(sweetAlertDialog -> {
+
+                            sweetAlertDialog.dismissWithAnimation();
+                        }).show();
+            }
+        }
 
     }
 
@@ -89,10 +140,12 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
         if (documentSnapshot.exists()) {
             Usuario treballador = documentSnapshot.toObject(Usuario.class);
             Random rand = new Random();
-            if (treballador.getTreballant())
-                Notificacio.Notificar(getContext(),"Jornada iniciada!", treballador.getNom() + " ha entrat a treballar", rand.nextInt(100-20)+20);
-            else if (!firstLoad){
-                Notificacio.Notificar(getContext(), "Jornada acabada!", treballador.getNom() + " ha sortit de treballar", rand.nextInt(100 - 20) + 20);
+            if (!firstLoad) {
+                if (treballador.getTreballant() && getContext() != null)
+                    Notificacio.Notificar(getContext(), "Jornada iniciada!", treballador.getNom() + " ha entrat a treballar", rand.nextInt(100 - 20) + 20);
+                else {
+                    Notificacio.Notificar(getContext(), "Jornada acabada!", treballador.getNom() + " ha sortit de treballar", rand.nextInt(100 - 20) + 20);
+                }
             }
             getMultipldeDocuments(DDBB.collection("usuaris").whereEqualTo("empresa", userAuth.getEmpresa()), this::setElements);
 

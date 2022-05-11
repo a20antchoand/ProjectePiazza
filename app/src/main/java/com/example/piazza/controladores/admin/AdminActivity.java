@@ -16,6 +16,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.piazza.controladores.auth.AuthActivity;
 import com.example.piazza.controladores.auth.SplashScreen;
+import com.example.piazza.controladores.employee.EmployeeActivity;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
 
@@ -38,26 +39,10 @@ public class AdminActivity extends AppCompatActivity implements AuthUserSession 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (userAuth.getUid() == null) {
+        if (userAuth.getRol() == null) {
             startActivity(new Intent(this, SplashScreen.class));
             finish();
         }
-
-        final View activityRootView = findViewById(R.id.container);
-
-        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
-                if (heightDiff > dpToPx(AdminActivity.this, 200)) {
-                    findViewById(R.id.nav_view).setVisibility(View.GONE); // Lo haces invisible y que no ocupe espacio.
-                }
-                else {
-                    findViewById(R.id.nav_view).setVisibility(View.VISIBLE); // Lo haces visible
-                }
-            }
-        });
-
 
         setTheme(R.style.Theme_TestAuth);
 
@@ -90,9 +75,7 @@ public class AdminActivity extends AppCompatActivity implements AuthUserSession 
                     R.id.navigation_treballadors, R.id.navigation_administrar, R.id.navigation_reports)
                     .build();
             binding.navView.inflateMenu(R.menu.bottom_nav_menu);
-            System.out.println("ADMIN");
         } else if (userAuth.getRol().equals("superadmin")) {
-            System.out.println("SUPER");
             appBarConfiguration = new AppBarConfiguration.Builder(
                     R.id.navigation_treballadors, R.id.navigation_alta_administradors, R.id.navigation_reports)
                     .build();
@@ -102,11 +85,6 @@ public class AdminActivity extends AppCompatActivity implements AuthUserSession 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_admin);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
-    }
-
-    public static float dpToPx(Context context, float valueInDp) {
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, valueInDp, metrics);
     }
 
     @Override

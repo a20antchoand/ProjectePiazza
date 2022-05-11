@@ -70,7 +70,6 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
     private List<Missatge> missatges = new ArrayList<>();
     private ListAdapterMissatges listAdapter;
-    private TextView benvinguda;
     private Button iniciarJornadaBtn;
     private Button acabarJornadaBtn;
     private LinearLayout butons;
@@ -112,11 +111,9 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         //iniciem variables
         iniciarJornadaBtn = binding.iniciarJornada;
         acabarJornadaBtn =binding.acabarJornada;
-        benvinguda = binding.benvingudaIntoduirHores;
         butons = binding.butonsLayout;
         horarioUsuario = new Horario();
         //donem la benvingua a l'usuari
-        benvinguda.setText("Hola, " + userAuth.getNom().substring(0, 1).toUpperCase() + userAuth.getNom().substring(1));
         //indiquem la funció del boto iniciarJornada
         binding.iniciarJornada.setOnClickListener(this::iniciarJornada);
         //indiquem la funció del boto acabarJornada
@@ -179,6 +176,8 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
         missatges.clear();
 
+        System.out.println("HEY: " + queryDocumentSnapshots.size());
+
         if (!queryDocumentSnapshots.isEmpty()) {
 
             for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()) {
@@ -211,6 +210,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     private boolean introduirRegistre(MenuItem menuItem) {
         Horario horari = new Horario();
         horari.setEstatJornada(true);
+        horari.setUsuario(userAuth);
         Horario modificacio = new Horario();
         new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
                 .setTitleText("Estas segur que vols afegir un registre?")
@@ -307,13 +307,11 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         binding.textTextLL.setText(getResources().getString(R.string.acabarJornadaStr));
     }
     public void iniciarJornadaSwipe() {
-        binding.txtViewrecordatori.setText(getResources().getString(R.string.recordatoriFicharEntrada));
         binding.imageView6.setX(4);
         binding.imageView6.setImageDrawable(context.getDrawable(R.drawable.ic_round_arrow_forward_24));
         cargarEfecteTextEntrar();
     }
     public void acabarJornadaSwipe() {
-        binding.txtViewrecordatori.setText(getResources().getString(R.string.recordatoriFicharSortida));
         binding.imageView6.setX(binding.textLL.getWidth() - (binding.imageView6.getWidth() + 4));
         binding.imageView6.setImageDrawable(context.getDrawable(R.drawable.ic_round_arrow_back_24));
         cargarEfecteTextSalir();
@@ -411,9 +409,6 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                     comprovarEntradaSortida();
                 }
             }
-        }
-        if (horarisDocuments.getResult().isEmpty()) {
-            binding.txtViewrecordatori.setText(getResources().getString(R.string.recordatoriFicharEntrada));
         }
     }
     private void GuardarRegistroBBDD() {

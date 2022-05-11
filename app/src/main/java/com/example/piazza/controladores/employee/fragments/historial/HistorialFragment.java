@@ -305,7 +305,7 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
                             })
                             .show();
 
-
+                    sweetAlertDialog.dismissWithAnimation();
 
                 })
                 .show();

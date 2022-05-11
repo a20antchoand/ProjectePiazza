@@ -68,16 +68,13 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
-        root.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                int heightDiff = root.getRootView().getHeight() - root.getHeight();
-                if (heightDiff > dpToPx(EmployeeActivity.this, 200)) {
-                    findViewById(R.id.nav_view).setVisibility(View.GONE); // Lo haces invisible y que no ocupe espacio.
-                }
-                else {
-                    findViewById(R.id.nav_view).setVisibility(View.VISIBLE); // Lo haces visible
-                }
+        root.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            int heightDiff = root.getRootView().getHeight() - root.getHeight();
+            if (heightDiff > dpToPx(EmployeeActivity.this, 200)) {
+                findViewById(R.id.nav_view).setVisibility(View.GONE); // Lo haces invisible y que no ocupe espacio.
+            }
+            else {
+                findViewById(R.id.nav_view).setVisibility(View.VISIBLE); // Lo haces visible
             }
         });
 

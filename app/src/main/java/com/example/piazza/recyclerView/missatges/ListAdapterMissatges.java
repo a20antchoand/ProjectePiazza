@@ -5,15 +5,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.view.menu.MenuView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
 import com.google.firebase.auth.FirebaseAuthException;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class ListAdapterMissatges extends RecyclerView.Adapter<ListAdapterMissatges.ViewHolder> implements AuthUserSession {
@@ -46,8 +49,8 @@ public class ListAdapterMissatges extends RecyclerView.Adapter<ListAdapterMissat
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.bindData(mData.get(position), context);
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.bindData(mData.get(position), position);
     }
 
     public void setItems(List<Missatge> items) {
@@ -64,10 +67,14 @@ public class ListAdapterMissatges extends RecyclerView.Adapter<ListAdapterMissat
             hora = itemView.findViewById(R.id.hora);
         }
 
-        void bindData (final Missatge item, Context context) {
+        void bindData (Missatge item, int position) {
             nom.setText(item.getUsuari().getNom());
             missatge.setText(item.getMissatge());
-            hora.setText(item.getHora().getTime().getHours() + ":" + item.getHora().getTime().getMinutes());
+
+            SimpleDateFormat horaPattern = new SimpleDateFormat("HH:mm");
+
+            hora.setText(horaPattern.format(item.getHora().toDate()));
+
         }
 
     }
