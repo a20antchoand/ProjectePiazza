@@ -3,13 +3,19 @@ package com.example.piazza.controladores.employee;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
+import com.example.piazza.controladores.admin.AdminActivity;
 import com.example.piazza.controladores.auth.AuthActivity;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
@@ -39,6 +45,8 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
         binding = ActivityEmployeeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        View root = findViewById(R.id.employeeContainer);
+
         Toolbar toolbar = findViewById(R.id.my_toolbar);
         ImageView logo = findViewById(R.id.yourlogo);
 
@@ -60,6 +68,24 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
+        root.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int heightDiff = root.getRootView().getHeight() - root.getHeight();
+                if (heightDiff > dpToPx(EmployeeActivity.this, 200)) {
+                    findViewById(R.id.nav_view).setVisibility(View.GONE); // Lo haces invisible y que no ocupe espacio.
+                }
+                else {
+                    findViewById(R.id.nav_view).setVisibility(View.VISIBLE); // Lo haces visible
+                }
+            }
+        });
+
+    }
+
+    public static float dpToPx(Context context, float valueInDp) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, valueInDp, metrics);
     }
 
 

@@ -21,6 +21,7 @@
         <activity
             android:name="com.example.piazza.controladores.employee.EmployeeActivity"
             android:exported="true"
+            android:windowSoftInputMode="stateVisible|adjustResize"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.example.piazza.controladores.auth.AuthActivity"

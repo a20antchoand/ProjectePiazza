@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Theme.TestAuth"
+    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="2dp"
@@ -61,6 +62,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
+                    android:minHeight="48dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_baseline_menu_24" />
@@ -195,131 +198,94 @@
 
     </androidx.cardview.widget.CardView>
 
-    <LinearLayout
-        android:id="@+id/historicDiari"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:orientation="vertical"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:padding="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cvResidu" />
+        app:layout_constraintTop_toBottomOf="@+id/cvResidu">
 
-    <!-- <LinearLayout
-        android:id="@+id/introduirHoresLinearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        <EditText
+            android:id="@+id/editTextMissatge"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/edit_text_bg"
+            android:ems="10"
+            android:hint="Missatge..."
+            android:inputType="textPersonName"
+            app:layout_constraintBottom_toBottomOf="@+id/BtnEnviarMissatge"
+            app:layout_constraintEnd_toStartOf="@+id/BtnEnviarMissatge"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/BtnEnviarMissatge" />
+
+        <Button
+            android:id="@+id/BtnEnviarMissatge"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/login_btn"
+            android:text="Enviar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/editTextMissatge" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerChat"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="1dp"
+            android:layout_marginEnd="1dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/editTextMissatge"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <View
             android:id="@+id/divider2"
-            android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:layout_marginTop="75dp"
-            android:background="?dividerColor" />
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintBottom_toTopOf="@+id/editTextMissatge"
+            app:layout_constraintEnd_toEndOf="@+id/editTextMissatge"
+            app:layout_constraintStart_toStartOf="@+id/editTextMissatge" />
 
-        <androidx.legacy.widget.Space
-            android:layout_width="wrap_content"
-            android:layout_height="16dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:textAlignment="center">
-
-            <TextView
-                android:id="@+id/iniciarTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="75dp"
-                android:text="@string/emptyTime"
-                android:textAlignment="gravity"
-                android:textSize="50sp" />
-
-            <Space
-                android:layout_width="75dp"
-                android:layout_height="1dp" />
-
-            <TextView
-                android:id="@+id/acabarTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="75dp"
-                android:text="@string/emptyTime"
-                android:textAlignment="center"
-                android:textSize="50sp"
-                app:autoSizeTextType="uniform" />
-
-        </LinearLayout>
-
-        <androidx.legacy.widget.Space
-            android:layout_width="match_parent"
-            android:layout_height="16dp" />
+        <View
+            android:id="@+id/divider3"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginBottom="1dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/editTextMissatge"
+            app:layout_constraintStart_toStartOf="@+id/editTextMissatge"
+            app:layout_constraintTop_toBottomOf="@+id/editTextMissatge" />
 
         <View
             android:id="@+id/divider4"
-            android:layout_width="match_parent"
-            android:layout_height="5dp"
-            android:background="?dividerColor" />
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintBottom_toBottomOf="@+id/editTextMissatge"
+            app:layout_constraintStart_toEndOf="@+id/editTextMissatge"
+            app:layout_constraintTop_toTopOf="@+id/editTextMissatge" />
 
-        <androidx.legacy.widget.Space
+        <View
+            android:id="@+id/divider5"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintBottom_toBottomOf="@+id/editTextMissatge"
+            app:layout_constraintEnd_toStartOf="@+id/editTextMissatge"
+            app:layout_constraintTop_toTopOf="@+id/editTextMissatge" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-            android:layout_width="match_parent"
-            android:layout_height="16dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="75dp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/iniciarJornada"
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/start_effect"
-                android:enabled="true"
-                android:text="@string/iniciar"
-                android:textColor="#000000"
-                android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/acabarJornada"
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/end_effect"
-                android:enabled="false"
-                android:text="@string/acabar"
-                android:textColor="#000000"
-                android:textStyle="bold"
-                android:visibility="gone" />
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/resultat"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="25dp"
-            android:layout_marginTop="25dp"
-            android:layout_marginEnd="25dp"
-            android:layout_marginBottom="25dp"
-            android:gravity="center"
-            android:text="@string/emptyTime"
-            android:textSize="34sp" />
-
-
-    </LinearLayout>
-
-
--->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

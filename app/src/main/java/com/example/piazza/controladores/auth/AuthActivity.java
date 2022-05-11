@@ -82,17 +82,18 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
 
                 if (!email.equals("") && !password.equals("")) {
 
+                    pDialog = new SweetAlertDialog(AuthActivity.this, SweetAlertDialog.PROGRESS_TYPE);
+                    pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+                    pDialog.setTitleText("Preparant sistema...");
+                    pDialog.setCancelable(true);
+                    pDialog.show();
+
                     //Fem un login amb l'usuari i password
                     FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
 
                         //si funciona cargem les dades de l'usauri
                         if (task.isSuccessful()) {
 
-                            pDialog = new SweetAlertDialog(AuthActivity.this, SweetAlertDialog.PROGRESS_TYPE);
-                            pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-                            pDialog.setTitleText("Preparant sistema...");
-                            pDialog.setCancelable(true);
-                            pDialog.show();
                             /* ======================================
                              * Cargamos datos del usuario actual
                              * ======================================
@@ -105,6 +106,7 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
 
 
                         } else {
+                            pDialog.cancel();
                             new SweetAlertDialog(AuthActivity.this, SweetAlertDialog.ERROR_TYPE)
                                     .setTitleText("Oops...")
                                     .setContentText("El correu o la contrasenya no son correctes!")

@@ -5,18 +5,23 @@ import static com.google.firebase.crashlytics.internal.Logger.TAG;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -25,25 +30,34 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.piazza.classes.Horario;
 import com.example.piazza.commons.*;
+import com.example.piazza.controladores.auth.SplashScreen;
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.data.WriteData;
 import com.example.piazza.fireBase.session.AuthUserSession;
+import com.example.piazza.recyclerView.missatges.ListAdapterMissatges;
+import com.example.piazza.recyclerView.missatges.Missatge;
+import com.example.piazza.recyclerView.reportHores.ListAdapterReportHores;
 import com.example.testauth.BuildConfig;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentIntroduirHoresBinding;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -54,6 +68,8 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     public static Handler HandlerIntroduirHores = new Handler();
     float coordX;
 
+    private List<Missatge> missatges = new ArrayList<>();
+    private ListAdapterMissatges listAdapter;
     private TextView benvinguda;
     private Button iniciarJornadaBtn;
     private Button acabarJornadaBtn;
@@ -61,7 +77,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     private DocumentSnapshot document;
     private Horario horarioUsuario;
     private DocumentReference docRefHorari;
-
+    private Context context;
     private Query query = DDBB.collection("horari")
             .orderBy("diaEntrada", Query.Direction.DESCENDING);
 
@@ -72,9 +88,14 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentIntroduirHoresBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        context = getContext();
+
         setup();
         return root;
     }
+
+
 
     @SuppressLint("ClickableViewAccessibility")
     public void setup () {
@@ -128,14 +149,14 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                     break; case MotionEvent.ACTION_UP: System.out.println(binding.imageView6.getX() + " -------- " + binding.textLL.getWidth() / 2);
                     if (binding.imageView6.getX() + (binding.imageView6.getWidth() / 2) < binding.textLL.getWidth() / 2) {
                         binding.imageView6.setX(4);
-                        binding.imageView6.setImageDrawable(getContext().getDrawable(R.drawable.ic_round_arrow_forward_24));
+                        binding.imageView6.setImageDrawable(context.getDrawable(R.drawable.ic_round_arrow_forward_24));
                         if (horarioUsuario.getDiaEntrada() != -1) {
                             System.out.println("ACABAR");
                             acabarJornada(binding.imageView6);
                         }
                     } else {
                         binding.imageView6.setX(binding.textLL.getWidth() - (binding.imageView6.getWidth() + 4));
-                        binding.imageView6.setImageDrawable(getContext().getDrawable(R.drawable.ic_round_arrow_back_24));
+                        binding.imageView6.setImageDrawable(context.getDrawable(R.drawable.ic_round_arrow_back_24));
                         if (horarioUsuario.getDiaEntrada() == -1) {
                             System.out.println("INICIAR");
                             iniciarJornada(binding.imageView6);
@@ -144,9 +165,44 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             }
             return true;
         });
+
+        getListenerCollections(DDBB.collection("missatges").orderBy("hora"), this::mostrarMissatges);
+
+        binding.BtnEnviarMissatge.setOnClickListener(l -> {
+            Missatge missatge = new Missatge(userAuth, binding.editTextMissatge.getText().toString());
+            writeOneDocument(DDBB.collection("missatges").document(), missatge);
+            binding.editTextMissatge.setText("");
+        });
     }
+
+    private void mostrarMissatges(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
+
+        missatges.clear();
+
+        if (!queryDocumentSnapshots.isEmpty()) {
+
+            for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()) {
+                Missatge missatge = documentSnapshot.toObject(Missatge.class);
+                if (missatge.getUsuari().getEmpresa().equals(userAuth.getEmpresa()))
+                    missatges.add(missatge);
+            }
+
+        }
+
+        //Creem l'adaptador de la recyclerview
+        listAdapter = new ListAdapterMissatges(missatges, context, null);
+
+        //creem la recyclerview
+        RecyclerView recyclerView = binding.recyclerChat;
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setAdapter(listAdapter);
+
+        recyclerView.smoothScrollToPosition(missatges.size());
+    }
+
     private void mostrarMenu(View view) {
-        PopupMenu popup = new PopupMenu(getContext(), view);
+        PopupMenu popup = new PopupMenu(context, view);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.introduir_hores_menu, popup.getMenu());
         popup.setOnMenuItemClickListener(this::introduirRegistre);
@@ -194,7 +250,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                         int hourSortida = getCurrTimeGMT.zdt.getHour();
                         int minuteSortida = getCurrTimeGMT.zdt.getMinute();
                         TimePickerDialog mTimePicker;
-                        mTimePicker = new TimePickerDialog(getContext(), mTimeListenerSortida, hourSortida, minuteSortida, true);//Yes 24 hour time
+                        mTimePicker = new TimePickerDialog(context, mTimeListenerSortida, hourSortida, minuteSortida, true);//Yes 24 hour time
                         mTimePicker.setTitle("Select Time");
                         mTimePicker.show();
                     };
@@ -209,7 +265,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                         int month = getCurrTimeGMT.zdt.getMonthValue();
                         int day = getCurrTimeGMT.zdt.getDayOfMonth();
                         DatePickerDialog mTimePicker;
-                        mTimePicker = new DatePickerDialog(getContext(), mDateListenerSortida, year, month, day);//Yes 24 hour time
+                        mTimePicker = new DatePickerDialog(context, mDateListenerSortida, year, month, day);//Yes 24 hour time
                                 mTimePicker.setTitle("Select Time");
                                 mTimePicker.setIcon(getResources().getDrawable(R.drawable.lum_soft_02));
                                 mTimePicker.show();
@@ -222,7 +278,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                         int hour = getCurrTimeGMT.zdt.getHour();
                         int minute = getCurrTimeGMT.zdt.getMinute();
                         TimePickerDialog mTimePicker;
-                        mTimePicker = new TimePickerDialog(getContext(), mTimeListenerEntrada, hour, minute, true);//Yes 24 hour time
+                        mTimePicker = new TimePickerDialog(context, mTimeListenerEntrada, hour, minute, true);//Yes 24 hour time
                         mTimePicker.setTitle("Select Time");
                         mTimePicker.setIcon(getResources().getDrawable(R.drawable.lum_soft_02));
                         mTimePicker.show();
@@ -231,7 +287,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                     int month = getCurrTimeGMT.zdt.getMonthValue();
                     int day = getCurrTimeGMT.zdt.getDayOfMonth();;
                     DatePickerDialog mTimePicker;
-                    mTimePicker = new DatePickerDialog(getContext(), mDateListenerEntrada, year, month, day);//Yes 24 hour time
+                    mTimePicker = new DatePickerDialog(context, mDateListenerEntrada, year, month, day);//Yes 24 hour time
                     mTimePicker.setTitle("Select Time");
                     mTimePicker.setIcon(getResources().getDrawable(R.drawable.lum_soft_02));
                     mTimePicker.show();
@@ -253,13 +309,13 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     public void iniciarJornadaSwipe() {
         binding.txtViewrecordatori.setText(getResources().getString(R.string.recordatoriFicharEntrada));
         binding.imageView6.setX(4);
-        binding.imageView6.setImageDrawable(getContext().getDrawable(R.drawable.ic_round_arrow_forward_24));
+        binding.imageView6.setImageDrawable(context.getDrawable(R.drawable.ic_round_arrow_forward_24));
         cargarEfecteTextEntrar();
     }
     public void acabarJornadaSwipe() {
         binding.txtViewrecordatori.setText(getResources().getString(R.string.recordatoriFicharSortida));
         binding.imageView6.setX(binding.textLL.getWidth() - (binding.imageView6.getWidth() + 4));
-        binding.imageView6.setImageDrawable(getContext().getDrawable(R.drawable.ic_round_arrow_back_24));
+        binding.imageView6.setImageDrawable(context.getDrawable(R.drawable.ic_round_arrow_back_24));
         cargarEfecteTextSalir();
     }
     private int getFirstTimeRun() {
@@ -294,10 +350,6 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         //guardem el registre a la BBDD
         GuardarRegistroBBDD();
 
-        //noifiquem a l'usuari de l'entrada a treballar
-        if (Build.VERSION.SDK_INT < 31)
-            Notificacio.Notificar(getContext(),"Piazza", "Has iniciat la teva Jornada.\nPodras parar-la en qualsevol moment donan-li al boto de parar.", 1);
-
         //amagem e lboto d'inici i mostrem el d'acabar
         changeStateButtons.hideButton(iniciarJornadaBtn);
         changeStateButtons.showButton(acabarJornadaBtn);
@@ -305,6 +357,12 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
         //iniciem el handler que actualitzara el contador
         startRepeatingTask();
+
+        new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
+                .setTitleText("Jornada iniciada!")
+                .setContentText("S'ha iniciat la jornada correctament!")
+                .show();
+
     }
     public void acabarJornada (View view) {
 
@@ -321,13 +379,6 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
         //agafem la dada actual i guardem la informacio
         getFechaActual(false);
-
-        Toast.makeText(getContext(), "SDK: " + Build.VERSION.SDK_INT, Toast.LENGTH_SHORT).show();
-        System.out.println("SDK: " + Build.VERSION.SDK_INT);
-
-        //notifiquem del final de la jornada
-        if (Build.VERSION.SDK_INT < 31)
-            Notificacio.Notificar(getContext(),"Piazza", "Has acabat la teva Jornada.\nEspero que descansis.\nHas fet un torn de: " + horarioUsuario.getTotalMinutsTreballats()/60 + "h " + horarioUsuario.getTotalMinutsTreballats()%60 + "m" , 1);
 
         //parem el handler
         stopRepeatingTask();
@@ -481,10 +532,10 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                     getCurrTimeGMT.zdt = getCurrTimeGMT.getZoneDateTime(s);
                 } catch (ExecutionException e) {
                     e.printStackTrace();
-                    Toast.makeText(getContext(), "Error al coger la fecha", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Error al coger la fecha", Toast.LENGTH_SHORT).show();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                    Toast.makeText(getContext(), "Error al coger la fecha", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Error al coger la fecha", Toast.LENGTH_SHORT).show();
                 }
             });
             //emmagatzema el resultat passant la cadena que hem recuperat a ZonedDateTime
@@ -518,7 +569,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         getFechaActual(false);
         System.out.println(((Integer.parseInt(userAuth.getHoresMensuals()) / 4) / Integer.parseInt(userAuth.getDiesSetmana())) * 60);
         if (horarioUsuario.getTotalMinutsTreballats() == ((Integer.parseInt(userAuth.getHoresMensuals()) / 4) / Integer.parseInt(userAuth.getDiesSetmana())) * 60) {
-            Notificacio.Notificar(getContext(), "Portes " + horarioUsuario.getTotalMinutsTreballats() / 60 + ":" + horarioUsuario.getTotalMinutsTreballats() % 60 + " hores treballant", "Recorda marcar la sortida", 2);
+            Notificacio.Notificar(context, "Portes " + horarioUsuario.getTotalMinutsTreballats() / 60 + ":" + horarioUsuario.getTotalMinutsTreballats() % 60 + " hores treballant", "Recorda marcar la sortida", 2);
         }
     }
     void startRepeatingTask() {
@@ -527,10 +578,21 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     void stopRepeatingTask() {
         HandlerIntroduirHores.removeCallbacks(mStatusChecker);
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         stopRepeatingTask();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (userAuth.getUid() == null) {
+            startActivity(new Intent(context, SplashScreen.class));
+            onDestroy();
+        }
+
+    }
 }

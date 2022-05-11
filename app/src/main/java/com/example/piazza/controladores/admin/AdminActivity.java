@@ -1,10 +1,15 @@
 package com.example.piazza.controladores.admin;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import androidx.appcompat.widget.Toolbar;
@@ -31,12 +36,28 @@ public class AdminActivity extends AppCompatActivity implements AuthUserSession 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        if (userAuth == null) {
+        if (userAuth.getUid() == null) {
             startActivity(new Intent(this, SplashScreen.class));
+            finish();
         }
 
-        super.onCreate(savedInstanceState);
+        final View activityRootView = findViewById(R.id.container);
+
+        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
+                if (heightDiff > dpToPx(AdminActivity.this, 200)) {
+                    findViewById(R.id.nav_view).setVisibility(View.GONE); // Lo haces invisible y que no ocupe espacio.
+                }
+                else {
+                    findViewById(R.id.nav_view).setVisibility(View.VISIBLE); // Lo haces visible
+                }
+            }
+        });
+
 
         setTheme(R.style.Theme_TestAuth);
 
@@ -81,6 +102,11 @@ public class AdminActivity extends AppCompatActivity implements AuthUserSession 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_admin);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
+    }
+
+    public static float dpToPx(Context context, float valueInDp) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, valueInDp, metrics);
     }
 
     @Override
