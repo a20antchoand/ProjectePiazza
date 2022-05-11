@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.piazza.controladores.auth.AuthActivity;
+import com.example.piazza.controladores.auth.SplashScreen;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
 
@@ -30,6 +31,11 @@ public class AdminActivity extends AppCompatActivity implements AuthUserSession 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        if (userAuth == null) {
+            startActivity(new Intent(this, SplashScreen.class));
+        }
+
         super.onCreate(savedInstanceState);
 
         setTheme(R.style.Theme_TestAuth);

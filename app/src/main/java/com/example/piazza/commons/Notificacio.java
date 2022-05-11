@@ -25,41 +25,42 @@ public class Notificacio {
 
     public static void Notificar(Context context, String titol, String missatge, int notID){
 
-        NotificationCompat.Builder creador;
-        String canalID = "canalPiazza";
+            NotificationCompat.Builder creador;
+            String canalID = "canalPiazza";
 
-        NotificationManager notificador = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        new NotificationCompat.Builder(context, canalID);
+            NotificationManager notificador = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            new NotificationCompat.Builder(context, canalID);
 
-        Intent notificationIntent = new Intent(context, SplashScreen.class);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent intent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+            Intent notificationIntent = new Intent(context, context.getClass());
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            PendingIntent intent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
-        String canalNombre = "Mensajes";
-        String canalDescribe = "Canal de mensajes";
+            String canalNombre = "Mensajes";
+            String canalDescribe = "Canal de mensajes";
 
-        int importancia = NotificationManager.IMPORTANCE_HIGH;
+            int importancia = NotificationManager.IMPORTANCE_HIGH;
 
-        NotificationChannel miCanal = new NotificationChannel(canalID, canalNombre, importancia);
+            NotificationChannel miCanal = new NotificationChannel(canalID, canalNombre, importancia);
 
-        miCanal.setDescription(canalDescribe);
-        miCanal.enableLights(true);
-        miCanal.setLightColor(Color.BLUE); // Esto no lo soportan todos los dispositivos
-        miCanal.enableVibration(true);
+            miCanal.setDescription(canalDescribe);
+            miCanal.enableLights(true);
+            miCanal.setLightColor(Color.BLUE); // Esto no lo soportan todos los dispositivos
+            miCanal.enableVibration(true);
 
-        notificador.createNotificationChannel(miCanal);
-        creador = new NotificationCompat.Builder(context, canalID);
+            notificador.createNotificationChannel(miCanal);
+            creador = new NotificationCompat.Builder(context, canalID);
 
-        int iconoSmall = R.mipmap.ic_launcher;
+            int iconoSmall = R.mipmap.ic_launcher;
 
-        creador.setSmallIcon(iconoSmall);
-        creador.setContentTitle(titol);
-        creador.setContentText(missatge);
-        creador.setContentIntent(intent);
-        creador.setStyle(new NotificationCompat.BigTextStyle().bigText(missatge));
-        creador.setChannelId(canalID);
+            creador.setSmallIcon(iconoSmall);
+            creador.setContentTitle(titol);
+            creador.setContentText(missatge);
+            creador.setContentIntent(intent);
+            creador.setStyle(new NotificationCompat.BigTextStyle().bigText(missatge));
+            creador.setChannelId(canalID);
 
-        notificador.notify(notID, creador.build());
+            notificador.notify(notID, creador.build());
+
     }
 
 }

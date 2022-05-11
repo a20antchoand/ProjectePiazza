@@ -30,6 +30,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.example.piazza.classes.Horario;
@@ -201,22 +202,24 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
                 int horesTreballades = 0, horesMensuals;
 
                 Usuario usuari = usuarios.get(binding.spnTreballador.getSelectedItem());
+
                 horesMensuals = Integer.parseInt(usuari.getHoresMensuals()) * 60;
 
                 for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
 
                     Horario temp = documentSnapshot.toObject(Horario.class);
 
-                    if (temp.getUsuario().getUid().equals(usuari.getUid())
-                            && temp.getMesEntrada() == getCurrTimeGMT.zdt.getMonthValue()
-                            && temp.getAnioEntrada() == getCurrTimeGMT.zdt.getYear()) {
+                    if (temp.getUsuario() != null) {
+                        if (temp.getUsuario().getUid().equals(usuari.getUid())
+                                && temp.getMesEntrada() == getCurrTimeGMT.zdt.getMonthValue()
+                                && temp.getAnioEntrada() == getCurrTimeGMT.zdt.getYear()) {
 
-                        horesTreballades += temp.getTotalMinutsTreballats();
+                            horesTreballades += temp.getTotalMinutsTreballats();
 
-                        registres.put(documentSnapshot.getId(), temp);
+                            registres.put(documentSnapshot.getId(), temp);
 
+                        }
                     }
-
                 }
 
                 mostrarInformacioMesActual(usuari, horesTreballades, horesMensuals, registres);
@@ -255,8 +258,6 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
                     binding.tvResiduHores.setText("0h 0m");
                     binding.tvResiduHores.setTextColor(root.getContext().getResources().getColor(R.color.black));
                 }
-
-
 
                 if (horesMensuals > 6000) {
                     binding.tvHoresMensuals.setText(String.format(HORES_NEUTRE, horesMensuals / 60));

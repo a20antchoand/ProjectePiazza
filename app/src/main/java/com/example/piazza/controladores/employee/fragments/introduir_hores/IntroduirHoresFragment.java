@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -271,48 +272,71 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         return result;
     }
     public void iniciarJornada (View view) {
+
         userAuth.setTreballant(true);
         writeOneDocument(DDBB.collection("usuaris").document(userAuth.getUid()), userAuth);
+
         //iniciem l'horari de l'usuari
         horarioUsuario = new Horario();
+
         //indiquem l'usuari a l'horari
         horarioUsuario.setUsuario(userAuth);
+
         //augmentem el numero de document en +1
         numeroDocument = numeroDocument + 1;
+
         //agafem la referencia del document a treballar
         docRefHorari = DDBB.collection("horari").document(getCurrTimeGMT.zdt.getYear() + "_" + getCurrTimeGMT.zdt.getMonthValue() + "_" + getCurrTimeGMT.zdt.getDayOfMonth() +  "_" + userAuth.getUid() + "_" + numeroDocument);
+
         //agafem la data actual
         getFechaActual(true);
+
         //guardem el registre a la BBDD
         GuardarRegistroBBDD();
+
         //noifiquem a l'usuari de l'entrada a treballar
-        Notificacio.Notificar(getContext(),"Piazza", "Has iniciat la teva Jornada.\nPodras parar-la en qualsevol moment donan-li al boto de parar.", 1);
+        if (Build.VERSION.SDK_INT < 31)
+            Notificacio.Notificar(getContext(),"Piazza", "Has iniciat la teva Jornada.\nPodras parar-la en qualsevol moment donan-li al boto de parar.", 1);
+
         //amagem e lboto d'inici i mostrem el d'acabar
         changeStateButtons.hideButton(iniciarJornadaBtn);
         changeStateButtons.showButton(acabarJornadaBtn);
         acabarJornadaSwipe();
+
         //iniciem el handler que actualitzara el contador
         startRepeatingTask();
     }
     public void acabarJornada (View view) {
+
         userAuth.setTreballant(false);
         writeOneDocument(DDBB.collection("usuaris").document(userAuth.getUid()), userAuth);
+
         //indiquem que la jornada esta acabada
         horarioUsuario.setEstatJornada(true);
+
         //cambiem els botons ocultant el d'acabar i mostrant el d'iniciar
         changeStateButtons.hideButton(acabarJornadaBtn);
         changeStateButtons.showButton(iniciarJornadaBtn);
         iniciarJornadaSwipe();
+
         //agafem la dada actual i guardem la informacio
         getFechaActual(false);
+
+        Toast.makeText(getContext(), "SDK: " + Build.VERSION.SDK_INT, Toast.LENGTH_SHORT).show();
+        System.out.println("SDK: " + Build.VERSION.SDK_INT);
+
         //notifiquem del final de la jornada
-        Notificacio.Notificar(getContext(),"Piazza", "Has acabat la teva Jornada.\nEspero que descansis.\nHas fet un torn de: " + horarioUsuario.getTotalMinutsTreballats()/60 + "h " + horarioUsuario.getTotalMinutsTreballats()%60 + "m" , 1);
+        if (Build.VERSION.SDK_INT < 31)
+            Notificacio.Notificar(getContext(),"Piazza", "Has acabat la teva Jornada.\nEspero que descansis.\nHas fet un torn de: " + horarioUsuario.getTotalMinutsTreballats()/60 + "h " + horarioUsuario.getTotalMinutsTreballats()%60 + "m" , 1);
+
         //parem el handler
         stopRepeatingTask();
+
         new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
                 .setTitleText("Jornada guardada!")
                 .setContentText("La jornada ha durat: " + horarioUsuario.getTotalMinutsTreballats() / 60 + "h " + horarioUsuario.getTotalMinutsTreballats() % 60 + "m.")
                 .show();
+
         horarioUsuario = new Horario();
     }
     private void RecuperarRegistroUsuariBBDD() {
