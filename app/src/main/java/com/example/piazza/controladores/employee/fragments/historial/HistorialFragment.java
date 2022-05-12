@@ -157,8 +157,7 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
         Horario modificacio = new Horario();
 
         new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
-                .setTitleText("Estas segur que vols modificar el registre?")
-                .setContentText("L'administrador decidira si la mante o no!")
+                .setTitleText("Vols eliminar o editar el registre?")
                 .setConfirmText("Editar")
                 .setCancelText("Eliminar")
                 .setConfirmClickListener(sDialog -> {
@@ -185,9 +184,10 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
 
                             modificacio.setUsuario(horario.getUsuario());
 
+                            modificacio.setEstatJornada(true);
+
                         horario.setModificacio(modificacio);
 
-                        writeOneDocument(DDBB.collection("horari").document(listElementHistorialHores.getId()),horario);
                         writeOneDocument(DDBB.collection("modificacions").document(listElementHistorialHores.getId()),horario);
                         new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
                                 .setTitleText("S'ha enviat la modificació a validar!")
@@ -294,7 +294,7 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
                                                 new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
-                                                        .setTitleText("No s'ha pogut editar el registre!")
+                                                        .setTitleText("No s'ha pogut eliminar el registre!")
                                                         .show();
 
                                             }
@@ -305,7 +305,6 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
                             })
                             .show();
 
-                    sweetAlertDialog.dismissWithAnimation();
 
                 })
                 .show();
@@ -321,6 +320,8 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
     private void showHistorialEmpty() {
 
         //mostrem un titol dient que no tens registres junt amb una imatge
+        binding.shimmerLayout.setVisibility(View.INVISIBLE);
+
         binding.titolHistorial.setVisibility(View.VISIBLE);
         binding.imatgeHistorial.setVisibility(View.VISIBLE);
         binding.recyclerViewHistorial.setVisibility(View.GONE);

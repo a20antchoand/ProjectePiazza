@@ -47,6 +47,7 @@
     <string name="iniciarJornadaStr">Swipe to enter</string>
     <string name="acabarJornadaStr">Swipe to leave</string>
     <string name="spn_title">Rol</string>
+    <string name="guardar">Guardar</string>
     <string-array name="dlangs">
         <item>worker</item>
         <item>administrator</item>

@@ -158,11 +158,12 @@
 
     <Button
         android:id="@+id/btnGuardar"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:background="@drawable/login_btn"
-        android:text="Guardar"
+        android:text="@string/guardar"
         app:icon="@drawable/lum_soft_02"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

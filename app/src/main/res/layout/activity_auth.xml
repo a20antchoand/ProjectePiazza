@@ -70,7 +70,7 @@
                 android:inputType="textEmailAddress"
                 android:paddingLeft="10dp" />
 
-            <Space
+            <View
                 android:layout_width="match_parent"
                 android:layout_height="16dp" />
 
@@ -88,7 +88,7 @@
                 android:inputType="textPassword"
                 android:paddingLeft="10dp" />
 
-            <Space
+            <View
                 android:layout_width="match_parent"
                 android:layout_height="8dp" />
         </LinearLayout>

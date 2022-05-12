@@ -56,4 +56,10 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="empresa_perfil">EMPRESA</string>
+    <string name="no_tens_cap_registre_horari_encara">NO TENS CAP REGISTRE HORARI ENCARA</string>
+    <string name="mensuals">MENSUALS</string>
+    <string name="treballades">TREBALLADES</string>
+    <string name="balan">BALANÇ</string>
+    <string name="guardar">Guardar</string>
+    <string name="string_guardar">GUARDAR</string>
 </resources>

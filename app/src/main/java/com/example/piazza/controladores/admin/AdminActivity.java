@@ -1,15 +1,10 @@
 package com.example.piazza.controladores.admin;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -17,7 +12,6 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.piazza.controladores.auth.AuthActivity;
 import com.example.piazza.controladores.auth.SplashScreen;
-import com.example.piazza.controladores.employee.EmployeeActivity;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
 
@@ -99,7 +93,7 @@ public class AdminActivity extends AppCompatActivity implements AuthUserSession 
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.introduirHores:
+            case R.id.logout:
                 logOut();
                 break;
         }

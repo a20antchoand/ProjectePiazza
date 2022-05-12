@@ -19,45 +19,51 @@
 
         <TextView
             android:id="@+id/tvMensuals"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:text="MENSUALS"
+            android:layout_marginBottom="-2dp"
+            android:background="@color/white"
+            android:gravity="center"
+            android:paddingTop="7dp"
+            android:paddingBottom="5dp"
+            android:text="@string/mensuals"
             android:textSize="12sp"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/cvHoresMensuals"
             app:layout_constraintEnd_toEndOf="@+id/cvHoresMensuals"
-            app:layout_constraintStart_toStartOf="@+id/cvHoresMensuals"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="@+id/cvHoresMensuals" />
 
         <TextView
             android:id="@+id/tvExtres"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:text="EXTRES"
+            android:layout_marginBottom="-2dp"
+            android:background="@color/white"
+            android:gravity="center"
+            android:paddingTop="7dp"
+            android:paddingBottom="5dp"
+            android:text="@string/balan"
             android:textSize="12sp"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/cvResidu"
             app:layout_constraintEnd_toEndOf="@+id/cvResidu"
-            app:layout_constraintStart_toStartOf="@+id/cvResidu"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="@+id/cvResidu" />
 
         <TextView
             android:id="@+id/tvTreballades"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:text="TREBALLADES"
+            android:layout_marginBottom="-2dp"
+            android:background="@color/white"
+            android:gravity="center"
+            android:paddingTop="7dp"
+            android:paddingBottom="5dp"
+            android:text="@string/treballades"
             android:textSize="12sp"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/horesTreballadesTotal"
             app:layout_constraintEnd_toEndOf="@+id/horesTreballadesTotal"
-            app:layout_constraintStart_toStartOf="@+id/horesTreballadesTotal"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="@+id/horesTreballadesTotal" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cvHoresMensuals"
@@ -218,7 +224,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:text="NO TENS CAP REGISTRE HORARI ENCARA"
+        android:text="@string/no_tens_cap_registre_horari_encara"
         android:textAlignment="center"
         android:textSize="34sp"
         android:visibility="gone"

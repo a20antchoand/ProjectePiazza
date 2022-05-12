@@ -21,6 +21,7 @@ import com.example.piazza.classes.Usuario;
 import com.example.piazza.commons.Notificacio;
 import com.example.piazza.commons.getCurrTimeGMT;
 import com.example.piazza.fireBase.data.ReadData;
+import com.example.piazza.fireBase.data.WriteData;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.piazza.recyclerView.treballadors.ListAdapterTreballadors;
 import com.example.piazza.recyclerView.treballadors.ListElementTreballadors;
@@ -41,7 +42,7 @@ import java.util.Random;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class TreballadorsFragment extends Fragment implements ReadData, AuthUserSession {
+public class TreballadorsFragment extends Fragment implements ReadData, WriteData, AuthUserSession {
 
     private static final String TAG = "TREBALLADORS_FRAGMENT: ";
     private FragmentTreballadorsBinding binding;
@@ -80,7 +81,7 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
 
         for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult().getDocuments()) {
             Horario horario = documentSnapshot.toObject(Horario.class);
-            if (horario.getUsuario().getEmpresa().equals(userAuth.getEmpresa())) {
+            if (horario.getUsuario().getEmpresa().equals(userAuth.getEmpresa()) && horario.getModificacio() != null) {
 
                 String titol;
                 String contingut = "Data: " + horario.getModificacio().getDiaEntrada() + "/" + horario.getModificacio().getMesEntrada() + " a " + horario.getModificacio().getDiaSalida() + "/" + horario.getModificacio().getMesSalida()
@@ -102,9 +103,18 @@ public class TreballadorsFragment extends Fragment implements ReadData, AuthUser
                         .setCancelText("Denegar")
                         .setConfirmClickListener(sweetAlertDialog -> {
 
+                            Horario temp = horario.getModificacio();
+                            temp.setUsuario(horario.getUsuario());
+
+                            writeOneDocument(DDBB.collection("horari").document(documentSnapshot.getId()), temp);
+
+                            DDBB.collection("modificacions").document(documentSnapshot.getId()).delete();
+
                             sweetAlertDialog.dismissWithAnimation();
                         })
                         .setCancelClickListener(sweetAlertDialog -> {
+
+                            DDBB.collection("modificacions").document(documentSnapshot.getId()).delete();
 
                             sweetAlertDialog.dismissWithAnimation();
                         }).show();

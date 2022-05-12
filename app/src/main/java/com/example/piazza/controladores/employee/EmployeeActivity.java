@@ -12,10 +12,8 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
-import com.example.piazza.controladores.admin.AdminActivity;
 import com.example.piazza.controladores.auth.AuthActivity;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
@@ -97,7 +95,7 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.introduirHores:
+            case R.id.logout:
                 logOut();
                 break;
         }

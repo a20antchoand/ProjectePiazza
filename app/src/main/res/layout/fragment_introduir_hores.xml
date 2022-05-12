@@ -32,15 +32,19 @@
 
                 <ImageButton
                     android:id="@+id/imageButton2"
+                    style="@style/Widget.AppCompat.ImageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
+                    android:background="@drawable/login_btn"
                     android:minHeight="48dp"
+                    android:padding="10dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_baseline_menu_24" />
+                    app:srcCompat="@drawable/ic_baseline_menu_24"
+                    tools:ignore="SpeakableTextPresentCheck" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
@@ -58,7 +62,7 @@
                         android:layout_width="75dp"
                         android:layout_height="75dp"
                         android:layout_margin="15dp"
-                        android:background="@drawable/bkg_img"
+                        android:background="@drawable/login_btn"
                         app:srcCompat="@mipmap/imatge_butons_round" />
 
                     <LinearLayout
@@ -173,6 +177,7 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/chatLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
@@ -180,6 +185,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:padding="2dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -200,6 +206,7 @@
 
         <Button
             android:id="@+id/BtnEnviarMissatge"
+            style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:layout_marginStart="10dp"
@@ -235,9 +242,7 @@
             android:id="@+id/divider3"
             android:layout_width="0dp"
             android:layout_height="1dp"
-            android:layout_marginBottom="1dp"
             android:background="?android:attr/listDivider"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/editTextMissatge"
             app:layout_constraintStart_toStartOf="@+id/editTextMissatge"
             app:layout_constraintTop_toBottomOf="@+id/editTextMissatge" />

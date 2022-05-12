@@ -204,10 +204,37 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         PopupMenu popup = new PopupMenu(context, view);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.introduir_hores_menu, popup.getMenu());
-        popup.setOnMenuItemClickListener(this::introduirRegistre);
+
+        popup.setOnMenuItemClickListener(this::menuItemClick);
         popup.show();
     }
-    private boolean introduirRegistre(MenuItem menuItem) {
+
+    private boolean menuItemClick(MenuItem menuItem) {
+
+        switch (menuItem.getItemId()) {
+
+            case R.id.introduirJornada:
+                introduirRegistre();
+                break;
+            case R.id.gestionarChat:
+                gestionarChat();
+                break;
+
+        }
+
+        return true;
+    }
+
+    private void gestionarChat() {
+
+        if (binding.chatLayout.getVisibility() == View.VISIBLE)
+            binding.chatLayout.setVisibility(View.INVISIBLE);
+        else
+            binding.chatLayout.setVisibility(View.VISIBLE);
+
+    }
+
+    private void introduirRegistre() {
         Horario horari = new Horario();
         horari.setEstatJornada(true);
         horari.setUsuario(userAuth);
@@ -234,6 +261,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                                 //afegim al horari el total de minuts treballats
                                 modificacio.setTotalMinutsTreballats(diffMinuts);
                                 modificacio.setUsuario(userAuth);
+                                modificacio.setEstatJornada(true);
                                 horari.setModificacio(modificacio);
                                 String docRef = getCurrTimeGMT.zdt.getYear() + "_" + getCurrTimeGMT.zdt.getMonthValue() + "_" + getCurrTimeGMT.zdt.getDayOfMonth() +  "_" + userAuth.getUid() + "_afegit_" + Calendar.getInstance().getTimeInMillis();
                                 writeOneDocument(DDBB.collection("horari").document(docRef),horari);
@@ -298,7 +326,6 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                     sweetAlertDialog.dismissWithAnimation();
                 }).show();
 
-        return true;
     }
     private void cargarEfecteTextEntrar() {
         binding.textTextLL.setText(getResources().getString(R.string.iniciarJornadaStr));
