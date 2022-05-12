@@ -73,16 +73,18 @@
                         android:layout_height="0dp"
                         android:background="?android:attr/listDivider"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/spnTreballador"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <Spinner
                         android:id="@+id/spnTreballador"
                         android:layout_width="match_parent"
-                        android:layout_height="35dp"
+                        android:layout_height="48dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="SpeakableTextPresentCheck" />
 
                     <View
                         android:id="@+id/divider18"
@@ -251,6 +253,8 @@
                 android:layout_height="50dp"
                 android:background="#65818181"
                 app:layout_constraintBottom_toBottomOf="@+id/tvData2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
