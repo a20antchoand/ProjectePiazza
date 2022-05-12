@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
@@ -39,52 +40,52 @@ public class AdminActivity extends AppCompatActivity implements AuthUserSession 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (userAuth.getRol() == null) {
-            startActivity(new Intent(this, SplashScreen.class));
-            finish();
+        try {
+            if (userAuth.getRol() == null) {
+                startActivity(new Intent(this, SplashScreen.class));
+                finish();
+            }
+
+            setTheme(R.style.Theme_TestAuth);
+
+            binding = ActivityAdminBinding.inflate(getLayoutInflater());
+            setContentView(binding.getRoot());
+
+            Toolbar toolbar = findViewById(R.id.my_toolbar_admin);
+            ImageView logo = findViewById(R.id.yourlogo);
+
+            StorageReference storageRef = STORAGE.getReferenceFromUrl("gs://testauth-f5eb4.appspot.com/" + userAuth.getEmpresa() + ".png");
+            storageRef.getBytes(1024 * 1024)
+                    .addOnSuccessListener(bytes -> logo.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length)));
+
+
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayUseLogoEnabled(true);
+
+            AppBarConfiguration appBarConfiguration = null;
+
+            binding.navView.getMenu().clear();
+
+            if (userAuth.getRol().equals("admin")) {
+                appBarConfiguration = new AppBarConfiguration.Builder(
+                        R.id.navigation_treballadors, R.id.navigation_administrar, R.id.navigation_reports)
+                        .build();
+                binding.navView.inflateMenu(R.menu.bottom_nav_menu);
+            } else if (userAuth.getRol().equals("superadmin")) {
+                appBarConfiguration = new AppBarConfiguration.Builder(
+                        R.id.navigation_treballadors, R.id.navigation_alta_administradors, R.id.navigation_reports)
+                        .build();
+                binding.navView.inflateMenu(R.menu.bottom_nav_menu_super);
+            }
+
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_admin);
+            NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+            NavigationUI.setupWithNavController(binding.navView, navController);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Hola " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }
-
-        setTheme(R.style.Theme_TestAuth);
-
-        binding = ActivityAdminBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        Toolbar toolbar = findViewById(R.id.my_toolbar_admin);
-        ImageView logo = findViewById(R.id.yourlogo);
-
-        StorageReference storageRef = STORAGE.getReferenceFromUrl("gs://testauth-f5eb4.appspot.com/" + userAuth.getEmpresa() + ".png");
-        storageRef.getBytes(1024 * 1024)
-                .addOnSuccessListener(bytes -> logo.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length)));
-
-/*
-        logo.setImageDrawable(getResources().getDrawable(R.drawable.mipmap_piazza));
-*/
-        /*toolbar.setBackgroundColor(getResources().getColor(R.color.start_btn));*/
-
-
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayUseLogoEnabled(true);
-
-        AppBarConfiguration appBarConfiguration = null;
-
-        binding.navView.getMenu().clear();
-
-        if (userAuth.getRol().equals("admin")) {
-            appBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.navigation_treballadors, R.id.navigation_administrar, R.id.navigation_reports)
-                    .build();
-            binding.navView.inflateMenu(R.menu.bottom_nav_menu);
-        } else if (userAuth.getRol().equals("superadmin")) {
-            appBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.navigation_treballadors, R.id.navigation_alta_administradors, R.id.navigation_reports)
-                    .build();
-            binding.navView.inflateMenu(R.menu.bottom_nav_menu_super);
-        }
-
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_admin);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(binding.navView, navController);
     }
 
     @Override
