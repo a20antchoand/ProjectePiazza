@@ -7,11 +7,9 @@ import java.io.Serializable;
 public class ListElementReportHores implements Serializable {
 
     Horario horario;
-    String id;
 
-    public ListElementReportHores(Horario horario, String id) {
+    public ListElementReportHores(Horario horario) {
         this.horario = horario;
-        this.id = id;
     }
 
     public Horario getHorario() {
@@ -22,11 +20,4 @@ public class ListElementReportHores implements Serializable {
         this.horario = horario;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 }

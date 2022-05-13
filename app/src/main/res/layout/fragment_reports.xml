@@ -540,7 +540,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/login_constraint"
+        android:background="@drawable/selector_bkg"
         android:translationZ="90dp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"

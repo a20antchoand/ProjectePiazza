@@ -18,17 +18,13 @@ public class ListAdapterReportHores extends RecyclerView.Adapter<ListAdapterRepo
     private List<ListElementReportHores> mData;
     private LayoutInflater mInflater;
     private Context context;
-    final onItemClickListener listener;
 
-    public interface onItemClickListener {
-        void onItemClickListener(ListElementReportHores item);
-    }
 
-    public ListAdapterReportHores(List<ListElementReportHores> itemList, Context context, onItemClickListener listener) {
+
+    public ListAdapterReportHores(List<ListElementReportHores> itemList, Context context) {
         this.mInflater = LayoutInflater.from(context);
         this.context = context;
         this.mData = itemList;
-        this.listener = listener;
     }
 
     @Override
@@ -75,8 +71,6 @@ public class ListAdapterReportHores extends RecyclerView.Adapter<ListAdapterRepo
             data.setText(dataStr);
             entrada.setText(entradaStr);
             sortida.setText(sortidaStr);
-
-            itemView.setOnClickListener(view -> listener.onItemClickListener(item));
 
         }
     }

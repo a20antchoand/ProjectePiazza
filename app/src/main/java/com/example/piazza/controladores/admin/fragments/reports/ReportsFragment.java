@@ -6,19 +6,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.ShareCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-import androidx.core.util.Pair;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
@@ -30,34 +19,35 @@ import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.Toolbar;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ShareCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.piazza.classes.Horario;
 import com.example.piazza.classes.Usuario;
+import com.example.piazza.commons.getCurrTimeGMT;
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.data.WriteData;
 import com.example.piazza.fireBase.session.AuthUserSession;
-import com.example.piazza.recyclerView.historialHores.ListAdapterHistorialHores;
-import com.example.piazza.recyclerView.historialHores.ListElementHistorialHores;
 import com.example.piazza.recyclerView.reportHores.ListAdapterReportHores;
 import com.example.piazza.recyclerView.reportHores.ListElementReportHores;
 import com.example.testauth.BuildConfig;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentReportsBinding;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.example.piazza.commons.*;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -67,8 +57,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -119,9 +107,9 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
         binding.button.setOnClickListener(l -> {
             if (binding.spnTreballador.getSelectedItem().equals(getActivity().getString(R.string.tots)))
-                getMultipldeDocuments(DDBB.collection("horari"), this::exportarCSVGeneral);
+                getMultipldeDocuments(DDBB.collection("horari").orderBy("diaEntrada"), this::exportarCSVGeneral);
             else
-                getMultipldeDocuments(DDBB.collection("horari"), this::exportarCSVUsuari);
+                getMultipldeDocuments(DDBB.collection("horari").orderBy("diaEntrada"), this::exportarCSVUsuari);
 
         });
 
@@ -131,61 +119,63 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
+                if (binding.constraintLayout.getVisibility() == View.VISIBLE)
+                    ocultarSelectorData(binding.constraintLayout);
 
-                    if (binding.cardViewHistorial.getVisibility() == View.VISIBLE && !binding.spnTreballador.getSelectedItem().equals(getActivity().getString(R.string.tots))) {
-                        TranslateAnimation animate = new TranslateAnimation(
-                                0,                 // fromXDelta
-                                binding.cardViewHistorial.getWidth() + 50,                 // toXDelta
+                if (binding.cardViewHistorial.getVisibility() == View.VISIBLE && !binding.spnTreballador.getSelectedItem().equals(getActivity().getString(R.string.tots))) {
+                    TranslateAnimation animate = new TranslateAnimation(
+                            0,                 // fromXDelta
+                            binding.cardViewHistorial.getWidth() + 50,                 // toXDelta
+                            0,  // fromYDelta
+                            0);                // toYDelta
+                    animate.setDuration(500);
+                    animate.setFillAfter(true);
+                    binding.cardViewHistorial.setVisibility(View.INVISIBLE);
+                    binding.cardViewHistorial.startAnimation(animate);
+                    binding.cardViewHistorial.postDelayed(() -> {
+
+                        getMultipldeDocuments(DDBB.collection("horari").orderBy("diaEntrada"), this::recopilarHoresTreballadesMesActual);
+
+                        TranslateAnimation animate2 = new TranslateAnimation(
+                                -(binding.cardViewHistorial.getWidth()),                 // fromXDelta
+                                0,                 // toXDelta
                                 0,  // fromYDelta
                                 0);                // toYDelta
-                        animate.setDuration(500);
-                        animate.setFillAfter(true);
-                        binding.cardViewHistorial.setVisibility(View.INVISIBLE);
-                        binding.cardViewHistorial.startAnimation(animate);
-                        binding.cardViewHistorial.postDelayed(() -> {
-
-                            getMultipldeDocuments(DDBB.collection("horari"), this::recopilarHoresTreballadesMesActual);
-
-                            TranslateAnimation animate2 = new TranslateAnimation(
-                                    -(binding.cardViewHistorial.getWidth()),                 // fromXDelta
-                                    0,                 // toXDelta
-                                    0,  // fromYDelta
-                                    0);                // toYDelta
-                            animate2.setDuration(500);
-                            animate2.setFillAfter(true);
-                            binding.cardViewHistorial.setVisibility(View.VISIBLE);
-                            binding.cardViewHistorial.startAnimation(animate2);
-                        }, 500);
+                        animate2.setDuration(500);
+                        animate2.setFillAfter(true);
+                        binding.cardViewHistorial.setVisibility(View.VISIBLE);
+                        binding.cardViewHistorial.startAnimation(animate2);
+                    }, 500);
 
 
-                    } else {
-                        if (!binding.spnTreballador.getSelectedItem().equals(getActivity().getString(R.string.tots))) {
+                } else {
+                    if (!binding.spnTreballador.getSelectedItem().equals(getActivity().getString(R.string.tots))) {
 
-                            getMultipldeDocuments(DDBB.collection("horari"), this::recopilarHoresTreballadesMesActual);
+                        getMultipldeDocuments(DDBB.collection("horari").orderBy("diaEntrada"), this::recopilarHoresTreballadesMesActual);
 
-                            TranslateAnimation animate2 = new TranslateAnimation(
-                                    -(binding.cardViewHistorial.getWidth()),                 // fromXDelta
-                                    0,                 // toXDelta
-                                    0,  // fromYDelta
-                                    0);                // toYDelta
-                            animate2.setDuration(500);
-                            animate2.setFillAfter(true);
-                            binding.cardViewHistorial.setVisibility(View.VISIBLE);
-                            binding.cardViewHistorial.startAnimation(animate2);
-                        }
-                    }
-
-                    if (binding.cardViewHistorial.getVisibility() == View.VISIBLE && binding.spnTreballador.getSelectedItem().equals(getActivity().getString(R.string.tots))) {
-                        TranslateAnimation animate = new TranslateAnimation(
-                                0,                 // fromXDelta
-                                binding.cardViewHistorial.getWidth() + 50,                 // toXDelta
+                        TranslateAnimation animate2 = new TranslateAnimation(
+                                -(binding.cardViewHistorial.getWidth()),                 // fromXDelta
+                                0,                 // toXDelta
                                 0,  // fromYDelta
                                 0);                // toYDelta
-                        animate.setDuration(500);
-                        animate.setFillAfter(true);
-                        binding.cardViewHistorial.setVisibility(View.INVISIBLE);
-                        binding.cardViewHistorial.startAnimation(animate);
+                        animate2.setDuration(500);
+                        animate2.setFillAfter(true);
+                        binding.cardViewHistorial.setVisibility(View.VISIBLE);
+                        binding.cardViewHistorial.startAnimation(animate2);
                     }
+                }
+
+                if (binding.cardViewHistorial.getVisibility() == View.VISIBLE && binding.spnTreballador.getSelectedItem().equals(getActivity().getString(R.string.tots))) {
+                    TranslateAnimation animate = new TranslateAnimation(
+                            0,                 // fromXDelta
+                            binding.cardViewHistorial.getWidth() + 50,                 // toXDelta
+                            0,  // fromYDelta
+                            0);                // toYDelta
+                    animate.setDuration(500);
+                    animate.setFillAfter(true);
+                    binding.cardViewHistorial.setVisibility(View.INVISIBLE);
+                    binding.cardViewHistorial.startAnimation(animate);
+                }
 
 
             }
@@ -197,7 +187,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
             private void recopilarHoresTreballadesMesActual(Task<QuerySnapshot> querySnapshotTask) {
 
-                Map<String, Horario> registres = new HashMap<>();
+                List<Horario> registres = new ArrayList<>();
 
                 int horesTreballades = 0, horesMensuals;
 
@@ -216,7 +206,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
                             horesTreballades += temp.getTotalMinutsTreballats();
 
-                            registres.put(documentSnapshot.getId(), temp);
+                            registres.add(temp);
 
                         }
                     }
@@ -227,7 +217,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
             }
 
-            public void mostrarInformacioMesActual(Usuario usuari, int horesTreballades, int horesMensuals, Map<String, Horario> registres) {
+            public void mostrarInformacioMesActual(Usuario usuari, int horesTreballades, int horesMensuals, List<Horario> registres) {
 
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
                 int residu;
@@ -262,7 +252,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
                 if (horesMensuals > 6000) {
                     binding.tvHoresMensuals.setText(String.format(HORES_NEUTRE, horesMensuals / 60));
                 } else {
-                    binding.tvHoresMensuals.setText(String.format(HORES_MINUTS_NEUTRE, horesMensuals/60, horesMensuals%60));
+                    binding.tvHoresMensuals.setText(String.format(HORES_MINUTS_NEUTRE, horesMensuals / 60, horesMensuals % 60));
                 }
 
                 if (horesTreballades > 6000) {
@@ -278,7 +268,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
                 binding.percentatgeJornada.setText((horesTreballades * 100) / horesMensuals + "%");
 
-                binding.tvData2.setText(1 + "/" + getCurrTimeGMT.zdt.getMonthValue() + "/" + getCurrTimeGMT.zdt.getYear() + " - " +  getCurrTimeGMT.zdt.getDayOfMonth() + "/" + getCurrTimeGMT.zdt.getMonthValue() + "/" + getCurrTimeGMT.zdt.getYear());
+                binding.tvData2.setText(1 + "/" + getCurrTimeGMT.zdt.getMonthValue() + "/" + getCurrTimeGMT.zdt.getYear() + " - " + getCurrTimeGMT.zdt.getDayOfMonth() + "/" + getCurrTimeGMT.zdt.getMonthValue() + "/" + getCurrTimeGMT.zdt.getYear());
 
                 mostrarRegistres(registres);
 
@@ -297,7 +287,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
     private void recopilarHoresTreballadesOpcio(Task<QuerySnapshot> querySnapshotTask) {
 
-        Map<String, Horario> registres = new HashMap<>();
+        List<Horario> registres = new ArrayList<>();
 
         int horesTreballades = 0, horesMensuals;
 
@@ -328,7 +318,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
                 horesTreballades += temp.getTotalMinutsTreballats();
 
-                registres.put(documentSnapshot.getId(), temp);
+                registres.add(temp);
 
             }
 
@@ -338,7 +328,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
     }
 
-    public void mostrarInformacioOpcio(Usuario usuari, int horesTreballades, int horesMensuals, Map<String, Horario> registres) {
+    public void mostrarInformacioOpcio(Usuario usuari, int horesTreballades, int horesMensuals, List<Horario> registres) {
 
         SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATA);
         int residu;
@@ -371,11 +361,10 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         }
 
 
-
         if (horesMensuals > 6000) {
             binding.tvHoresMensuals.setText(String.format(HORES_NEUTRE, horesMensuals / 60));
         } else {
-            binding.tvHoresMensuals.setText(String.format(HORES_MINUTS_NEUTRE, horesMensuals/60, horesMensuals%60));
+            binding.tvHoresMensuals.setText(String.format(HORES_MINUTS_NEUTRE, horesMensuals / 60, horesMensuals % 60));
         }
 
         if (horesTreballades > 6000) {
@@ -399,7 +388,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         calendar.set(Calendar.DAY_OF_YEAR, (getCurrTimeGMT.zdt.getDayOfYear() - documentsRecuperar));
 
 
-        binding.tvData2.setText(sdf.format(calendar.getTime()) + " - " +  getCurrTimeGMT.zdt.getDayOfMonth() + "/" + getCurrTimeGMT.zdt.getMonthValue() + "/" + getCurrTimeGMT.zdt.getYear());
+        binding.tvData2.setText(sdf.format(calendar.getTime()) + " - " + getCurrTimeGMT.zdt.getDayOfMonth() + "/" + getCurrTimeGMT.zdt.getMonthValue() + "/" + getCurrTimeGMT.zdt.getYear());
 
         mostrarRegistres(registres);
 
@@ -407,9 +396,11 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
     private void recopilarHoresTreballadesPersonalitzat(Task<QuerySnapshot> querySnapshotTask) {
 
-        Map<String, Horario> registres = new HashMap<>();
+        List<Horario> registres = new ArrayList<>();
 
         int horesTreballades = 0, horesMensuals;
+
+        calendariInici.add(Calendar.DATE, -1);
 
         Date max = calendariFinal.getTime(), min = calendariInici.getTime();
 
@@ -427,7 +418,6 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
         horesMensuals = horesMensuals * dies;
 
-        System.out.println("TEMPS: " + differenceWeek);
         for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
 
             Horario temp = documentSnapshot.toObject(Horario.class);
@@ -436,18 +426,18 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
                 Date data = null;
                 try {
-                    data = new SimpleDateFormat("yyyy-MM-dd").parse(temp.getAnioEntrada() + "-" + temp.getMesEntrada() +"-" + temp.getDiaEntrada());
+                    data = new SimpleDateFormat("yyyy-MM-dd").parse(temp.getAnioEntrada() + "-" + temp.getMesEntrada() + "-" + temp.getDiaEntrada());
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
 
-                if (data.after(min) && data.before(max)) {
+                if (data.after(min) && data.before(max) || data.compareTo(min) == 0 || data.compareTo(max) == 0) {
 
                     horesTreballades += temp.getTotalMinutsTreballats();
+                    registres.add(temp);
 
                 }
 
-                registres.put(documentSnapshot.getId(), temp);
 
             }
 
@@ -458,7 +448,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
     }
 
-    private void mostrarInformacioPersonalitzada(Usuario usuari, int horesTreballades, int horesMensuals, Map<String, Horario> registres) {
+    private void mostrarInformacioPersonalitzada(Usuario usuari, int horesTreballades, int horesMensuals, List<Horario> registres) {
 
         SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATA);
         int residu;
@@ -491,11 +481,10 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         }
 
 
-
         if (horesMensuals > 6000) {
             binding.tvHoresMensuals.setText(String.format(HORES_NEUTRE, horesMensuals / 60));
         } else {
-            binding.tvHoresMensuals.setText(String.format(HORES_MINUTS_NEUTRE, horesMensuals/60, horesMensuals%60));
+            binding.tvHoresMensuals.setText(String.format(HORES_MINUTS_NEUTRE, horesMensuals / 60, horesMensuals % 60));
         }
         if (horesTreballades > 6000) {
             binding.tvTotalHores.setText(String.format(HORES_NEUTRE, horesTreballades / 60));
@@ -511,24 +500,24 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         binding.percentatgeJornada.setText((horesTreballades * 100) / horesMensuals + "%");
 
 
-        binding.tvData2.setText(sdf.format(calendariInici.getTime()) + " - " +  sdf.format(calendariFinal.getTime()));
+        binding.tvData2.setText(sdf.format(calendariInici.getTime()) + " - " + sdf.format(calendariFinal.getTime()));
 
         mostrarRegistres(registres);
 
     }
 
-    private void mostrarRegistres(Map<String, Horario> registres) {
+    private void mostrarRegistres(List<Horario> registres) {
 
         List<ListElementReportHores> listRegistres = new ArrayList<>();
 
-        for (Map.Entry<String, Horario> map : registres.entrySet()) {
+        for (Horario horario : registres) {
 
-            listRegistres.add(new ListElementReportHores(map.getValue(), map.getKey()));
+            listRegistres.add(new ListElementReportHores(horario));
 
         }
 
         //Creem l'adaptador de la recyclerview
-        ListAdapterReportHores listAdapter = new ListAdapterReportHores(listRegistres, getContext(), null);
+        ListAdapterReportHores listAdapter = new ListAdapterReportHores(listRegistres, getContext());
 
         //creem la recyclerview
         RecyclerView recyclerView = binding.rceyclerViewReport;
@@ -539,29 +528,45 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
     }
 
 
-
-
     public void mostrarSelectorData(View view) {
 
-        if (view.getVisibility() != View.VISIBLE) {
-            binding.textView6.setVisibility(View.VISIBLE);
-            binding.textView7.setVisibility(View.VISIBLE);
-            binding.textView8.setVisibility(View.VISIBLE);
-            binding.textView9.setVisibility(View.VISIBLE);
-            binding.textView10.setVisibility(View.VISIBLE);
+        TranslateAnimation animate = new TranslateAnimation(
+                0,                 // fromXDelta
+                0,                 // toXDelta
+                view.getHeight(),  // fromYDelta
+                0);                // toYDelta
+        animate.setDuration(500);
+        animate.setFillAfter(true);
+        view.setVisibility(View.VISIBLE);
+        view.startAnimation(animate);
 
-            TranslateAnimation animate = new TranslateAnimation(
-                    0,                 // fromXDelta
-                    0,                 // toXDelta
-                    view.getHeight(),  // fromYDelta
-                    0);                // toYDelta
-            animate.setDuration(500);
-            animate.setFillAfter(true);
-            view.setVisibility(View.VISIBLE);
-            view.startAnimation(animate);
+        binding.textView6.setVisibility(View.VISIBLE);
+        binding.textView7.setVisibility(View.VISIBLE);
+        binding.textView8.setVisibility(View.VISIBLE);
+        binding.textView9.setVisibility(View.VISIBLE);
+        binding.textView10.setVisibility(View.VISIBLE);
+
+    }
+
+    public void ocultarSelectorData(View view) {
+
+        TranslateAnimation animate = new TranslateAnimation(
+                0,                 // fromXDelta
+                0,                 // toXDelta
+                0,  // fromYDelta
+                view.getHeight());                // toYDelta
+        animate.setDuration(500);
+        animate.setFillAfter(true);
+        view.setVisibility(View.GONE);
+        view.startAnimation(animate);
+
+        binding.textView6.setVisibility(View.GONE);
+        binding.textView7.setVisibility(View.GONE);
+        binding.textView8.setVisibility(View.GONE);
+        binding.textView9.setVisibility(View.GONE);
+        binding.textView10.setVisibility(View.GONE);
 
 
-        }
     }
 
     public void ocultarSelectorData(TextView item, View view) {
@@ -573,14 +578,8 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
                 view.getHeight());                // toYDelta
         animate.setDuration(500);
         animate.setFillAfter(true);
-        view.setVisibility(View.INVISIBLE);
+        view.setVisibility(View.GONE);
         view.startAnimation(animate);
-
-        binding.textView6.setVisibility(View.INVISIBLE);
-        binding.textView7.setVisibility(View.INVISIBLE);
-        binding.textView8.setVisibility(View.INVISIBLE);
-        binding.textView9.setVisibility(View.INVISIBLE);
-        binding.textView10.setVisibility(View.INVISIBLE);
 
         String text = item.getText().toString();
         if (getActivity().getString(R.string.dia).equals(text)) {
@@ -594,7 +593,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         } else if (getActivity().getString(R.string.personalitzat).equals(text)) {
 
 
-            DatePickerDialog.OnDateSetListener dateListener1 =
+            DatePickerDialog.OnDateSetListener dateListenerSortida =
                     (datePicker, year, month, dayOfMonth) -> {
 
                         Calendar now = Calendar.getInstance();
@@ -611,12 +610,12 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
                     };
 
-            DatePickerDialog.OnDateSetListener dateListener =
+            DatePickerDialog.OnDateSetListener dateListenerEntrada =
                     (datePicker, year, month, dayOfMonth) -> {
 
                         Calendar now = Calendar.getInstance();
 
-                        now.set(year, month, dayOfMonth-1);
+                        now.set(year, month, dayOfMonth);
 
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(FORMAT_DATA);
 
@@ -627,22 +626,27 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
                         calendariInici = now;
 
                         DatePickerDialog datePicker1 = new DatePickerDialog(getContext(),
-                                dateListener1, getCurrTimeGMT.zdt.getYear(), (getCurrTimeGMT.zdt.getMonthValue()-1), getCurrTimeGMT.zdt.getDayOfMonth());
+                                dateListenerSortida, getCurrTimeGMT.zdt.getYear(), (getCurrTimeGMT.zdt.getMonthValue() - 1), getCurrTimeGMT.zdt.getDayOfMonth());
                         datePicker1.getDatePicker().setMinDate(0);
                         datePicker1.show();
                     };
 
 
             DatePickerDialog datePicker1 = new DatePickerDialog(getContext(),
-                    dateListener, getCurrTimeGMT.zdt.getYear(), (getCurrTimeGMT.zdt.getMonthValue()-1), getCurrTimeGMT.zdt.getDayOfMonth());
+                    dateListenerEntrada, getCurrTimeGMT.zdt.getYear(), (getCurrTimeGMT.zdt.getMonthValue() - 1), getCurrTimeGMT.zdt.getDayOfMonth());
             datePicker1.getDatePicker().setMinDate(0);
             datePicker1.show();
 
         }
 
         if (!getActivity().getString(R.string.personalitzat).equals(text))
-            getMultipldeDocuments(DDBB.collection("horari"), this::recopilarHoresTreballadesOpcio);
+            getMultipldeDocuments(DDBB.collection("horari").orderBy("diaEntrada"), this::recopilarHoresTreballadesOpcio);
 
+        binding.textView6.setVisibility(View.GONE);
+        binding.textView7.setVisibility(View.GONE);
+        binding.textView8.setVisibility(View.GONE);
+        binding.textView9.setVisibility(View.GONE);
+        binding.textView10.setVisibility(View.GONE);
 
     }
 
@@ -790,9 +794,9 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
             fileWriter.append(",");
             fileWriter.append(horario.getDiaEntrada() + "/" + horario.getMesEntrada() + "/" + horario.getAnioEntrada());
             fileWriter.append(",");
-            fileWriter.append(horario.getHoraEntrada() + ":" + String.format("%02d",horario.getMinutEntrada()));
+            fileWriter.append(horario.getHoraEntrada() + ":" + String.format("%02d", horario.getMinutEntrada()));
             fileWriter.append(",");
-            fileWriter.append(horario.getHoraSalida() + ":" + String.format("%02d",horario.getMinutSalida()));
+            fileWriter.append(horario.getHoraSalida() + ":" + String.format("%02d", horario.getMinutSalida()));
             fileWriter.append(",");
             fileWriter.append(horario.getTotalMinutsTreballats() + "");
             fileWriter.append("\n");
@@ -805,7 +809,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         Uri uri = FileProvider.getUriForFile(Objects.requireNonNull(getContext()),
                 BuildConfig.APPLICATION_ID + ".provider", file);
 
-        if(file.exists()) {
+        if (file.exists()) {
             Intent intent = ShareCompat.IntentBuilder.from(Objects.requireNonNull(getActivity()))
                     .setStream(uri) // uri from FileProvider
                     .setType("application/*")
