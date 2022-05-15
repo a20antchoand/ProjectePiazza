@@ -354,40 +354,43 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     }
     public void iniciarJornada (View view) {
 
-        userAuth.setTreballant(true);
-        writeOneDocument(DDBB.collection("usuaris").document(userAuth.getUid()), userAuth);
+        try {
+            userAuth.setTreballant(true);
+            writeOneDocument(DDBB.collection("usuaris").document(userAuth.getUid()), userAuth);
 
-        //iniciem l'horari de l'usuari
-        horarioUsuario = new Horario();
+            //iniciem l'horari de l'usuari
+            horarioUsuario = new Horario();
 
-        //indiquem l'usuari a l'horari
-        horarioUsuario.setUsuario(userAuth);
+            //indiquem l'usuari a l'horari
+            horarioUsuario.setUsuario(userAuth);
 
-        //augmentem el numero de document en +1
-        numeroDocument = numeroDocument + 1;
+            //augmentem el numero de document en +1
+            numeroDocument = numeroDocument + 1;
 
-        //agafem la referencia del document a treballar
-        docRefHorari = DDBB.collection("horari").document(getCurrTimeGMT.zdt.getYear() + "_" + getCurrTimeGMT.zdt.getMonthValue() + "_" + getCurrTimeGMT.zdt.getDayOfMonth() +  "_" + userAuth.getUid() + "_" + numeroDocument);
+            //agafem la referencia del document a treballar
+            docRefHorari = DDBB.collection("horari").document(getCurrTimeGMT.zdt.getYear() + "_" + getCurrTimeGMT.zdt.getMonthValue() + "_" + getCurrTimeGMT.zdt.getDayOfMonth() + "_" + userAuth.getUid() + "_" + numeroDocument);
 
-        //agafem la data actual
-        getFechaActual(true);
+            //agafem la data actual
+            getFechaActual(true);
 
-        //guardem el registre a la BBDD
-        GuardarRegistroBBDD();
+            //guardem el registre a la BBDD
+            GuardarRegistroBBDD();
 
-        //amagem e lboto d'inici i mostrem el d'acabar
-        changeStateButtons.hideButton(iniciarJornadaBtn);
-        changeStateButtons.showButton(acabarJornadaBtn);
-        acabarJornadaSwipe();
+            //amagem e lboto d'inici i mostrem el d'acabar
+            changeStateButtons.hideButton(iniciarJornadaBtn);
+            changeStateButtons.showButton(acabarJornadaBtn);
+            acabarJornadaSwipe();
 
-        //iniciem el handler que actualitzara el contador
-        startRepeatingTask();
+            //iniciem el handler que actualitzara el contador
+            startRepeatingTask();
 
-        new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
-                .setTitleText("Jornada iniciada!")
-                .setContentText("S'ha iniciat la jornada correctament!")
-                .show();
-
+            new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
+                    .setTitleText("Jornada iniciada!")
+                    .setContentText("S'ha iniciat la jornada correctament!")
+                    .show();
+        } catch (Exception e) {
+            Toast.makeText(getContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+        }
     }
     public void acabarJornada (View view) {
 
@@ -415,6 +418,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
         horarioUsuario = new Horario();
     }
+
     private void RecuperarRegistroUsuariBBDD() {
         //query de documents que tenen la jornada iniciada
         Query queryRegistre = DDBB.collection("horari").whereEqualTo("estatJornada", false);
@@ -588,10 +592,14 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         }
     };
     private void updateStatus() {
-        getFechaActual(false);
-        System.out.println(((Integer.parseInt(userAuth.getHoresMensuals()) / 4) / Integer.parseInt(userAuth.getDiesSetmana())) * 60);
-        if (horarioUsuario.getTotalMinutsTreballats() == ((Integer.parseInt(userAuth.getHoresMensuals()) / 4) / Integer.parseInt(userAuth.getDiesSetmana())) * 60) {
-            Notificacio.Notificar(context, "Portes " + horarioUsuario.getTotalMinutsTreballats() / 60 + ":" + horarioUsuario.getTotalMinutsTreballats() % 60 + " hores treballant", "Recorda marcar la sortida", 2);
+        try {
+            getFechaActual(false);
+            System.out.println(((Integer.parseInt(userAuth.getHoresMensuals()) / 4) / Integer.parseInt(userAuth.getDiesSetmana())) * 60);
+            if (horarioUsuario.getTotalMinutsTreballats() == ((Integer.parseInt(userAuth.getHoresMensuals()) / 4) / Integer.parseInt(userAuth.getDiesSetmana())) * 60) {
+                Notificacio.Notificar(context, "Portes " + horarioUsuario.getTotalMinutsTreballats() / 60 + ":" + horarioUsuario.getTotalMinutsTreballats() % 60 + " hores treballant", "Recorda marcar la sortida", 2);
+            }
+        } catch (Exception e) {
+            Toast.makeText(getContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }
     }
     void startRepeatingTask() {
@@ -604,7 +612,6 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     @Override
     public void onDestroy() {
         super.onDestroy();
-        stopRepeatingTask();
     }
 
     @Override
@@ -613,7 +620,6 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
         if (userAuth.getUid() == null) {
             startActivity(new Intent(context, SplashScreen.class));
-            onDestroy();
         }
 
     }

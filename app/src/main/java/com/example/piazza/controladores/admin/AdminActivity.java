@@ -107,4 +107,14 @@ public class AdminActivity extends AppCompatActivity implements AuthUserSession 
         finish();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (userAuth.getUid() == null) {
+            startActivity(new Intent(this, SplashScreen.class));
+        }
+
+    }
+
 }

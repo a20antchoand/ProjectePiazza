@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.example.piazza.controladores.auth.AuthActivity;
+import com.example.piazza.controladores.auth.SplashScreen;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
 
@@ -108,6 +109,16 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
         Intent intent = new Intent(this, AuthActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (userAuth.getUid() == null) {
+            startActivity(new Intent(this, SplashScreen.class));
+        }
+
     }
 
 }
