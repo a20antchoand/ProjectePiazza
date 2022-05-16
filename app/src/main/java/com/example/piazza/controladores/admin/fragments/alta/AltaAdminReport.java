@@ -134,7 +134,6 @@ public class AltaAdminReport extends Fragment implements AuthUserSession{
             diesSetmana++;
         }
 
-        System.out.println("Button: " + diesSetmana);
 
     }
 

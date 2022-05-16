@@ -306,8 +306,6 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
                 break;
         }
 
-        System.out.println("HORES: " + horesMensuals);
-        System.out.println("DOCUMENTS: " + documentsRecuperar);
 
         for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
 
@@ -619,7 +617,6 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(FORMAT_DATA);
 
-                        System.out.println(now.getTime());
 
                         binding.tvData2.setText(simpleDateFormat.format(now.getTime()));
 

@@ -97,7 +97,6 @@ public class ValidarFragment extends Fragment implements AuthUserSession, ReadDa
                     Horario horarioEmpezado = new Horario();
                     for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult().getDocuments()) {
                         Horario horario = documentSnapshot.toObject(Horario.class);
-                        System.out.println(horario.getUsuario().getUid() + "-->" + usuari.getUid());
                         if (horario.getUsuario().getUid().equals(usuari.getUid())) {
                             cont++;
                             horarioEmpezado = horario;
@@ -153,7 +152,6 @@ public class ValidarFragment extends Fragment implements AuthUserSession, ReadDa
     }
 
     void moveToDescription(com.example.piazza.recyclerView.estatTreballadors.ListElementEstatTreballadors item) {
-        System.out.println("Estat: "+ item.getEstat());
 
     }
 

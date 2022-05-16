@@ -160,7 +160,6 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
             diesSetmana++;
         }
 
-        System.out.println("Button: " + diesSetmana);
 
     }
 

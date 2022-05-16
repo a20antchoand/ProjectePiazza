@@ -101,7 +101,6 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
                 }
             }
 
-            System.out.println("Elements actualitzats");
 
         } else {
             Log.d(TAG, "Error al recuperar varios documentos.");
@@ -198,8 +197,6 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
 
                     DatePickerDialog.OnDateSetListener mDateListenerSortida = (view, year, month, day) -> {
 
-                        System.out.println(year + "/" + month + "/" + day);
-
                         modificacio.setAnioSalida(year);
                         modificacio.setMesSalida(month);
                         modificacio.setDiaSalida(day);
@@ -233,8 +230,6 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
                     };
 
                     DatePickerDialog.OnDateSetListener mDateListenerEntrada = (view, year, month, day) -> {
-
-                        System.out.println(year + "/" + month + "/" + day);
 
                         modificacio.setAnioEntrada(year);
                         modificacio.setMesEntrada(month);
@@ -308,12 +303,6 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
 
                 })
                 .show();
-
-    }
-
-    private void updateDisplay(int hora, int minut) {
-
-        System.out.println("UPDATE TIME: " + hora + ":" + minut);
 
     }
 

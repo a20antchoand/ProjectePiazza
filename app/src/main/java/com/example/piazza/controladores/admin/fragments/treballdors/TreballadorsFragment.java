@@ -128,7 +128,6 @@ public class TreballadorsFragment extends Fragment implements ReadData, WriteDat
 
         if (querySnapshotTask.isSuccessful() && !querySnapshotTask.getResult().isEmpty()) {
 
-            System.out.println("CAMPS: " + querySnapshotTask.getResult().size());
 
             for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult().getDocuments()) {
 
@@ -182,7 +181,6 @@ public class TreballadorsFragment extends Fragment implements ReadData, WriteDat
 
             }
 
-            System.out.println("Elements actualitzats " + listElements.size());
 
         } else {
             Log.d(TAG, "Error al recuperar varios documentos.");
