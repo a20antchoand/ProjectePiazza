@@ -318,6 +318,8 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
                 registres.add(temp);
 
+                System.out.println("DIA: " + temp.getDiaEntrada());
+
             }
 
         }

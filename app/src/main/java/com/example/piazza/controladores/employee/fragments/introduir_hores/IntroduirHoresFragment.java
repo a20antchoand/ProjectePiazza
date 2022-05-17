@@ -19,6 +19,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -41,6 +42,8 @@ import com.example.testauth.BuildConfig;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentIntroduirHoresBinding;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.imageview.ShapeableImageView;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -49,9 +52,15 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -59,7 +68,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class IntroduirHoresFragment extends Fragment implements ReadData, WriteData, AuthUserSession{
 
-    private int mInterval = 5;
+    private int mInterval = 10000;
     public static Handler handlerIntroduirHores = new Handler();
     float coordX;
 
@@ -174,6 +183,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     private void mostrarMissatges(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
 
         missatges.clear();
+
 
         if (!queryDocumentSnapshots.isEmpty()) {
 
@@ -414,6 +424,37 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         horarioUsuario = new Horario();
     }
 
+
+    private void acabarJornadaAutomatic(ImageView sortida) {
+
+        userAuth.setTreballant(false);
+        writeOneDocument(DDBB.collection("usuaris").document(userAuth.getUid()), userAuth);
+
+        //indiquem que la jornada esta acabada
+        horarioUsuario.setEstatJornada(true);
+
+        //cambiem els botons ocultant el d'acabar i mostrant el d'iniciar
+        changeStateButtons.hideButton(acabarJornadaBtn);
+        changeStateButtons.showButton(iniciarJornadaBtn);
+        iniciarJornadaSwipe();
+
+        //agafem la dada actual i guardem la informacio
+        calcularHores(horarioUsuario);
+
+        //parem el handler
+        stopRepeatingTask();
+
+        new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
+                .setTitleText("S'ha parat la jornada automaticament!")
+                .setContentText("Hem detectat la possibilitat de que no hagis marcat al sortir, si es un error pots modificar el registre: " + horarioUsuario.getTotalMinutsTreballats() / 60 + "h " + horarioUsuario.getTotalMinutsTreballats() % 60 + "m.")
+                .show();
+
+        horarioUsuario = new Horario();
+
+    }
+
+
+
     private void RecuperarRegistroUsuariBBDD() {
         //query de documents que tenen la jornada iniciada
         Query queryRegistre = DDBB.collection("horari").whereEqualTo("estatJornada", false);
@@ -505,9 +546,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             calcularHores(horarioUsuario);
         }
     }
-    private void amagarButons(View view) {
-        binding.butonsLayout.setVisibility(View.GONE);
-    }
+
     private Horario calcularHores(Horario horario) {
         //agafem la data d'entrada i la de sortida
         LocalDateTime entrada = formatarDateTime(horario.getAnioEntrada(), horario.getMesEntrada(), horario.getDiaEntrada(), horario.getHoraEntrada(), horario.getMinutEntrada());
@@ -590,26 +629,44 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
             getFechaActual(false);
 
-            if (horarioUsuario.getTotalMinutsTreballats() == ((Integer.parseInt(userAuth.getHoresMensuals()) / 4) / Integer.parseInt(userAuth.getDiesSetmana())) * 60) {
+            if (horarioUsuario.getTotalMinutsTreballats() == ((Integer.parseInt(userAuth.getHoresMensuals()) / 4) / Integer.parseInt(userAuth.getDiesSetmana())) * 60L) {
                 Notificacio.Notificar(context, "Portes " + horarioUsuario.getTotalMinutsTreballats() / 60 + ":" + horarioUsuario.getTotalMinutsTreballats() % 60 + " hores treballant", "Recorda marcar la sortida", 2);
             }
 
-            if (horarioUsuario != null && !horarioUsuario.isEstatJornada() && horarioUsuario.getTotalMinutsTreballats() > (((Integer.parseInt(userAuth.getHoresMensuals()) / 4) / Integer.parseInt(userAuth.getDiesSetmana())) * 60) * 2){
-                acabarJornada(binding.imageView6);
+            if (horarioUsuario != null && !horarioUsuario.isEstatJornada() && horarioUsuario.getTotalMinutsTreballats() > (((Integer.parseInt(userAuth.getHoresMensuals()) / 4) / Integer.parseInt(userAuth.getDiesSetmana())) * 60L) * 1.5){
+
+                LocalDate date = LocalDate.of(horarioUsuario.getAnioEntrada(), horarioUsuario.getMesEntrada(), horarioUsuario.getDiaEntrada());
+
+                LocalTime time = LocalTime.of(horarioUsuario.getHoraEntrada(), horarioUsuario.getMinutEntrada());
+                ZoneId zoneId = ZoneId.of("Europe/Madrid");
+
+                ZonedDateTime zonedDateTime = ZonedDateTime.of(date, time, zoneId);
+
+                System.out.println("MINUTS: " + ((Integer.parseInt(userAuth.getHoresMensuals()) / 4) / Integer.parseInt(userAuth.getDiesSetmana())) * 60L);
+
+                zonedDateTime = zonedDateTime.plusMinutes(((Integer.parseInt(userAuth.getHoresMensuals()) / 4) / Integer.parseInt(userAuth.getDiesSetmana())) * 60L);
+
+                horarioUsuario.setDiaSalida(zonedDateTime.getDayOfMonth());
+                horarioUsuario.setMesSalida(zonedDateTime.getMonthValue());
+                horarioUsuario.setAnioSalida(zonedDateTime.getYear());
+                horarioUsuario.setHoraSalida(zonedDateTime.getHour());
+                horarioUsuario.setMinutSalida(zonedDateTime.getMinute());
+
+
+                acabarJornadaAutomatic(binding.imageView6);
                 Notificacio.Notificar(context, "T'has oblidat de fitxar?", userAuth.getNom() + " hem detectat que has treballat mes del que et toca. Hem adaptat la jornada a les hores que has de treballar. Si ha estat un error pots modificar el registre.", 2);
             } else {
                 handlerIntroduirHores.postDelayed(mStatusChecker, mInterval);
             }
 
         } catch (Exception e) {
-            Toast.makeText(context, "UPDATE STATUS: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }
     }
+
     void startRepeatingTask() {
         try {
             handlerIntroduirHores.post(mStatusChecker);
         } catch (Exception e) {
-            Toast.makeText(context, "START REPEATING: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }
     }
     void stopRepeatingTask() {
