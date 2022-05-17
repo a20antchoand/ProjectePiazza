@@ -74,7 +74,7 @@ public class SplashScreen extends Activity implements ReadData, AuthUserSession 
 
         } else {
             //Si no te sesio activa l'enviem a AuthActivity
-            startActivity(new Intent(SplashScreen.this, AuthActivity.class));
+            showAuth();
         }
 
     }
@@ -99,7 +99,7 @@ public class SplashScreen extends Activity implements ReadData, AuthUserSession 
 
         } else {
             //Si la informació que recuperem és null enviem a l'usauri a la pantalla de AuthActivity
-            startActivity(new Intent(SplashScreen.this, AuthActivity.class));
+            showAuth();
         }
 
     }
@@ -150,18 +150,21 @@ public class SplashScreen extends Activity implements ReadData, AuthUserSession 
     private void showAdmin() {
         Intent intent = new Intent(this, AdminActivity.class);
         startActivity(intent);
+        onDestroy();
         finish();
     }
 
     private void showEmployee () {
         Intent intent = new Intent(this, EmployeeActivity.class);
         startActivity(intent);
+        onDestroy();
         finish();
     }
 
     private void showAuth () {
         Intent intent = new Intent(this, AuthActivity.class);
         startActivity(intent);
+        onDestroy();
         finish();
     }
 

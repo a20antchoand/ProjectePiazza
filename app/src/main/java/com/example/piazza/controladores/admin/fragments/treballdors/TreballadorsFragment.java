@@ -187,7 +187,6 @@ public class TreballadorsFragment extends Fragment implements ReadData, WriteDat
         }
 
         ListAdapterTreballadors listAdapter = new ListAdapterTreballadors(listElements, root.getContext(), this::showName);
-        binding.recyclerViewTreballadors.setHasFixedSize(true);
         binding.recyclerViewTreballadors.setLayoutManager(new LinearLayoutManager(root.getContext()));
         binding.recyclerViewTreballadors.setAdapter(listAdapter);
 

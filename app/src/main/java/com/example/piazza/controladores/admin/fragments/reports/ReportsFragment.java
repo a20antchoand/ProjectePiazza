@@ -311,14 +311,15 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
             Horario temp = documentSnapshot.toObject(Horario.class);
 
+            System.out.println("DIA: " + temp.getDiaEntrada() + " DIA ANY: " + temp.getDiaAny() + " >= " + (getCurrTimeGMT.zdt.getDayOfYear() - documentsRecuperar));
+
             if (temp.getUsuario().getUid().equals(usuari.getUid())
-                    && temp.getDiaAny() > (getCurrTimeGMT.zdt.getDayOfYear() - documentsRecuperar)) {
+                    && temp.getDiaAny() >= (getCurrTimeGMT.zdt.getDayOfYear() - documentsRecuperar)) {
 
                 horesTreballades += temp.getTotalMinutsTreballats();
 
                 registres.add(temp);
 
-                System.out.println("DIA: " + temp.getDiaEntrada());
 
             }
 

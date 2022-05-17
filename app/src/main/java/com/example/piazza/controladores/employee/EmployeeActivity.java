@@ -3,6 +3,8 @@ package com.example.piazza.controladores.employee;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -14,8 +16,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.example.piazza.commons.getCurrTimeGMT;
 import com.example.piazza.controladores.auth.AuthActivity;
 import com.example.piazza.controladores.auth.SplashScreen;
+import com.example.piazza.controladores.employee.fragments.introduir_hores.IntroduirHoresFragment;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
 
@@ -30,6 +34,12 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class EmployeeActivity extends AppCompatActivity implements AuthUserSession {
 
@@ -115,10 +125,30 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
     public void onResume() {
         super.onResume();
 
-        if (userAuth.getUid() == null) {
-            startActivity(new Intent(this, SplashScreen.class));
-        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        startActivity(new Intent(this, SplashScreen.class));
 
     }
 
+    @Override
+    public void onBackPressed() {
+
+        new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Vols tancar l'app")
+                .setConfirmText("Si")
+                .setCancelText("No")
+                .setConfirmClickListener(sDialog -> {
+                    sDialog.dismissWithAnimation();
+                    finish();
+                })
+                .setCancelClickListener(sweetAlertDialog -> {
+                    sweetAlertDialog.dismissWithAnimation();
+                }).show();
+
+    }
 }

@@ -665,7 +665,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
     void startRepeatingTask() {
         try {
-            handlerIntroduirHores.post(mStatusChecker);
+            handlerIntroduirHores.postDelayed(mStatusChecker, 5000);
         } catch (Exception e) {
         }
     }
@@ -673,20 +673,5 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         handlerIntroduirHores.removeCallbacks(mStatusChecker);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (userAuth.getUid() == null || context == null) {
-            startActivity(new Intent(context, SplashScreen.class));
-        }
-
-
-
-    }
 }

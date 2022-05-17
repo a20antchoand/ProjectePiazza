@@ -58,24 +58,27 @@ public class ListAdapterTreballadors extends RecyclerView.Adapter<ListAdapterTre
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView iconImage, estat;
+        ImageView iconImage;
         TextView nom;
+        View estat;
+        View itemView;
 
         ViewHolder(View itemView) {
             super(itemView);
             iconImage = itemView.findViewById(R.id.iconImageView);
             nom = itemView.findViewById(R.id.nom);
             estat = itemView.findViewById(R.id.estatJornada);
-
+            this.itemView = itemView;
         }
 
         void bindData (final ListElementTreballadors item, Context context) {
             nom.setText(item.getNom() + " " + item.getCognom());
 
             if (item.getTreballant())
-                estat.setBackgroundColor(context.getResources().getColor(R.color.treballant));
+                estat.setBackground(context.getResources().getDrawable(R.drawable.rounded_treballant));
             else
-                estat.setBackgroundColor(context.getResources().getColor(R.color.parat));
+                estat.setBackground(context.getResources().getDrawable(R.drawable.rounded_no_treballant));
+
 
         }
 

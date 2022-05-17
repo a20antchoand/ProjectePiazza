@@ -26,6 +26,8 @@ import com.example.testauth.databinding.ActivityAdminBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.StorageReference;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class AdminActivity extends AppCompatActivity implements AuthUserSession {
 
     private ActivityAdminBinding binding;
@@ -108,12 +110,27 @@ public class AdminActivity extends AppCompatActivity implements AuthUserSession 
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    protected void onRestart() {
+        super.onRestart();
 
-        if (userAuth.getUid() == null) {
-            startActivity(new Intent(this, SplashScreen.class));
-        }
+        startActivity(new Intent(this, SplashScreen.class));
+
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Vols tancar l'app")
+                .setConfirmText("Si")
+                .setCancelText("No")
+                .setConfirmClickListener(sDialog -> {
+                    sDialog.dismissWithAnimation();
+                    finish();
+                })
+                .setCancelClickListener(sweetAlertDialog -> {
+                    sweetAlertDialog.dismissWithAnimation();
+                }).show();
 
     }
 
