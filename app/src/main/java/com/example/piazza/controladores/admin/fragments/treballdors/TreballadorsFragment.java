@@ -134,7 +134,7 @@ public class TreballadorsFragment extends Fragment implements ReadData, WriteDat
                 Usuario temp = documentSnapshot.toObject(Usuario.class);
 
                 if (temp.getRol().equals("treballador"))
-                    getListenerDocument(documentSnapshot.getReference(), this::notificarCanvi);
+                    getListenerDocument(getActivity(), documentSnapshot.getReference(), this::notificarCanvi);
 
             }
 

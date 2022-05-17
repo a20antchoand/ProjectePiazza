@@ -118,6 +118,9 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
         FirebaseAuth.getInstance().signOut();
         Intent intent = new Intent(this, AuthActivity.class);
         startActivity(intent);
+
+        binding = null;
+
         finish();
     }
 

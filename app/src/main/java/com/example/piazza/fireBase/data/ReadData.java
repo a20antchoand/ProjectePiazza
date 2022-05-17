@@ -2,6 +2,8 @@ package com.example.piazza.fireBase.data;
 
 import static com.google.firebase.crashlytics.internal.Logger.TAG;
 
+import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -51,10 +53,10 @@ public interface ReadData {
 
     }
 
-    default void getListenerDocument(DocumentReference docRef, EventListener<DocumentSnapshot> action) {
+    default void getListenerDocument(Activity activity, DocumentReference docRef, EventListener<DocumentSnapshot> action) {
 
         docRef.
-                addSnapshotListener(action);
+                addSnapshotListener(activity, action);
 
     }
 
