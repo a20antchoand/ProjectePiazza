@@ -80,7 +80,8 @@ public class AdminActivity extends AppCompatActivity implements AuthUserSession 
             NavigationUI.setupWithNavController(binding.navView, navController);
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(this, "Hola " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Admin " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            startActivity(new Intent(this, SplashScreen.class));
         }
     }
 

@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.piazza.commons.getCurrTimeGMT;
 import com.example.piazza.controladores.auth.AuthActivity;
@@ -49,44 +50,48 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setTheme(R.style.Theme_TestAuth);
+        try {
+            setTheme(R.style.Theme_TestAuth);
 
-        binding = ActivityEmployeeBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+            binding = ActivityEmployeeBinding.inflate(getLayoutInflater());
+            setContentView(binding.getRoot());
 
-        View root = findViewById(R.id.employeeContainer);
+            View root = findViewById(R.id.employeeContainer);
 
-        Toolbar toolbar = findViewById(R.id.my_toolbar);
-        ImageView logo = findViewById(R.id.yourlogo);
+            Toolbar toolbar = findViewById(R.id.my_toolbar);
+            ImageView logo = findViewById(R.id.yourlogo);
 
-        StorageReference storageRef = STORAGE.getReferenceFromUrl("gs://testauth-f5eb4.appspot.com/" + userAuth.getEmpresa() + ".png");
-        storageRef.getBytes(1024 * 1024)
-                .addOnSuccessListener(bytes -> logo.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length)));
+            StorageReference storageRef = STORAGE.getReferenceFromUrl("gs://testauth-f5eb4.appspot.com/" + userAuth.getEmpresa() + ".png");
+            storageRef.getBytes(1024 * 1024)
+                    .addOnSuccessListener(bytes -> logo.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length)));
 
-        /*toolbar.setBackgroundColor(getResources().getColor(R.color.start_btn));*/
+            /*toolbar.setBackgroundColor(getResources().getColor(R.color.start_btn));*/
 
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayUseLogoEnabled(true);
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayUseLogoEnabled(true);
 
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_introduir_hores, R.id.navigation_historial, R.id.navigation_perfil)
-                .build();
+            AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                    R.id.navigation_introduir_hores, R.id.navigation_historial, R.id.navigation_perfil)
+                    .build();
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(binding.navView, navController);
+            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+            NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+            NavigationUI.setupWithNavController(binding.navView, navController);
 
-        root.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
-            int heightDiff = root.getRootView().getHeight() - root.getHeight();
-            if (heightDiff > dpToPx(EmployeeActivity.this, 200)) {
-                findViewById(R.id.nav_view).setVisibility(View.GONE); // Lo haces invisible y que no ocupe espacio.
-            }
-            else {
-                findViewById(R.id.nav_view).setVisibility(View.VISIBLE); // Lo haces visible
-            }
-        });
-
+            root.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+                int heightDiff = root.getRootView().getHeight() - root.getHeight();
+                if (heightDiff > dpToPx(EmployeeActivity.this, 200)) {
+                    findViewById(R.id.nav_view).setVisibility(View.GONE); // Lo haces invisible y que no ocupe espacio.
+                } else {
+                    findViewById(R.id.nav_view).setVisibility(View.VISIBLE); // Lo haces visible
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Employee " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            startActivity(new Intent(this, SplashScreen.class));
+        }
     }
 
     public static float dpToPx(Context context, float valueInDp) {

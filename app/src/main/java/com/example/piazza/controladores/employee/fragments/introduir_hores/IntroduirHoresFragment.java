@@ -8,6 +8,8 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -33,6 +35,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.piazza.classes.Horario;
 import com.example.piazza.commons.*;
 import com.example.piazza.controladores.auth.SplashScreen;
+import com.example.piazza.controladores.employee.EmployeeActivity;
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.data.WriteData;
 import com.example.piazza.fireBase.session.AuthUserSession;
@@ -110,6 +113,8 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                 break; case 1: Log.d("appPreferences", "ya has iniciado la app alguna vez");
                 break; case 2: Log.d("appPreferences", "es una versión nueva");
         }
+
+        new Handler().postDelayed(checkInternet, 5000);
 
         //Actualitzem el numero de document
         getMultipldeDocuments(query, this::updateDocumentNumber);
@@ -607,10 +612,12 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         dataEntrada = LocalDateTime.of(anioEntrada, mesEntrada, diaEntrada, horaEntrada, minutEntrada);
         return dataEntrada;
     }
+
     public void changeTextTimeResultat (TextView textView, long hora, long minut) {
         //formatem el text
         textView.setText(String.format("%01dh %02dm",hora,minut));
     }
+
     Runnable mStatusChecker = new Runnable() {
         @Override
         public void run() {
@@ -622,6 +629,36 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             }
         }
     };
+
+
+
+    Runnable checkInternet = new Runnable() {
+        @Override
+        public void run() {
+
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(getActivity().CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+            if (networkInfo != null && networkInfo.isConnected())
+                setup();
+            else {
+                SweetAlertDialog sDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE);
+                sDialog.setTitleText("Error de conexió!")
+                        .setContentText("Es possible que no tinguis bona senyal d'internet... Torna a intentar-ho mes tard.")
+                        .setConfirmText("Reintentar")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                startActivity(new Intent(getActivity(), SplashScreen.class));
+                            }
+                        })
+                        .setCancelable(false);
+                sDialog.show();
+            }
+
+        }
+    };
+
     private void updateStatus() {
         try {
 
@@ -672,6 +709,5 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     void stopRepeatingTask() {
         handlerIntroduirHores.removeCallbacks(mStatusChecker);
     }
-
 
 }

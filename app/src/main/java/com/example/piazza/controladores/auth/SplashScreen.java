@@ -2,6 +2,8 @@ package com.example.piazza.controladores.auth;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -26,6 +28,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.concurrent.ExecutionException;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class SplashScreen extends Activity implements ReadData, AuthUserSession {
 
     FirebaseUser user;
@@ -34,7 +38,27 @@ public class SplashScreen extends Activity implements ReadData, AuthUserSession 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setup();
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        if (networkInfo != null && networkInfo.isConnected())
+            setup();
+        else {
+            SweetAlertDialog sDialog = new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE);
+            sDialog.setTitleText("Error de conexió!")
+                    .setContentText("Es possible que no tinguis bona senyal d'internet... Torna a intentar-ho mes tard.")
+                    .setConfirmText("Reintentar")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            startActivity(new Intent(SplashScreen.this, SplashScreen.class));
+                            finish();
+                        }
+                    })
+                    .setCancelable(false);
+            sDialog.show();
+        }
     }
 
     /**
