@@ -2,6 +2,7 @@ package com.example.piazza.controladores.employee.fragments.historial;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.example.piazza.classes.Horario;
+import com.example.piazza.controladores.auth.SplashScreen;
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.data.WriteData;
 import com.example.piazza.fireBase.session.AuthUserSession;
@@ -62,7 +64,11 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
         binding = FragmentHistorialBinding.inflate(inflater, container, false);
         root = binding.getRoot();
 
-        setup();
+        try {
+            setup();
+        } catch (Exception e) {
+            startActivity(new Intent(getActivity(), SplashScreen.class));
+        }
 
         return root;
     }

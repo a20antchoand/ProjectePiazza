@@ -72,8 +72,8 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
         binding.alta.setOnClickListener(view -> {
 
             String email = binding.email.getText().toString();
-            String nom = binding.nom.getText().toString().substring(0,1).toUpperCase() + binding.nom.getText().toString().substring(1);
-            String cognom = binding.cognom.getText().toString().substring(0,1).toUpperCase() + binding.cognom.getText().toString().substring(1);
+            String nom = binding.nom.getText().toString();
+            String cognom = binding.cognom.getText().toString();
             String telefon = binding.telefon.getText().toString();
             String rol = binding.spn2.getSelectedItem().toString();
             String horesMensuals = binding.horesMensuals.getText().toString();

@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.example.piazza.controladores.auth.SplashScreen;
 import com.example.piazza.fireBase.data.WriteData;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.databinding.FragmentPerfilBinding;
@@ -30,14 +31,8 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class PerfilFragment extends Fragment implements AuthUserSession, WriteData {
 
-    private static final int RESULT_OK = -1;
     private FragmentPerfilBinding binding;
     private View root;
-
-    private static final int PICK_IMAGE = 100;
-    Uri imageUri;
-
-    Bitmap bitmap;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -45,7 +40,11 @@ public class PerfilFragment extends Fragment implements AuthUserSession, WriteDa
         binding = FragmentPerfilBinding.inflate(inflater, container, false);
         root = binding.getRoot();
 
-        setup();
+        try {
+            setup();
+        } catch (Exception e) {
+            startActivity(new Intent(getActivity(), SplashScreen.class));
+        }
 
         return root;
 
@@ -69,10 +68,6 @@ public class PerfilFragment extends Fragment implements AuthUserSession, WriteDa
                     .show();
         });
     }
-
-
-
-
 
     /**
      * Funcio per mostrar dades del perfil mostrant la informacio que tenim

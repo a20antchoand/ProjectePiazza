@@ -97,9 +97,13 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         binding = FragmentIntroduirHoresBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        context = getContext();
+        try {
+            context = getContext();
+            setup();
+        } catch (Exception e) {
+            startActivity(new Intent(getActivity(), SplashScreen.class));
+        }
 
-        setup();
         return root;
     }
 
