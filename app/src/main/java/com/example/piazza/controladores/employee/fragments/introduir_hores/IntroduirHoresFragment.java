@@ -98,10 +98,20 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         View root = binding.getRoot();
 
         try {
-            context = getContext();
-            setup();
+            if (userAuth.getUid() != null) {
+                context = root.getContext();
+                setup();
+                Toast.makeText(getContext(), "INTRODUIR USER DIFERENT A NULL", Toast.LENGTH_SHORT).show();
+
+            }else {
+                startActivity(new Intent(getActivity(), SplashScreen.class));
+                Toast.makeText(getContext(), "INTRODUIR USER IGUAL A NULL", Toast.LENGTH_SHORT).show();
+
+            }
         } catch (Exception e) {
             startActivity(new Intent(getActivity(), SplashScreen.class));
+            Toast.makeText(getContext(), "CATCH SETUP INTRODUIR", Toast.LENGTH_SHORT).show();
+
         }
 
         return root;
@@ -644,7 +654,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
             if (networkInfo != null && networkInfo.isConnected())
-                setup();
+                System.out.println("INTERNET OK");
             else {
                 SweetAlertDialog sDialog = new SweetAlertDialog(getContext(), SweetAlertDialog.ERROR_TYPE);
                 sDialog.setTitleText("Error de conexió!")
