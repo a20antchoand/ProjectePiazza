@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,7 +42,6 @@ import com.example.piazza.fireBase.data.WriteData;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.piazza.recyclerView.missatges.ListAdapterMissatges;
 import com.example.piazza.recyclerView.missatges.Missatge;
-import com.example.testauth.BuildConfig;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentIntroduirHoresBinding;
 import com.google.android.gms.tasks.Task;
@@ -49,7 +49,9 @@ import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -68,6 +70,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import io.grpc.android.BuildConfig;
 
 public class IntroduirHoresFragment extends Fragment implements ReadData, WriteData, AuthUserSession{
 
@@ -90,7 +93,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     private Query queryJornada = DDBB.collection("horari")
             .whereEqualTo("estatJornada", false);
     public static int numeroDocument = 0;
-
+    private ListenerRegistration registration;
     private FragmentIntroduirHoresBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -101,16 +104,13 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             if (userAuth.getUid() != null) {
                 context = root.getContext();
                 setup();
-                Toast.makeText(getContext(), "INTRODUIR USER DIFERENT A NULL", Toast.LENGTH_SHORT).show();
 
             }else {
                 startActivity(new Intent(getActivity(), SplashScreen.class));
-                Toast.makeText(getContext(), "INTRODUIR USER IGUAL A NULL", Toast.LENGTH_SHORT).show();
 
             }
         } catch (Exception e) {
             startActivity(new Intent(getActivity(), SplashScreen.class));
-            Toast.makeText(getContext(), "CATCH SETUP INTRODUIR", Toast.LENGTH_SHORT).show();
 
         }
 
@@ -143,10 +143,10 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         horarioUsuario = new Horario();
 
         //indiquem la funció del boto iniciarJornada
-        binding.iniciarJornada.setOnClickListener(this::iniciarJornada);
+        binding.iniciarJornada.setOnClickListener(l -> iniciarJornada());
 
         //indiquem la funció del boto acabarJornada
-        binding.acabarJornada.setOnClickListener(this::acabarJornada);
+        binding.acabarJornada.setOnClickListener(l -> acabarJornada());
 
         //recuperem el registre de l'usuari actual
         RecuperarRegistroUsuariBBDD();
@@ -177,13 +177,13 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                         binding.imageView6.setX(4);
                         binding.imageView6.setImageDrawable(context.getDrawable(R.drawable.ic_round_arrow_forward_24));
                         if (horarioUsuario.getDiaEntrada() != -1) {
-                            acabarJornada(binding.imageView6);
+                            acabarJornada();
                         }
                     } else {
                         binding.imageView6.setX(binding.textLL.getWidth() - (binding.imageView6.getWidth() + 4));
                         binding.imageView6.setImageDrawable(context.getDrawable(R.drawable.ic_round_arrow_back_24));
                         if (horarioUsuario.getDiaEntrada() == -1) {
-                            iniciarJornada(binding.imageView6);
+                            iniciarJornada();
                         }
                     }
             }
@@ -197,6 +197,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             writeOneDocument(DDBB.collection("missatges").document(), missatge);
             binding.editTextMissatge.setText("");
         });
+
     }
 
     private void mostrarMissatges(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
@@ -376,7 +377,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         sp.edit().putInt("FIRSTTIMERUN", currentVersionCode).apply();
         return result;
     }
-    public void iniciarJornada (View view) {
+    public void iniciarJornada () {
 
         try {
             userAuth.setTreballant(true);
@@ -408,6 +409,14 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             //iniciem el handler que actualitzara el contador
             startRepeatingTask();
 
+            registration = docRefHorari.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                    actualitzarHorari(value, error);
+                }
+            });
+            getListenerDocument(getActivity(), docRefHorari, this::actualitzarHorari);
+
             new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
                     .setTitleText("Jornada iniciada!")
                     .setContentText("S'ha iniciat la jornada correctament!")
@@ -416,7 +425,25 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             Toast.makeText(context, "INICIAR JORNADA: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }
     }
-    public void acabarJornada (View view) {
+
+    private void actualitzarHorari(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+
+        if (documentSnapshot.exists()) {
+            Horario horario = documentSnapshot.toObject(Horario.class);
+
+            if (horario.isEstatJornada()) {
+                horarioUsuario.setEstatJornada(true);
+                userAuth.setTreballant(false);
+                writeOneDocument(DDBB.collection("usuaris").document(userAuth.getUid()), userAuth);
+                registration.remove();
+                iniciarJornadaSwipe();
+                stopRepeatingTask();
+            }
+        }
+
+    }
+
+    public void acabarJornada () {
 
         userAuth.setTreballant(false);
         writeOneDocument(DDBB.collection("usuaris").document(userAuth.getUid()), userAuth);

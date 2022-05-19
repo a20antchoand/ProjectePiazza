@@ -1,5 +1,6 @@
 package com.example.piazza.controladores.admin.fragments.validar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.piazza.classes.Horario;
 import com.example.piazza.classes.Usuario;
+import com.example.piazza.controladores.auth.SplashScreen;
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.data.WriteData;
 import com.example.piazza.fireBase.session.AuthUserSession;
@@ -42,7 +44,19 @@ public class ValidarFragment extends Fragment implements AuthUserSession, ReadDa
         binding = FragmentValidarBinding.inflate(inflater, container, false);
         root = binding.getRoot();
 
-        setup();
+        try {
+            if (userAuth.getUid() != null) {
+
+                setup();
+
+            }else {
+                startActivity(new Intent(getActivity(), SplashScreen.class));
+
+            }
+        } catch (Exception e) {
+            startActivity(new Intent(getActivity(), SplashScreen.class));
+
+        }
 
         return root;
 

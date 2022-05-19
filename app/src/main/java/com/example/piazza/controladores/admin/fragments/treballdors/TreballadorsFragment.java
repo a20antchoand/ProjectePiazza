@@ -2,6 +2,7 @@ package com.example.piazza.controladores.admin.fragments.treballdors;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -20,6 +21,7 @@ import com.example.piazza.classes.Horario;
 import com.example.piazza.classes.Usuario;
 import com.example.piazza.commons.Notificacio;
 import com.example.piazza.commons.getCurrTimeGMT;
+import com.example.piazza.controladores.auth.SplashScreen;
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.data.WriteData;
 import com.example.piazza.fireBase.session.AuthUserSession;
@@ -30,6 +32,7 @@ import com.example.testauth.databinding.FragmentTreballadorsBinding;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -57,8 +60,19 @@ public class TreballadorsFragment extends Fragment implements ReadData, WriteDat
         root = binding.getRoot();
         firstLoad = true;
 
-        new Handler(Looper.getMainLooper()).post(() -> setup());
+        try {
+            if (userAuth.getUid() != null) {
 
+                setup();
+
+            }else {
+                startActivity(new Intent(getActivity(), SplashScreen.class));
+
+            }
+        } catch (Exception e) {
+            startActivity(new Intent(getActivity(), SplashScreen.class));
+
+        }
         return root;
     }
 
@@ -74,6 +88,53 @@ public class TreballadorsFragment extends Fragment implements ReadData, WriteDat
         binding.floatingActionButton.setOnClickListener(l -> {
             getMultipldeDocuments(DDBB.collection("modificacions"), this::mostrarValidacions);
         });
+
+        binding.pararJornada.setOnClickListener(l -> {
+            new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText("Parar jornada general")
+                    .setContentText("Estas segur que vols parar la jornda de tots els treballadors?")
+                    .setConfirmText("Si")
+                    .setCancelText("No")
+                    .setConfirmClickListener(sweetAlertDialog -> {
+
+                        getMultipldeDocuments(DDBB.collection("horari"), this::pararJornadaGeneral);
+
+                        sweetAlertDialog.dismissWithAnimation();
+                    })
+                    .setCancelClickListener(sweetAlertDialog -> {
+
+                        sweetAlertDialog.dismissWithAnimation();
+                    }).show();
+        });
+
+    }
+
+    private void pararJornadaGeneral(Task<QuerySnapshot> querySnapshotTask) {
+
+        System.out.println("ENTRA");
+
+        if (querySnapshotTask.isSuccessful()) {
+
+            System.out.println("ENTRA: " + querySnapshotTask.getResult().size());
+
+            List<Horario> horaris = new ArrayList<>();
+            List<Horario> horarisModificats = new ArrayList<>();
+
+            for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
+
+                Horario horario = documentSnapshot.toObject(Horario.class);
+
+                if (horario.getUsuario().getEmpresa().equals(userAuth.getEmpresa()) && !horario.isEstatJornada()) {
+                    System.out.println(documentSnapshot.getId());
+                    if (!horario.isEstatJornada()) {
+                        horario.setEstatJornada(true);
+                        writeOneDocument(documentSnapshot.getReference(), horario);
+                    }
+                }
+
+            }
+
+        }
 
     }
 

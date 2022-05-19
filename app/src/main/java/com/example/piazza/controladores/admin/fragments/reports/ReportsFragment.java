@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.piazza.classes.Horario;
 import com.example.piazza.classes.Usuario;
 import com.example.piazza.commons.getCurrTimeGMT;
+import com.example.piazza.controladores.auth.SplashScreen;
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.data.WriteData;
 import com.example.piazza.fireBase.session.AuthUserSession;
@@ -91,8 +92,19 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         root = binding.getRoot();
 
 
-        new Handler(Looper.getMainLooper()).post(() -> setup());
+        try {
+            if (userAuth.getUid() != null) {
 
+                setup();
+
+            }else {
+                startActivity(new Intent(getActivity(), SplashScreen.class));
+
+            }
+        } catch (Exception e) {
+            startActivity(new Intent(getActivity(), SplashScreen.class));
+
+        }
         // Inflate the layout for this fragment
         return root;
     }
@@ -798,7 +810,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
             fileWriter.append(",");
             fileWriter.append(horario.getHoraSalida() + ":" + String.format("%02d", horario.getMinutSalida()));
             fileWriter.append(",");
-            fileWriter.append(horario.getTotalMinutsTreballats() + "");
+            fileWriter.append(horario.getTotalMinutsTreballats()/60 + ":" + horario.getTotalMinutsTreballats()%60);
             fileWriter.append("\n");
         }
 

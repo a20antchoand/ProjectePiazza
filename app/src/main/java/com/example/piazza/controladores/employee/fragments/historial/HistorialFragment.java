@@ -67,13 +67,10 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
         try {
             if (userAuth.getUid() != null) {
                 setup();
-                Toast.makeText(getContext(), "HISTORIAL USER DIFERENT A NULL", Toast.LENGTH_SHORT).show();
             }else {
-                Toast.makeText(getContext(), "HISTORIAL USER IGUAL A NULL", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(getActivity(), SplashScreen.class));
             }
         } catch (Exception e) {
-            Toast.makeText(getContext(), "CATCH SETUP HISTORIAL", Toast.LENGTH_SHORT).show();
 
             startActivity(new Intent(getActivity(), SplashScreen.class));
         }

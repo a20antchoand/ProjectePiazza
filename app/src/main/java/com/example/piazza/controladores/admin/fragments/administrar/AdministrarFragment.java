@@ -2,6 +2,7 @@ package com.example.piazza.controladores.admin.fragments.administrar;
 
 import static android.content.ContentValues.TAG;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -23,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.piazza.classes.Usuario;
+import com.example.piazza.controladores.auth.SplashScreen;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentAdministrarBinding;
@@ -46,11 +48,22 @@ public class AdministrarFragment extends Fragment implements AuthUserSession{
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-
         binding = FragmentAdministrarBinding.inflate(inflater, container, false);
         root = binding.getRoot();
 
-        new Handler(Looper.getMainLooper()).post(() -> setup());
+        try {
+            if (userAuth.getUid() != null) {
+
+                setup();
+
+            }else {
+                startActivity(new Intent(getActivity(), SplashScreen.class));
+
+            }
+        } catch (Exception e) {
+            startActivity(new Intent(getActivity(), SplashScreen.class));
+
+        }
 
         return root;
     }

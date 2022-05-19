@@ -43,16 +43,13 @@ public class PerfilFragment extends Fragment implements AuthUserSession, WriteDa
         try {
             if (userAuth.getUid() != null) {
                 setup();
-                Toast.makeText(getContext(), "PERFIL USER DIFERENT A NULL", Toast.LENGTH_SHORT).show();
 
             }else {
                 startActivity(new Intent(getActivity(), SplashScreen.class));
-                Toast.makeText(getContext(), "PERFIL USER IGUAl A NULL", Toast.LENGTH_SHORT).show();
 
             }
         } catch (Exception e) {
             startActivity(new Intent(getActivity(), SplashScreen.class));
-            Toast.makeText(getContext(), "CATCH SETUP PERFIL", Toast.LENGTH_SHORT).show();
 
         }
 
