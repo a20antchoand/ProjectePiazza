@@ -193,6 +193,7 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
                             modificacio.setTotalMinutsTreballats(diffMinuts);
 
                             modificacio.setUsuario(horario.getUsuario());
+                            modificacio.setDiaAny(horario.getDiaAny());
 
                             modificacio.setEstatJornada(true);
 

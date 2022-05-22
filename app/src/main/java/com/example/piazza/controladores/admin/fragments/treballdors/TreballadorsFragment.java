@@ -128,6 +128,8 @@ public class TreballadorsFragment extends Fragment implements ReadData, WriteDat
                     System.out.println(documentSnapshot.getId());
                     if (!horario.isEstatJornada()) {
                         horario.setEstatJornada(true);
+                        horario.getUsuario().setTreballant(false);
+                        writeOneDocument(DDBB.collection("usuaris").document(horario.getUsuario().getUid()), horario.getUsuario());
                         writeOneDocument(documentSnapshot.getReference(), horario);
                     }
                 }
@@ -165,7 +167,6 @@ public class TreballadorsFragment extends Fragment implements ReadData, WriteDat
                         .setConfirmClickListener(sweetAlertDialog -> {
 
                             Horario temp = horario.getModificacio();
-                            temp.setUsuario(horario.getUsuario());
 
                             writeOneDocument(DDBB.collection("horari").document(documentSnapshot.getId()), temp);
 

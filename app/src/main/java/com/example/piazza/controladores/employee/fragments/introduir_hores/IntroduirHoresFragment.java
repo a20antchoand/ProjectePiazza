@@ -2,18 +2,30 @@ package com.example.piazza.controladores.employee.fragments.introduir_hores;
 
 import static com.google.firebase.crashlytics.internal.Logger.TAG;
 
+
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,8 +39,13 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -56,6 +73,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -67,16 +85,21 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.grpc.android.BuildConfig;
 
-public class IntroduirHoresFragment extends Fragment implements ReadData, WriteData, AuthUserSession{
+public class IntroduirHoresFragment extends Fragment implements ReadData, WriteData, AuthUserSession {
 
     private int mInterval = 10000;
     public static Handler handlerIntroduirHores = new Handler();
     float coordX;
+
+    LocationManager mLocationManager;
+    private String nomUbicacio = "";
 
     private List<Missatge> missatges = new ArrayList<>();
     private ListAdapterMissatges listAdapter;
@@ -100,12 +123,13 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         binding = FragmentIntroduirHoresBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+
         try {
             if (userAuth.getUid() != null) {
                 context = root.getContext();
                 setup();
 
-            }else {
+            } else {
                 startActivity(new Intent(getActivity(), SplashScreen.class));
 
             }
@@ -118,9 +142,9 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     }
 
 
-
     @SuppressLint("ClickableViewAccessibility")
-    public void setup () {
+    public void setup() {
+
         switch(getFirstTimeRun()) {
             case 0:
                 Log.d("appPreferences", "Es la primera vez!");
@@ -174,16 +198,38 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                         binding.imageView6.setX(binding.textLL.getWidth() - (binding.imageView6.getWidth() + 4));
                     break; case MotionEvent.ACTION_UP:
                     if (binding.imageView6.getX() + (binding.imageView6.getWidth() / 2) < binding.textLL.getWidth() / 2) {
-                        binding.imageView6.setX(4);
-                        binding.imageView6.setImageDrawable(context.getDrawable(R.drawable.ic_round_arrow_forward_24));
+                        iniciarJornadaSwipe();
                         if (horarioUsuario.getDiaEntrada() != -1) {
                             acabarJornada();
                         }
                     } else {
-                        binding.imageView6.setX(binding.textLL.getWidth() - (binding.imageView6.getWidth() + 4));
-                        binding.imageView6.setImageDrawable(context.getDrawable(R.drawable.ic_round_arrow_back_24));
-                        if (horarioUsuario.getDiaEntrada() == -1) {
+                        if (horarioUsuario.getDiaEntrada() == -1 &&
+                                ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()),
+                                Manifest.permission.ACCESS_FINE_LOCATION)
+                                == PackageManager.PERMISSION_GRANTED) {
+
+                            acabarJornadaSwipe();
                             iniciarJornada();
+
+                        } else {
+                            iniciarJornadaSwipe();
+
+                            SweetAlertDialog sDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE);
+
+                            sDialog.setTitleText("Es necessiten els permisos d'ubicació!")
+                                    .setConfirmText("Donar permís")
+                                    .setConfirmClickListener(sweetAlertDialog -> {
+                                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                                Uri.fromParts("package", context.getPackageName(), null));
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(intent);
+
+                                        sweetAlertDialog.dismissWithAnimation();
+                                    })
+                                    .setCanceledOnTouchOutside(false);
+                            sDialog.show();
+
+
                         }
                     }
             }
@@ -198,6 +244,29 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             binding.editTextMissatge.setText("");
         });
 
+
+        mLocationManager = (LocationManager) context.getSystemService(context.LOCATION_SERVICE);
+
+        checkLocationPermission();
+
+    }
+
+    public boolean checkLocationPermission () {
+
+        if (ContextCompat.checkSelfPermission(context,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            System.out.println("LOCATION");
+            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1500, 1, mLocationListener);
+            return true;
+        } else {
+
+            mPermissionResult.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+
+            System.out.println("NO LOCATION");
+        }
+
+        return false;
     }
 
     private void mostrarMissatges(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
@@ -352,22 +421,16 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                 }).show();
 
     }
-    private void cargarEfecteTextEntrar() {
-        binding.textTextLL.setText(getResources().getString(R.string.iniciarJornadaStr));
-    }
-    private void cargarEfecteTextSalir() {
-        binding.textTextLL.setText(getResources().getString(R.string.acabarJornadaStr));
-    }
+
     public void iniciarJornadaSwipe() {
         binding.imageView6.setX(4);
         binding.imageView6.setImageDrawable(context.getDrawable(R.drawable.ic_round_arrow_forward_24));
-        cargarEfecteTextEntrar();
     }
     public void acabarJornadaSwipe() {
         binding.imageView6.setX(binding.textLL.getWidth() - (binding.imageView6.getWidth() + 4));
         binding.imageView6.setImageDrawable(context.getDrawable(R.drawable.ic_round_arrow_back_24));
-        cargarEfecteTextSalir();
     }
+
     private int getFirstTimeRun() {
         SharedPreferences sp = getActivity().getSharedPreferences("Piazza", 0);
         int result, currentVersionCode = BuildConfig.VERSION_CODE;
@@ -377,6 +440,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         sp.edit().putInt("FIRSTTIMERUN", currentVersionCode).apply();
         return result;
     }
+
     public void iniciarJornada () {
 
         try {
@@ -433,11 +497,9 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
             if (horario.isEstatJornada()) {
                 horarioUsuario.setEstatJornada(true);
-                userAuth.setTreballant(false);
-                writeOneDocument(DDBB.collection("usuaris").document(userAuth.getUid()), userAuth);
-                registration.remove();
                 iniciarJornadaSwipe();
                 stopRepeatingTask();
+                setup();
             }
         }
 
@@ -659,6 +721,45 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         textView.setText(String.format("%01dh %02dm",hora,minut));
     }
 
+
+
+
+
+    private final LocationListener mLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(final Location location) {
+            System.out.println("LOCATION");
+
+            if (nomUbicacio.equals("")) {
+                Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+                try {
+                    List<Address> listAddresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                    if (null != listAddresses && listAddresses.size() > 0) {
+                        String _Location = listAddresses.get(0).getAddressLine(0);
+                        nomUbicacio = _Location;
+                        horarioUsuario.setNomUbicacio(nomUbicacio);
+                        System.out.println("HORARIO USUARIO: " + horarioUsuario.getNomUbicacio());
+
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
+
+    @SuppressLint("MissingPermission")
+    private ActivityResultLauncher<String> mPermissionResult = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            result -> {
+                if(result) {
+                    Log.e("PERMISSION", "onActivityResult: PERMISSION GRANTED");
+                    mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1500, 1, mLocationListener);
+                } else {
+                    Log.e("PERMISSION", "onActivityResult: PERMISSION DENIED");
+                }
+            });
+
     Runnable mStatusChecker = new Runnable() {
         @Override
         public void run() {
@@ -704,6 +805,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         try {
 
             System.out.println("HANDLER");
+            horarioUsuario.setNomUbicacio(nomUbicacio);
 
             getFechaActual(false);
 
@@ -743,7 +845,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
     void startRepeatingTask() {
         try {
-            handlerIntroduirHores.postDelayed(mStatusChecker, 5000);
+            handlerIntroduirHores.post(mStatusChecker);
         } catch (Exception e) {
         }
     }
@@ -751,4 +853,10 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         handlerIntroduirHores.removeCallbacks(mStatusChecker);
     }
 
+    @Override
+    public void onDestroy() {
+        stopRepeatingTask();
+        System.out.println("STOPED");
+        super.onDestroy();
+    }
 }

@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.PersistableBundle;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.piazza.classes.Usuario;
 import com.example.piazza.commons.getCurrTimeGMT;
 import com.example.piazza.controladores.auth.AuthActivity;
 import com.example.piazza.controladores.auth.SplashScreen;
@@ -122,12 +125,17 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
 
     public void logOut() {
         FirebaseAuth.getInstance().signOut();
+        new Handler(Looper.getMainLooper()).postDelayed( this::guardarDatosGlobalesJugador, 6000);
         Intent intent = new Intent(this, AuthActivity.class);
         startActivity(intent);
 
         binding = null;
 
         finish();
+    }
+
+    private void guardarDatosGlobalesJugador() {
+        guardarDatosGlobalesJugador(new Usuario());
     }
 
     @Override

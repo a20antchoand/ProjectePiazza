@@ -5,6 +5,8 @@ public class Horario {
     Usuario usuario;
     Horario modificacio;
 
+    String nomUbicacio;
+
     int anioEntrada;
     int mesEntrada;
     int diaEntrada;
@@ -159,5 +161,13 @@ public class Horario {
 
     public void setModificacio(Horario modificacio) {
         this.modificacio = modificacio;
+    }
+
+    public String getNomUbicacio() {
+        return nomUbicacio;
+    }
+
+    public void setNomUbicacio(String nomUbicacio) {
+        this.nomUbicacio = nomUbicacio;
     }
 }
