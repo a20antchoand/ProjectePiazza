@@ -744,13 +744,19 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
                     .setTitleText("Registre generat correctament, vols enviar-lo?")
                     .setConfirmText("Compartir")
                     .setCancelText("No")
-                    .setConfirmClickListener(l -> compartirFitxer(file))
+                    .setConfirmClickListener(l -> {
+                        compartirFitxer(file);
+                        l.dismissWithAnimation();
+                    })
                     .show();
 
         } catch (Exception e) {
             new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
                     .setTitleText("Error al generar l'informe... \n" + e.getLocalizedMessage())
-                    .setConfirmClickListener(l -> compartirFitxer(file))
+                    .setConfirmClickListener(l -> {
+                        compartirFitxer(file);
+                        l.dismissWithAnimation();
+                    })
                     .show();
 
         }

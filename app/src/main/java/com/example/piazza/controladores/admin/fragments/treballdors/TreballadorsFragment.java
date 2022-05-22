@@ -145,12 +145,13 @@ public class TreballadorsFragment extends Fragment implements ReadData, WriteDat
         for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult().getDocuments()) {
             Horario horario = documentSnapshot.toObject(Horario.class);
             if (horario.getUsuario().getEmpresa().equals(userAuth.getEmpresa()) && horario.getModificacio() != null) {
+                String HORES_MINUTS_NEUTRE = "%01dh:%02dm";
 
                 String titol;
                 String contingut = "Data: " + horario.getModificacio().getDiaEntrada() + "/" + horario.getModificacio().getMesEntrada() + " a " + horario.getModificacio().getDiaSalida() + "/" + horario.getModificacio().getMesSalida()
-                        + "\n\nHora entrada: " + horario.getModificacio().getHoraEntrada() + ":" + horario.getModificacio().getMinutEntrada()
-                        + "\n\nHora sortida: " + horario.getModificacio().getHoraSalida() + ":" + horario.getModificacio().getMinutSalida()
-                        + "\n\nTotal treballat: " + horario.getModificacio().getTotalMinutsTreballats() / 60 + ":" + horario.getModificacio().getTotalMinutsTreballats() % 60;
+                        + "\n\nHora entrada: " + String.format(HORES_MINUTS_NEUTRE, horario.getModificacio().getHoraEntrada(), horario.getModificacio().getMinutEntrada())
+                        + "\n\nHora sortida: " + String.format(HORES_MINUTS_NEUTRE, horario.getModificacio().getHoraSalida(), horario.getModificacio().getMinutSalida())
+                        + "\n\nTotal treballat: " + String.format(HORES_MINUTS_NEUTRE, horario.getModificacio().getTotalMinutsTreballats() / 60, horario.getModificacio().getTotalMinutsTreballats() % 60);
 
                 if (documentSnapshot.contains("afegit")) {
                     titol = "L'empleat: " + horario.getUsuario().getNom() + " vol afegir el següent registre...";
