@@ -14,8 +14,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.piazza.classes.DialogRecuperarPass;
-import com.example.piazza.classes.Horari;
-import com.example.piazza.classes.Usuari;
+import com.example.piazza.classes.Horario;
+import com.example.piazza.classes.Usuario;
 import com.example.piazza.commons.getCurrTimeGMT;
 import com.example.piazza.controladores.admin.AdminActivity;
 import com.example.piazza.controladores.employee.EmployeeActivity;
@@ -87,7 +87,7 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
                         if (task.isSuccessful()) {
 
                             /* ======================================
-                             * Cargamos datos del Usuari actual
+                             * Cargamos datos del usuario actual
                              * ======================================
                              * */
 
@@ -125,7 +125,7 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
                 if (usuariDocument.getResult().getData() != null) {
 
                     //agafem la refere
-                    cargarDatosUsuari(docRefUsuari, this::setUserAuth);
+                    cargarDatosUsuario(docRefUsuari, this::setUserAuth);
 
 
                 }
@@ -141,7 +141,7 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
 
                 //Cargem la informació que recuperem de firebase i guardem la informació a la variable estatica que utilitzarem durant
                 //tot el transcurs de la app. Li enviem a la funcio un objecte usuari creantlo directament desde firebase.
-                guardarDatosGlobalesJugador(userDocument.getResult().toObject(Usuari.class));
+                guardarDatosGlobalesJugador(userDocument.getResult().toObject(Usuario.class));
 
                 //agafem la referencia als horaris
                 Query query = DDBB.collection("horari");
@@ -160,10 +160,10 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
                 //recorrem tots els documents recuperats
                 for (DocumentSnapshot horariDocument : horarisDocuments.getResult()) {
 
-                    Horari HorariTemp = horariDocument.toObject(Horari.class);
+                    Horario horarioTemp = horariDocument.toObject(Horario.class);
 
                     //per cada document que pertany a l'usuari i és del dia a ctual augmentem per 1 el document
-                    if (horariDocument.getId().contains(userAuth.getUid()) && HorariTemp.getDiaEntrada() == getCurrTimeGMT.zdt.getDayOfMonth()) {
+                    if (horariDocument.getId().contains(userAuth.getUid()) && horarioTemp.getDiaEntrada() == getCurrTimeGMT.zdt.getDayOfMonth()) {
                         IntroduirHoresFragment.numeroDocument++;
                     }
                 }

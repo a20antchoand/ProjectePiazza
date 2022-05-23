@@ -10,8 +10,8 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.piazza.classes.Horari;
-import com.example.piazza.classes.Usuari;
+import com.example.piazza.classes.Horario;
+import com.example.piazza.classes.Usuario;
 import com.example.piazza.commons.getCurrTimeGMT;
 import com.example.piazza.controladores.admin.AdminActivity;
 import com.example.piazza.controladores.employee.EmployeeActivity;
@@ -114,7 +114,7 @@ public class SplashScreen extends Activity implements ReadData, AuthUserSession 
         if (usuariDocument.getResult().getData() != null) {
 
             //agafem la refere
-            cargarDatosUsuari(docRefUsuari, this::setUserAuth);
+            cargarDatosUsuario(docRefUsuari, this::setUserAuth);
 
             //agafem la referencia als horaris
             Query query = DDBB.collection("horari");
@@ -137,7 +137,7 @@ public class SplashScreen extends Activity implements ReadData, AuthUserSession 
 
         //Cargem la informació que recuperem de firebase i guardem la informació a la variable estatica que utilitzarem durant
         //tot el transcurs de la app. Li enviem a la funcio un objecte usuari creantlo directament desde firebase.
-        guardarDatosGlobalesJugador(userDocument.getResult().toObject(Usuari.class));
+        guardarDatosGlobalesJugador(userDocument.getResult().toObject(Usuario.class));
 
     }
 
@@ -152,10 +152,10 @@ public class SplashScreen extends Activity implements ReadData, AuthUserSession 
             //recorrem tots els documents recuperats
             for (DocumentSnapshot horariDocument : horarisDocuments.getResult()) {
 
-                Horari HorariTemp = horariDocument.toObject(Horari.class);
+                Horario horarioTemp = horariDocument.toObject(Horario.class);
 
                 //per cada document que pertany a l'usuari i és del dia a ctual augmentem per 1 el document
-                if (HorariTemp != null && horariDocument.getId().contains(userAuth.getUid()) && HorariTemp.getDiaEntrada() == getCurrTimeGMT.zdt.getDayOfMonth()) {
+                if (horarioTemp != null && horariDocument.getId().contains(userAuth.getUid()) && horarioTemp.getDiaEntrada() == getCurrTimeGMT.zdt.getDayOfMonth()) {
                     IntroduirHoresFragment.numeroDocument++;
                 }
             }

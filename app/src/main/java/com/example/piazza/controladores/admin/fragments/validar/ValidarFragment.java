@@ -12,8 +12,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.piazza.classes.Horari;
-import com.example.piazza.classes.Usuari;
+import com.example.piazza.classes.Horario;
+import com.example.piazza.classes.Usuario;
 import com.example.piazza.controladores.auth.SplashScreen;
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.data.WriteData;
@@ -36,7 +36,7 @@ public class ValidarFragment extends Fragment implements AuthUserSession, ReadDa
     private FragmentValidarBinding binding;
     private View root;
     private List<ListElementEstatTreballadors> elements = new ArrayList<>();
-    public static List<Usuari> treballadors = new ArrayList<>();
+    public static List<Usuario> treballadors = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -92,7 +92,7 @@ public class ValidarFragment extends Fragment implements AuthUserSession, ReadDa
 
             for (DocumentSnapshot document : querySnapshotTask.getResult().getDocuments()) {
 
-                Usuari temp = document.toObject(Usuari.class);
+                Usuario temp = document.toObject(Usuario.class);
 
                 treballadors.add(temp);
 
@@ -105,21 +105,21 @@ public class ValidarFragment extends Fragment implements AuthUserSession, ReadDa
     private void mostrarEstat(Task<QuerySnapshot> querySnapshotTask) {
         elements = new ArrayList<>();
         if (querySnapshotTask.isSuccessful()) {
-            for (Usuari usuari : treballadors) {
+            for (Usuario usuari : treballadors) {
                 int cont = 0;
                 if (usuari.getRol().equals("treballador")) {
-                    Horari HorariEmpezado = new Horari();
+                    Horario horarioEmpezado = new Horario();
                     for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult().getDocuments()) {
-                        Horari Horari = documentSnapshot.toObject(Horari.class);
-                        if (Horari.getUsuari().getUid().equals(usuari.getUid())) {
+                        Horario horario = documentSnapshot.toObject(Horario.class);
+                        if (horario.getUsuario().getUid().equals(usuari.getUid())) {
                             cont++;
-                            HorariEmpezado = Horari;
+                            horarioEmpezado = horario;
                         }
                     }
                     if (cont == 0)
                         elements.add(addListElementEstatTreballadorsActius(usuari));
                     else
-                        elements.add(addListElementEstatTreballadorsNoActius(usuari, HorariEmpezado));
+                        elements.add(addListElementEstatTreballadorsNoActius(usuari, horarioEmpezado));
                 }
 
             }
@@ -131,13 +131,13 @@ public class ValidarFragment extends Fragment implements AuthUserSession, ReadDa
         }
     }
 
-    private ListElementEstatTreballadors addListElementEstatTreballadorsActius(Usuari Usuari) {
+    private ListElementEstatTreballadors addListElementEstatTreballadorsActius(Usuario usuario) {
 
         String color = "#FF0000";
-        String nom = Usuari.getNom().substring(0, 1).toUpperCase() + Usuari.getNom().substring(1);
-        String hores = Usuari.getTelefono();
-        String estat = Usuari.getRol();
-        String uid = Usuari.getUid();
+        String nom = usuario.getNom().substring(0, 1).toUpperCase() + usuario.getNom().substring(1);
+        String hores = usuario.getTelefono();
+        String estat = usuario.getRol();
+        String uid = usuario.getUid();
 
         return new ListElementEstatTreballadors(
                 color,
@@ -148,13 +148,13 @@ public class ValidarFragment extends Fragment implements AuthUserSession, ReadDa
 
     }
 
-    private ListElementEstatTreballadors addListElementEstatTreballadorsNoActius(Usuari Usuari, Horari Horari) {
+    private ListElementEstatTreballadors addListElementEstatTreballadorsNoActius(Usuario usuario, Horario horario) {
 
         String color = "#00BB2d";
-        String nom = Usuari.getNom().substring(0, 1).toUpperCase() + Usuari.getNom().substring(1);
-        String hores = String.format("%01dh %02dm", Horari.getHoraEntrada(), Horari.getMinutEntrada());
-        String estat = Usuari.getRol();
-        String uid = Usuari.getUid();
+        String nom = usuario.getNom().substring(0, 1).toUpperCase() + usuario.getNom().substring(1);
+        String hores = String.format("%01dh %02dm", horario.getHoraEntrada(), horario.getMinutEntrada());
+        String estat = usuario.getRol();
+        String uid = usuario.getUid();
 
         return new ListElementEstatTreballadors(
                 color,

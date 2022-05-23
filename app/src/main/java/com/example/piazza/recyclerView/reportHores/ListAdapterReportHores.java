@@ -62,10 +62,10 @@ public class ListAdapterReportHores extends RecyclerView.Adapter<ListAdapterRepo
 
         void bindData (final ListElementReportHores item) {
 
-            String dataStr = String.format("%2d",item.getHorari().getDiaEntrada());
-            String entradaStr = String.format("%d:%02d",item.getHorari().getHoraEntrada(),item.getHorari().getMinutEntrada()) ;
-            String sortidaStr = String.format("%d:%02d",item.getHorari().getHoraSalida(), item.getHorari().getMinutSalida());
-            String totalFinalStr = String.format("%dh %02dm",item.getHorari().getTotalMinutsTreballats()/60, item.getHorari().getTotalMinutsTreballats()%60);
+            String dataStr = String.format("%2d",item.getHorario().getDiaEntrada());
+            String entradaStr = String.format("%d:%02d",item.getHorario().getHoraEntrada(),item.getHorario().getMinutEntrada()) ;
+            String sortidaStr = String.format("%d:%02d",item.getHorario().getHoraSalida(), item.getHorario().getMinutSalida());
+            String totalFinalStr = String.format("%dh %02dm",item.getHorario().getTotalMinutsTreballats()/60, item.getHorario().getTotalMinutsTreballats()%60);
 
             total.setText(totalFinalStr);
             data.setText(dataStr);

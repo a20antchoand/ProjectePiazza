@@ -1,6 +1,6 @@
 package com.example.piazza.classes;
 
-public class Usuari {
+public class Usuario {
 
     String uid;
     String email;
@@ -17,7 +17,7 @@ public class Usuari {
     /**
      * Constructor per defecte d'Usuari
      */
-    public Usuari () {
+    public Usuario () {
     }
 
     /**
@@ -35,7 +35,7 @@ public class Usuari {
      * @param empresa Empresa en la que treballa
      */
 
-    public Usuari(String uid, String email, String nom, String cognom, String telefono, String rol, String horesMensuals, String diesSetmana, String urlPerfil, String empresa) {
+    public Usuario(String uid, String email, String nom, String cognom, String telefono, String rol, String horesMensuals, String diesSetmana, String urlPerfil, String empresa) {
         this.uid = uid;
         this.email = email;
         this.telefono = telefono;
@@ -48,7 +48,7 @@ public class Usuari {
         this.empresa = empresa;
     }
 
-    public Usuari(String uid, String email, String nom, String cognom, String telefono, String rol, String empresa) {
+    public Usuario(String uid, String email, String nom, String cognom, String telefono, String rol, String empresa) {
         this.uid = uid;
         this.email = email;
         this.telefono = telefono;

@@ -1,25 +1,25 @@
 package com.example.piazza.recyclerView.historialHores;
 
-import com.example.piazza.classes.Horari;
+import com.example.piazza.classes.Horario;
 
 import java.io.Serializable;
 
 public class ListElementHistorialHores implements Serializable {
 
-    Horari Horari;
+    Horario horario;
     String id;
 
-    public ListElementHistorialHores(Horari Horari, String id) {
-        this.Horari = Horari;
+    public ListElementHistorialHores(Horario horario, String id) {
+        this.horario = horario;
         this.id = id;
     }
 
-    public Horari getHorari() {
-        return Horari;
+    public Horario getHorario() {
+        return horario;
     }
 
-    public void setHorari(Horari Horari) {
-        this.Horari = Horari;
+    public void setHorario(Horario horario) {
+        this.horario = horario;
     }
 
     public String getId() {

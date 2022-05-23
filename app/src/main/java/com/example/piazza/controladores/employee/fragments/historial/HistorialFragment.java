@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-import com.example.piazza.classes.Horari;
+import com.example.piazza.classes.Horario;
 import com.example.piazza.controladores.auth.SplashScreen;
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.data.WriteData;
@@ -104,11 +104,11 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
                 //Si el registre pertany al usuari acual
                 if (historialDocument.getId().contains(userAuth.getUid())) {
                     //Creem l'objecte Historial que hem rcuperat del document
-                    Horari Horari = historialDocument.toObject(Horari.class);
+                    Horario horario = historialDocument.toObject(Horario.class);
                     //si la jornada esta acabada
-                    if (Horari.isEstatJornada() && Horari.getDiaEntrada() != -1)
+                    if (horario.isEstatJornada() && horario.getDiaEntrada() != -1)
                         //creem l'item de la recycler view i l'afegim a un array list d'elements
-                        listElements.add(bindDataElementHistorial(Horari, historialDocument.getId()));
+                        listElements.add(bindDataElementHistorial(horario, historialDocument.getId()));
                 }
             }
 
@@ -163,8 +163,8 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
 
     private void modificarRegistre(ListElementHistorialHores listElementHistorialHores) {
 
-        Horari Horari = listElementHistorialHores.getHorari();
-        Horari modificacio = new Horari();
+        Horario horario = listElementHistorialHores.getHorario();
+        Horario modificacio = new Horario();
 
         new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
                 .setTitleText("Vols eliminar o editar el registre?")
@@ -192,14 +192,14 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
                             //afegim al horari el total de minuts treballats
                             modificacio.setTotalMinutsTreballats(diffMinuts);
 
-                            modificacio.setUsuari(Horari.getUsuari());
-                            modificacio.setDiaAny(Horari.getDiaAny());
+                            modificacio.setUsuario(horario.getUsuario());
+                            modificacio.setDiaAny(horario.getDiaAny());
 
                             modificacio.setEstatJornada(true);
 
-                        Horari.setModificacio(modificacio);
+                        horario.setModificacio(modificacio);
 
-                        writeOneDocument(DDBB.collection("modificacions").document(listElementHistorialHores.getId()),Horari);
+                        writeOneDocument(DDBB.collection("modificacions").document(listElementHistorialHores.getId()),horario);
                         new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
                                 .setTitleText("S'ha enviat la modificació a validar!")
                                 .show();
@@ -213,8 +213,8 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
                         modificacio.setMesSalida(month);
                         modificacio.setDiaSalida(day);
 
-                        int hourSortida = listElementHistorialHores.getHorari().getHoraSalida();
-                        int minuteSortida = listElementHistorialHores.getHorari().getMinutSalida();
+                        int hourSortida = listElementHistorialHores.getHorario().getHoraSalida();
+                        int minuteSortida = listElementHistorialHores.getHorario().getMinutSalida();
                         TimePickerDialog mTimePicker;
                         mTimePicker = new TimePickerDialog(getContext(), mTimeListenerSortida, hourSortida, minuteSortida, true);//Yes 24 hour time
                         mTimePicker.setTitle("Select Time");
@@ -230,9 +230,9 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
                          modificacio.setHoraEntrada(hour);
                          modificacio.setMinutEntrada(minute);
 
-                             int year = listElementHistorialHores.getHorari().getAnioSalida();
-                             int month = listElementHistorialHores.getHorari().getMesSalida();
-                             int day = listElementHistorialHores.getHorari().getDiaSalida();
+                             int year = listElementHistorialHores.getHorario().getAnioSalida();
+                             int month = listElementHistorialHores.getHorario().getMesSalida();
+                             int day = listElementHistorialHores.getHorario().getDiaSalida();
 
                              DatePickerDialog mTimePicker;
                              mTimePicker = new DatePickerDialog(getContext(), mDateListenerSortida, year, month, day);//Yes 24 hour time
@@ -248,8 +248,8 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
                         modificacio.setDiaEntrada(day);
 
 
-                        int hour = listElementHistorialHores.getHorari().getHoraEntrada();
-                        int minute = listElementHistorialHores.getHorari().getMinutEntrada();
+                        int hour = listElementHistorialHores.getHorario().getHoraEntrada();
+                        int minute = listElementHistorialHores.getHorario().getMinutEntrada();
                         TimePickerDialog mTimePicker;
                         mTimePicker = new TimePickerDialog(getContext(), mTimeListenerEntrada, hour, minute, true);//Yes 24 hour time
                         mTimePicker.setTitle("Select Time");
@@ -258,9 +258,9 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
 
                     };
 
-                    int year = listElementHistorialHores.getHorari().getAnioEntrada();
-                    int month = listElementHistorialHores.getHorari().getMesEntrada();
-                    int day = listElementHistorialHores.getHorari().getDiaEntrada();
+                    int year = listElementHistorialHores.getHorario().getAnioEntrada();
+                    int month = listElementHistorialHores.getHorario().getMesEntrada();
+                    int day = listElementHistorialHores.getHorario().getDiaEntrada();
 
                     DatePickerDialog mTimePicker;
                     mTimePicker = new DatePickerDialog(getContext(), mDateListenerEntrada, year, month, day);//Yes 24 hour time
@@ -338,9 +338,9 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
 
     }
 
-    private ListElementHistorialHores bindDataElementHistorial(Horari Horari, String id) {
+    private ListElementHistorialHores bindDataElementHistorial(Horario horario, String id) {
 
-        return new ListElementHistorialHores(Horari, id);
+        return new ListElementHistorialHores(horario, id);
 
     }
 
@@ -354,12 +354,12 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
             for (QueryDocumentSnapshot historialDocument : historialsDocuments.getResult()) {
                 //si el document pertany a l'usuari
                 if (historialDocument.getId().contains(userAuth.getUid())) {
-                    //creem l'objecte Horari recuperat del document
-                    Horari Horari = historialDocument.toObject(Horari.class);
+                    //creem l'objecte Horario recuperat del document
+                    Horario horario = historialDocument.toObject(Horario.class);
                     //comprovem si el document és del mes actual
-                    if (Horari.getMesEntrada() == getCurrTimeGMT.zdt.getMonthValue())
+                    if (horario.getMesEntrada() == getCurrTimeGMT.zdt.getMonthValue())
                         //sumem els minuts totals treballats
-                        totalTempsMes += Horari.getTotalMinutsTreballats();
+                        totalTempsMes += horario.getTotalMinutsTreballats();
 
                 }
             }

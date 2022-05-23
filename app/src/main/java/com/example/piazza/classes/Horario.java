@@ -1,9 +1,9 @@
 package com.example.piazza.classes;
 
-public class Horari {
+public class Horario {
 
-    Usuari Usuari;
-    Horari modificacio;
+    Usuario usuario;
+    Horario modificacio;
 
     String nomUbicacio;
 
@@ -25,7 +25,7 @@ public class Horari {
     boolean estatJornada;
 
 
-    public Horari() {
+    public Horario() {
         anioEntrada = -1;
         anioSalida = -1;
         mesEntrada = -1;
@@ -129,12 +129,12 @@ public class Horari {
         this.totalMinutsTreballats = totalMinutsTreballats;
     }
 
-    public Usuari getUsuari() {
-        return Usuari;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setUsuari(Usuari Usuari) {
-        this.Usuari = Usuari;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     public boolean isEstatJornada() {
@@ -153,11 +153,11 @@ public class Horari {
         this.diaAny = diaAny;
     }
 
-    public Horari getModificacio() {
+    public Horario getModificacio() {
         return modificacio;
     }
 
-    public void setModificacio(Horari modificacio) {
+    public void setModificacio(Horario modificacio) {
         this.modificacio = modificacio;
     }
 
