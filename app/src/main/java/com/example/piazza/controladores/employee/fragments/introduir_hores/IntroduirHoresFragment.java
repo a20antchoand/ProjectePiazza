@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -148,8 +149,23 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         switch(getFirstTimeRun()) {
             case 0:
                 Log.d("appPreferences", "Es la primera vez!");
-                break; case 1: Log.d("appPreferences", "ya has iniciado la app alguna vez");
-                break; case 2: Log.d("appPreferences", "es una versión nueva");
+                break;
+            case 1:
+                Log.d("appPreferences", "ya has iniciado la app alguna vez");
+
+                break;
+            case 2:
+                Log.d("appPreferences", "es una versión nueva");
+                binding.constraintWelcome.setVisibility(View.VISIBLE);
+                binding.btnContinuar.setOnClickListener(l -> {
+                    if (binding.checkBox.isChecked()) {
+                        binding.constraintWelcome.setVisibility(View.GONE);
+                        binding.checkBox.setTextColor(Color.BLACK);
+                    } else {
+                        binding.checkBox.setTextColor(Color.RED);
+                    }
+                });
+                break;
         }
 
         new Handler().postDelayed(checkInternet, 5000);
@@ -207,13 +223,11 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
                             if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()),
                                     Manifest.permission.ACCESS_FINE_LOCATION)
-                                    == PackageManager.PERMISSION_GRANTED) {
-                                acabarJornadaSwipe();
-                                iniciarJornada();
-                            } else {
+                                    == PackageManager.PERMISSION_DENIED) {
+
                                 SweetAlertDialog sDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE);
 
-                                sDialog.setTitleText("Es necessiten els permisos d'ubicació!")
+                                sDialog.setTitleText("Es recomanen els permisos d'ubicació!")
                                         .setConfirmText("Donar permís")
                                         .setConfirmClickListener(sweetAlertDialog -> {
                                             Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
@@ -223,16 +237,19 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
                                             sweetAlertDialog.dismissWithAnimation();
                                         })
-                                        .setCanceledOnTouchOutside(false);
+                                .setOnDismissListener(l -> iniciarJornada());
+
                                 sDialog.show();
 
-                                iniciarJornadaSwipe();
-
+                            } else {
+                                iniciarJornada();
                             }
 
-                        } else {
-                            acabarJornadaSwipe();
+
                         }
+
+                        acabarJornadaSwipe();
+
                     }
             }
             return true;
@@ -737,10 +754,8 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                     List<Address> listAddresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                     if (null != listAddresses && listAddresses.size() > 0) {
                         String _Location = listAddresses.get(0).getAddressLine(0);
-                        nomUbicacio = _Location;
-                        horarioUsuario.setNomUbicacio(nomUbicacio);
-                        System.out.println("HORARIO USUARIO: " + horarioUsuario.getNomUbicacio());
-
+                        if (nomUbicacio.equals(""))
+                            nomUbicacio = _Location;
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
