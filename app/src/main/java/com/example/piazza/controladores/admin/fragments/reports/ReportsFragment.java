@@ -405,6 +405,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
         mostrarRegistres(registres);
 
+
     }
 
     private void recopilarHoresTreballadesPersonalitzat(Task<QuerySnapshot> querySnapshotTask) {

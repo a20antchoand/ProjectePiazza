@@ -47,9 +47,15 @@
     <string name="iniciarJornadaStr">Swipe to enter</string>
     <string name="acabarJornadaStr">Swipe to leave</string>
     <string name="spn_title">Rol</string>
-    <string name="guardar">Guardar</string>
     <string-array name="dlangs">
         <item>worker</item>
         <item>administrator</item>
     </string-array>
+    <string name="empresa_perfil">ENTERPRISE</string>
+    <string name="no_tens_cap_registre_horari_encara">YOU DON\'T HAVE REGISTERS YET</string>
+    <string name="mensuals">MONTHLY</string>
+    <string name="treballades">WORKED</string>
+    <string name="balan">STOCK</string>
+    <string name="guardar">Save</string>
+    <string name="string_guardar">SAVE</string>
 </resources>

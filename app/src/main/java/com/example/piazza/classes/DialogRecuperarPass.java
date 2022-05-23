@@ -15,10 +15,10 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 
 import com.example.testauth.R;
 
-public class ExampleDialog extends AppCompatDialogFragment {
+public class DialogRecuperarPass extends AppCompatDialogFragment {
 
     private EditText editTextEmail;
-    private ExampleDialogListener listener;
+    private DialogRecuperarListener listener;
 
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -52,7 +52,7 @@ public class ExampleDialog extends AppCompatDialogFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            listener = (ExampleDialogListener) context;
+            listener = (DialogRecuperarListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() +
                     "must implement ExempleDialogListener");
@@ -60,7 +60,7 @@ public class ExampleDialog extends AppCompatDialogFragment {
 
     }
 
-    public interface ExampleDialogListener {
+    public interface DialogRecuperarListener {
         void recuperarText(String email);
     }
 

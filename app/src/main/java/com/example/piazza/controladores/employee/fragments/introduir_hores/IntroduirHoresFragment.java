@@ -203,33 +203,35 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                             acabarJornada();
                         }
                     } else {
-                        if (horarioUsuario.getDiaEntrada() == -1 &&
-                                ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()),
-                                Manifest.permission.ACCESS_FINE_LOCATION)
-                                == PackageManager.PERMISSION_GRANTED) {
+                        if (horarioUsuario.getDiaEntrada() == -1) {
 
-                            acabarJornadaSwipe();
-                            iniciarJornada();
+                            if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()),
+                                    Manifest.permission.ACCESS_FINE_LOCATION)
+                                    == PackageManager.PERMISSION_GRANTED) {
+                                acabarJornadaSwipe();
+                                iniciarJornada();
+                            } else {
+                                SweetAlertDialog sDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE);
+
+                                sDialog.setTitleText("Es necessiten els permisos d'ubicació!")
+                                        .setConfirmText("Donar permís")
+                                        .setConfirmClickListener(sweetAlertDialog -> {
+                                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                                    Uri.fromParts("package", context.getPackageName(), null));
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                            startActivity(intent);
+
+                                            sweetAlertDialog.dismissWithAnimation();
+                                        })
+                                        .setCanceledOnTouchOutside(false);
+                                sDialog.show();
+
+                                iniciarJornadaSwipe();
+
+                            }
 
                         } else {
-                            iniciarJornadaSwipe();
-
-                            SweetAlertDialog sDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE);
-
-                            sDialog.setTitleText("Es necessiten els permisos d'ubicació!")
-                                    .setConfirmText("Donar permís")
-                                    .setConfirmClickListener(sweetAlertDialog -> {
-                                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                                Uri.fromParts("package", context.getPackageName(), null));
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        startActivity(intent);
-
-                                        sweetAlertDialog.dismissWithAnimation();
-                                    })
-                                    .setCanceledOnTouchOutside(false);
-                            sDialog.show();
-
-
+                            acabarJornadaSwipe();
                         }
                     }
             }
@@ -621,7 +623,6 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             changeStateButtons.hideButton(iniciarJornadaBtn);
             changeStateButtons.showButton(acabarJornadaBtn);
             acabarJornadaSwipe();
-            writeOneDocument(DDBB.collection("REGISTRE").document("VEGADES LINEA 442"), userAuth);
             //iniciem el Handler
             startRepeatingTask();
         }

@@ -1,33 +1,19 @@
 package com.example.piazza.controladores.auth;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import com.bumptech.glide.Glide;
-import com.example.piazza.classes.ExampleDialog;
+import com.example.piazza.classes.DialogRecuperarPass;
 import com.example.piazza.classes.Horario;
 import com.example.piazza.classes.Usuario;
 import com.example.piazza.commons.getCurrTimeGMT;
@@ -37,23 +23,16 @@ import com.example.piazza.controladores.employee.fragments.introduir_hores.Intro
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class AuthActivity extends AppCompatActivity implements ReadData, AuthUserSession, ExampleDialog.ExampleDialogListener {
+public class AuthActivity extends AppCompatActivity implements ReadData, AuthUserSession, DialogRecuperarPass.DialogRecuperarListener {
 
     Button logIn;
     TextView errorLogin, recuperarContrasenya;
@@ -79,8 +58,8 @@ public class AuthActivity extends AppCompatActivity implements ReadData, AuthUse
         imageView = findViewById(R.id.imageView2);
         recuperarContrasenya.setOnClickListener(l -> {
 
-            ExampleDialog exampleDialog = new ExampleDialog();
-            exampleDialog.show(getSupportFragmentManager(), "example dialog");
+            DialogRecuperarPass dialogRecuperarPass = new DialogRecuperarPass();
+            dialogRecuperarPass.show(getSupportFragmentManager(), "example dialog");
 
 
         });
