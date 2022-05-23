@@ -22,7 +22,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.piazza.classes.Usuario;
+import com.example.piazza.classes.Usuari;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentAdministrarBinding;
@@ -96,7 +96,7 @@ public class AltaAdminReport extends Fragment implements AuthUserSession{
                                         .setTitleText("Usuari donat d'alta correctament")
                                         .show();
 
-                                GuardarUsuarioBBDD(new Usuario(task.getResult().getUser().getUid(), email, nom, cognom, telefon, "admin", userAuth.getEmpresa()));
+                                GuardarUsuariBBDD(new Usuari(task.getResult().getUser().getUid(), email, nom, cognom, telefon, "admin", userAuth.getEmpresa()));
 
                                 mAuth2.signOut();
 

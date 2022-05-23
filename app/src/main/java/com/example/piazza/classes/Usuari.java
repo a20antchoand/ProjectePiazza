@@ -1,6 +1,6 @@
 package com.example.piazza.classes;
 
-public class Usuario {
+public class Usuari {
 
     String uid;
     String email;
@@ -17,23 +17,25 @@ public class Usuario {
     /**
      * Constructor per defecte d'Usuari
      */
-    public Usuario () {
+    public Usuari () {
     }
 
     /**
-     * Constructor d'Usuari
+     * Constructor per la classe Usuari
      *
-     * @param uid id de l'usuari generat per firebase
-     * @param email email de l'usuari amb el que accedeix
-     * @param nom nom de l'usuari
-     * @param cognom cognom de l'usuari
-     * @param telefono telefon de l'usuari
-     * @param rol rol de l'usauri a l'empresa i la app
-     * @param horesMensuals hores mensuals de l'usuari
-     * @param urlPerfil url de la imatge de perfil de l'usuarfi
+     * @param uid ID de l'usuari
+     * @param email Email de l'usuari
+     * @param nom Nom de l'usuari
+     * @param cognom Cognom de l'usuari
+     * @param telefono Telefon de l'usuari
+     * @param rol Rol de l'usuari
+     * @param horesMensuals Hores que realitza mensuals
+     * @param diesSetmana Dies que treballa setmanals
+     * @param urlPerfil URL per la foto de perfil (DEPRECAT)
+     * @param empresa Empresa en la que treballa
      */
 
-    public Usuario(String uid, String email, String nom, String cognom, String telefono, String rol, String horesMensuals, String diesSetmana, String urlPerfil, String empresa) {
+    public Usuari(String uid, String email, String nom, String cognom, String telefono, String rol, String horesMensuals, String diesSetmana, String urlPerfil, String empresa) {
         this.uid = uid;
         this.email = email;
         this.telefono = telefono;
@@ -46,7 +48,7 @@ public class Usuario {
         this.empresa = empresa;
     }
 
-    public Usuario(String uid, String email, String nom, String cognom, String telefono, String rol, String empresa) {
+    public Usuari(String uid, String email, String nom, String cognom, String telefono, String rol, String empresa) {
         this.uid = uid;
         this.email = email;
         this.telefono = telefono;

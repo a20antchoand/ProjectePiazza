@@ -20,7 +20,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.piazza.classes.Usuario;
+import com.example.piazza.classes.Usuari;
 import com.example.piazza.commons.getCurrTimeGMT;
 import com.example.piazza.controladores.admin.AdminActivity;
 import com.example.piazza.controladores.auth.AuthActivity;
@@ -139,7 +139,7 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
     }
 
     private void guardarDatosGlobalesJugador() {
-        guardarDatosGlobalesJugador(new Usuario());
+        guardarDatosGlobalesJugador(new Usuari());
     }
 
 

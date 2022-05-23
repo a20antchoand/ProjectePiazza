@@ -1,23 +1,23 @@
 package com.example.piazza.recyclerView.reportHores;
 
-import com.example.piazza.classes.Horario;
+import com.example.piazza.classes.Horari;
 
 import java.io.Serializable;
 
 public class ListElementReportHores implements Serializable {
 
-    Horario horario;
+    Horari Horari;
 
-    public ListElementReportHores(Horario horario) {
-        this.horario = horario;
+    public ListElementReportHores(Horari Horari) {
+        this.Horari = Horari;
     }
 
-    public Horario getHorario() {
-        return horario;
+    public Horari getHorari() {
+        return Horari;
     }
 
-    public void setHorario(Horario horario) {
-        this.horario = horario;
+    public void setHorari(Horari Horari) {
+        this.Horari = Horari;
     }
 
 }

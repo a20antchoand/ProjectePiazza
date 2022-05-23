@@ -2,7 +2,7 @@ package com.example.piazza.fireBase.session;
 
 import android.graphics.BitmapFactory;
 
-import com.example.piazza.classes.Usuario;
+import com.example.piazza.classes.Usuari;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -16,7 +16,7 @@ public interface AuthUserSession {
 
     FirebaseFirestore DDBB = FirebaseFirestore.getInstance();
     FirebaseStorage STORAGE = FirebaseStorage.getInstance();
-    Usuario userAuth = new Usuario();
+    Usuari userAuth = new Usuari();
 
     /**
      *Metode per cargar a la APP tota la informació del usuari.
@@ -24,7 +24,7 @@ public interface AuthUserSession {
      * @param docRef referencia al document de firebase amb la informació de l'usuari.
      * @param action funció qeu es cridara un cop es recuperi la informació.
      */
-    default void cargarDatosUsuario(DocumentReference docRef, OnCompleteListener<DocumentSnapshot> action) {
+    default void cargarDatosUsuari(DocumentReference docRef, OnCompleteListener<DocumentSnapshot> action) {
 
         docRef.get().addOnCompleteListener(action);
 
@@ -33,12 +33,12 @@ public interface AuthUserSession {
     /**
      *
      * Metode per guardar la informació a FireBase de l'usuari de la APP.
-     * @param usuario
+     * @param Usuari
      */
-    default void GuardarUsuarioBBDD(Usuario usuario) {
+    default void GuardarUsuariBBDD(Usuari Usuari) {
 
-        DDBB.collection("usuaris").document(Objects.requireNonNull(usuario.getUid()))
-                .set(usuario);
+        DDBB.collection("usuaris").document(Objects.requireNonNull(Usuari.getUid()))
+                .set(Usuari);
 
     }
 
@@ -48,7 +48,7 @@ public interface AuthUserSession {
      *
      * @param user usuari que s'ha recuperat de firebase
      */
-    default void guardarDatosGlobalesJugador(Usuario user) {
+    default void guardarDatosGlobalesJugador(Usuari user) {
 
         userAuth.setNom(user.getNom());
         userAuth.setUid(user.getUid());

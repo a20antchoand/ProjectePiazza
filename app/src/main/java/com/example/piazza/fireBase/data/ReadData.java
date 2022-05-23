@@ -8,8 +8,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.example.piazza.classes.Horario;
-import com.example.piazza.classes.Usuario;
+import com.example.piazza.classes.Horari;
+import com.example.piazza.classes.Usuari;
 import com.example.piazza.controladores.employee.fragments.historial.HistorialFragment;
 import com.example.piazza.controladores.employee.fragments.introduir_hores.IntroduirHoresFragment;
 import com.example.piazza.fireBase.session.AuthUserSession;
@@ -59,7 +59,6 @@ public interface ReadData {
                 addSnapshotListener(activity, action);
 
     }
-
 
     /**
      * Funcio per agafar multiples documnets de firebase

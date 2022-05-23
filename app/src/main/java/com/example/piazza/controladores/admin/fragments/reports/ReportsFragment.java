@@ -28,8 +28,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.piazza.classes.Horario;
-import com.example.piazza.classes.Usuario;
+import com.example.piazza.classes.Horari;
+import com.example.piazza.classes.Usuari;
 import com.example.piazza.commons.getCurrTimeGMT;
 import com.example.piazza.controladores.auth.SplashScreen;
 import com.example.piazza.fireBase.data.ReadData;
@@ -78,8 +78,8 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
     private final String CAPCELERA_CSV = "NOM, DATA, ENTRADA, SORTIDA, TOTAL\n";
 
-    Map<String, Usuario> usuarios = new HashMap<>();
-    List<Usuario> listaUsuarios = new ArrayList<>();
+    Map<String, Usuari> Usuaris = new HashMap<>();
+    List<Usuari> listaUsuaris = new ArrayList<>();
     List<String> noms = new ArrayList<>();
     int documentsRecuperar = 0;
     Calendar calendariInici, calendariFinal;
@@ -114,7 +114,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         pedirPermisos();
 
         // Application of the Array to the Spinner
-        getMultipldeDocuments(DDBB.collection("usuaris").whereEqualTo("empresa", userAuth.getEmpresa()), this::obtenerUsuarios);
+        getMultipldeDocuments(DDBB.collection("usuaris").whereEqualTo("empresa", userAuth.getEmpresa()), this::obtenerUsuaris);
 
 
         binding.button.setOnClickListener(l -> {
@@ -199,20 +199,20 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
             private void recopilarHoresTreballadesMesActual(Task<QuerySnapshot> querySnapshotTask) {
 
-                List<Horario> registres = new ArrayList<>();
+                List<Horari> registres = new ArrayList<>();
 
                 int horesTreballades = 0, horesMensuals;
 
-                Usuario usuari = usuarios.get(binding.spnTreballador.getSelectedItem());
+                Usuari usuari = Usuaris.get(binding.spnTreballador.getSelectedItem());
 
                 horesMensuals = Integer.parseInt(usuari.getHoresMensuals()) * 60;
 
                 for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
 
-                    Horario temp = documentSnapshot.toObject(Horario.class);
+                    Horari temp = documentSnapshot.toObject(Horari.class);
 
-                    if (temp.getUsuario() != null) {
-                        if (temp.getUsuario().getUid().equals(usuari.getUid())
+                    if (temp.getUsuari() != null) {
+                        if (temp.getUsuari().getUid().equals(usuari.getUid())
                                 && temp.getMesEntrada() == getCurrTimeGMT.zdt.getMonthValue()
                                 && temp.getAnioEntrada() == getCurrTimeGMT.zdt.getYear()) {
 
@@ -229,7 +229,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
             }
 
-            public void mostrarInformacioMesActual(Usuario usuari, int horesTreballades, int horesMensuals, List<Horario> registres) {
+            public void mostrarInformacioMesActual(Usuari usuari, int horesTreballades, int horesMensuals, List<Horari> registres) {
 
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
                 int residu;
@@ -299,11 +299,11 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
     private void recopilarHoresTreballadesOpcio(Task<QuerySnapshot> querySnapshotTask) {
 
-        List<Horario> registres = new ArrayList<>();
+        List<Horari> registres = new ArrayList<>();
 
         int horesTreballades = 0, horesMensuals;
 
-        Usuario usuari = usuarios.get(binding.spnTreballador.getSelectedItem());
+        Usuari usuari = Usuaris.get(binding.spnTreballador.getSelectedItem());
         horesMensuals = Integer.parseInt(usuari.getHoresMensuals()) * 60;
 
         switch (documentsRecuperar) {
@@ -321,11 +321,11 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
         for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
 
-            Horario temp = documentSnapshot.toObject(Horario.class);
+            Horari temp = documentSnapshot.toObject(Horari.class);
 
             System.out.println("DIA: " + temp.getDiaEntrada() + " DIA ANY: " + temp.getDiaAny() + " >= " + (getCurrTimeGMT.zdt.getDayOfYear() - documentsRecuperar));
 
-            if (temp.getUsuario().getUid().equals(usuari.getUid())
+            if (temp.getUsuari().getUid().equals(usuari.getUid())
                     && temp.getDiaAny() >= (getCurrTimeGMT.zdt.getDayOfYear() - documentsRecuperar)) {
 
                 horesTreballades += temp.getTotalMinutsTreballats();
@@ -341,7 +341,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
     }
 
-    public void mostrarInformacioOpcio(Usuario usuari, int horesTreballades, int horesMensuals, List<Horario> registres) {
+    public void mostrarInformacioOpcio(Usuari usuari, int horesTreballades, int horesMensuals, List<Horari> registres) {
 
         SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATA);
         int residu;
@@ -410,7 +410,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
     private void recopilarHoresTreballadesPersonalitzat(Task<QuerySnapshot> querySnapshotTask) {
 
-        List<Horario> registres = new ArrayList<>();
+        List<Horari> registres = new ArrayList<>();
 
         int horesTreballades = 0, horesMensuals;
 
@@ -418,7 +418,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
         Date max = calendariFinal.getTime(), min = calendariInici.getTime();
 
-        Usuario usuari = usuarios.get(binding.spnTreballador.getSelectedItem());
+        Usuari usuari = Usuaris.get(binding.spnTreballador.getSelectedItem());
 
         horesMensuals = Integer.parseInt(usuari.getHoresMensuals()) * 60;
 
@@ -434,9 +434,9 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
         for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
 
-            Horario temp = documentSnapshot.toObject(Horario.class);
+            Horari temp = documentSnapshot.toObject(Horari.class);
 
-            if (temp.getUsuario().getUid().equals(usuari.getUid())) {
+            if (temp.getUsuari().getUid().equals(usuari.getUid())) {
 
                 Date data = null;
                 try {
@@ -462,7 +462,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
     }
 
-    private void mostrarInformacioPersonalitzada(Usuario usuari, int horesTreballades, int horesMensuals, List<Horario> registres) {
+    private void mostrarInformacioPersonalitzada(Usuari usuari, int horesTreballades, int horesMensuals, List<Horari> registres) {
 
         SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATA);
         int residu;
@@ -520,13 +520,13 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
     }
 
-    private void mostrarRegistres(List<Horario> registres) {
+    private void mostrarRegistres(List<Horari> registres) {
 
         List<ListElementReportHores> listRegistres = new ArrayList<>();
 
-        for (Horario horario : registres) {
+        for (Horari Horari : registres) {
 
-            listRegistres.add(new ListElementReportHores(horario));
+            listRegistres.add(new ListElementReportHores(Horari));
 
         }
 
@@ -686,7 +686,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         }
     }
 
-    private void obtenerUsuarios(Task<QuerySnapshot> querySnapshotTask) {
+    private void obtenerUsuaris(Task<QuerySnapshot> querySnapshotTask) {
 
         noms.add("Tots");
 
@@ -694,11 +694,11 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
             for (DocumentSnapshot document : querySnapshotTask.getResult().getDocuments()) {
 
-                Usuario temp = document.toObject(Usuario.class);
+                Usuari temp = document.toObject(Usuari.class);
 
                 if (temp.getRol().equals("treballador")) {
-                    listaUsuarios.add(temp);
-                    usuarios.put(temp.getNom(), temp);
+                    listaUsuaris.add(temp);
+                    Usuaris.put(temp.getNom(), temp);
                     noms.add(temp.getNom());
                 }
 
@@ -725,7 +725,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
             fileWriter.append(CAPCELERA_CSV);
 
-            for (Usuario usuari : listaUsuarios) {
+            for (Usuari usuari : listaUsuaris) {
 
                 if (usuari.getRol().equals("treballador")) {
 
@@ -775,7 +775,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
             fileWriter.append(CAPCELERA_CSV);
 
-            Usuario usuari = usuarios.get(binding.spnTreballador.getSelectedItem());
+            Usuari usuari = Usuaris.get(binding.spnTreballador.getSelectedItem());
 
             for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult().getDocuments()) {
 
@@ -803,21 +803,21 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         }
     }
 
-    private void escriuLineaCSV(DocumentSnapshot documentSnapshot, FileWriter fileWriter, Usuario usuari) throws IOException {
+    private void escriuLineaCSV(DocumentSnapshot documentSnapshot, FileWriter fileWriter, Usuari usuari) throws IOException {
 
-        Horario horario = documentSnapshot.toObject(Horario.class);
+        Horari Horari = documentSnapshot.toObject(Horari.class);
 
-        if (horario.getUsuario().getUid().equals(usuari.getUid()) && horario.getMesEntrada() == (getCurrTimeGMT.zdt.getMonthValue())) {
+        if (Horari.getUsuari().getUid().equals(usuari.getUid()) && Horari.getMesEntrada() == (getCurrTimeGMT.zdt.getMonthValue())) {
 
             fileWriter.append(usuari.getNom());
             fileWriter.append(",");
-            fileWriter.append(horario.getDiaEntrada() + "/" + horario.getMesEntrada() + "/" + horario.getAnioEntrada());
+            fileWriter.append(Horari.getDiaEntrada() + "/" + Horari.getMesEntrada() + "/" + Horari.getAnioEntrada());
             fileWriter.append(",");
-            fileWriter.append(horario.getHoraEntrada() + ":" + String.format("%02d", horario.getMinutEntrada()));
+            fileWriter.append(Horari.getHoraEntrada() + ":" + String.format("%02d", Horari.getMinutEntrada()));
             fileWriter.append(",");
-            fileWriter.append(horario.getHoraSalida() + ":" + String.format("%02d", horario.getMinutSalida()));
+            fileWriter.append(Horari.getHoraSalida() + ":" + String.format("%02d", Horari.getMinutSalida()));
             fileWriter.append(",");
-            fileWriter.append(horario.getTotalMinutsTreballats()/60 + ":" + horario.getTotalMinutsTreballats()%60);
+            fileWriter.append(Horari.getTotalMinutsTreballats()/60 + ":" + Horari.getTotalMinutsTreballats()%60);
             fileWriter.append("\n");
         }
 

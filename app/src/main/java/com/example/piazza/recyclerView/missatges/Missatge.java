@@ -1,6 +1,6 @@
 package com.example.piazza.recyclerView.missatges;
 
-import com.example.piazza.classes.Usuario;
+import com.example.piazza.classes.Usuari;
 import com.example.piazza.commons.*;
 import com.google.firebase.Timestamp;
 
@@ -13,13 +13,13 @@ import java.util.concurrent.ExecutionException;
 public class Missatge {
 
     int id;
-    Usuario usuari;
+    Usuari usuari;
     String missatge;
     Timestamp hora;
 
     public Missatge () {}
 
-    public Missatge(Usuario usuari, String missatge) {
+    public Missatge(Usuari usuari, String missatge) {
         this.usuari = usuari;
         this.missatge = missatge;
 
@@ -38,11 +38,11 @@ public class Missatge {
 
     }
 
-    public Usuario getUsuari() {
+    public Usuari getUsuari() {
         return usuari;
     }
 
-    public void setUsuari(Usuario usuari) {
+    public void setUsuari(Usuari usuari) {
         this.usuari = usuari;
     }
 

@@ -17,8 +17,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.piazza.classes.Horario;
-import com.example.piazza.classes.Usuario;
+import com.example.piazza.classes.Horari;
+import com.example.piazza.classes.Usuari;
 import com.example.piazza.commons.Notificacio;
 import com.example.piazza.commons.getCurrTimeGMT;
 import com.example.piazza.controladores.auth.SplashScreen;
@@ -117,20 +117,20 @@ public class TreballadorsFragment extends Fragment implements ReadData, WriteDat
 
             System.out.println("ENTRA: " + querySnapshotTask.getResult().size());
 
-            List<Horario> horaris = new ArrayList<>();
-            List<Horario> horarisModificats = new ArrayList<>();
+            List<Horari> horaris = new ArrayList<>();
+            List<Horari> horarisModificats = new ArrayList<>();
 
             for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
 
-                Horario horario = documentSnapshot.toObject(Horario.class);
+                Horari Horari = documentSnapshot.toObject(Horari.class);
 
-                if (horario.getUsuario().getEmpresa().equals(userAuth.getEmpresa()) && !horario.isEstatJornada()) {
+                if (Horari.getUsuari().getEmpresa().equals(userAuth.getEmpresa()) && !Horari.isEstatJornada()) {
                     System.out.println(documentSnapshot.getId());
-                    if (!horario.isEstatJornada()) {
-                        horario.setEstatJornada(true);
-                        horario.getUsuario().setTreballant(false);
-                        writeOneDocument(DDBB.collection("usuaris").document(horario.getUsuario().getUid()), horario.getUsuario());
-                        writeOneDocument(documentSnapshot.getReference(), horario);
+                    if (!Horari.isEstatJornada()) {
+                        Horari.setEstatJornada(true);
+                        Horari.getUsuari().setTreballant(false);
+                        writeOneDocument(DDBB.collection("usuaris").document(Horari.getUsuari().getUid()), Horari.getUsuari());
+                        writeOneDocument(documentSnapshot.getReference(), Horari);
                     }
                 }
 
@@ -143,20 +143,20 @@ public class TreballadorsFragment extends Fragment implements ReadData, WriteDat
     private void mostrarValidacions(Task<QuerySnapshot> querySnapshotTask) {
 
         for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult().getDocuments()) {
-            Horario horario = documentSnapshot.toObject(Horario.class);
-            if (horario.getUsuario().getEmpresa().equals(userAuth.getEmpresa()) && horario.getModificacio() != null) {
+            Horari Horari = documentSnapshot.toObject(Horari.class);
+            if (Horari.getUsuari().getEmpresa().equals(userAuth.getEmpresa()) && Horari.getModificacio() != null) {
                 String HORES_MINUTS_NEUTRE = "%01dh:%02dm";
 
                 String titol;
-                String contingut = "Data: " + horario.getModificacio().getDiaEntrada() + "/" + horario.getModificacio().getMesEntrada() + " a " + horario.getModificacio().getDiaSalida() + "/" + horario.getModificacio().getMesSalida()
-                        + "\n\nHora entrada: " + String.format(HORES_MINUTS_NEUTRE, horario.getModificacio().getHoraEntrada(), horario.getModificacio().getMinutEntrada())
-                        + "\n\nHora sortida: " + String.format(HORES_MINUTS_NEUTRE, horario.getModificacio().getHoraSalida(), horario.getModificacio().getMinutSalida())
-                        + "\n\nTotal treballat: " + String.format(HORES_MINUTS_NEUTRE, horario.getModificacio().getTotalMinutsTreballats() / 60, horario.getModificacio().getTotalMinutsTreballats() % 60);
+                String contingut = "Data: " + Horari.getModificacio().getDiaEntrada() + "/" + Horari.getModificacio().getMesEntrada() + " a " + Horari.getModificacio().getDiaSalida() + "/" + Horari.getModificacio().getMesSalida()
+                        + "\n\nHora entrada: " + String.format(HORES_MINUTS_NEUTRE, Horari.getModificacio().getHoraEntrada(), Horari.getModificacio().getMinutEntrada())
+                        + "\n\nHora sortida: " + String.format(HORES_MINUTS_NEUTRE, Horari.getModificacio().getHoraSalida(), Horari.getModificacio().getMinutSalida())
+                        + "\n\nTotal treballat: " + String.format(HORES_MINUTS_NEUTRE, Horari.getModificacio().getTotalMinutsTreballats() / 60, Horari.getModificacio().getTotalMinutsTreballats() % 60);
 
                 if (documentSnapshot.getId().contains("afegit")) {
-                    titol = "L'empleat: " + horario.getUsuario().getNom() + " vol afegir el següent registre...";
+                    titol = "L'empleat: " + Horari.getUsuari().getNom() + " vol afegir el següent registre...";
                 } else {
-                    titol = "L'empleat: " + horario.getUsuario().getNom() + " vol modificar el següent registre...";
+                    titol = "L'empleat: " + Horari.getUsuari().getNom() + " vol modificar el següent registre...";
 
                 }
 
@@ -167,7 +167,7 @@ public class TreballadorsFragment extends Fragment implements ReadData, WriteDat
                         .setCancelText("Denegar")
                         .setConfirmClickListener(sweetAlertDialog -> {
 
-                            Horario temp = horario.getModificacio();
+                            Horari temp = Horari.getModificacio();
 
                             writeOneDocument(DDBB.collection("horari").document(documentSnapshot.getId()), temp);
 
@@ -194,7 +194,7 @@ public class TreballadorsFragment extends Fragment implements ReadData, WriteDat
 
             for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult().getDocuments()) {
 
-                Usuario temp = documentSnapshot.toObject(Usuario.class);
+                Usuari temp = documentSnapshot.toObject(Usuari.class);
 
                 if (temp.getRol().equals("treballador"))
                     getListenerDocument(getActivity(), documentSnapshot.getReference(), this::notificarCanvi);
@@ -210,7 +210,7 @@ public class TreballadorsFragment extends Fragment implements ReadData, WriteDat
     private void notificarCanvi(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
 
         if (documentSnapshot.exists()) {
-            Usuario treballador = documentSnapshot.toObject(Usuario.class);
+            Usuari treballador = documentSnapshot.toObject(Usuari.class);
             Random rand = new Random();
             if (!firstLoad) {
                 if (treballador.getTreballant() && getContext() != null)
@@ -232,7 +232,7 @@ public class TreballadorsFragment extends Fragment implements ReadData, WriteDat
         if (querySnapshotTask.isSuccessful()) {
 
             for (QueryDocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
-                Usuario usuari = documentSnapshot.toObject(Usuario.class);
+                Usuari usuari = documentSnapshot.toObject(Usuari.class);
 
                 if (!usuari.getRol().equals("admin") && !usuari.getRol().equals("superadmin"))
 
@@ -258,11 +258,11 @@ public class TreballadorsFragment extends Fragment implements ReadData, WriteDat
 
     }
 
-    private void addListElementTreballadors(Usuario usuario, Boolean treballant) {
+    private void addListElementTreballadors(Usuari Usuari, Boolean treballant) {
 
-        String nom = usuario.getNom().substring(0, 1).toUpperCase() + usuario.getNom().substring(1);
-        String cognom = usuario.getCognom();
-        String uid = usuario.getUid();
+        String nom = Usuari.getNom().substring(0, 1).toUpperCase() + Usuari.getNom().substring(1);
+        String cognom = Usuari.getCognom();
+        String uid = Usuari.getUid();
         listElements.add(new ListElementTreballadors(
                 nom ,
                 cognom,

@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.piazza.classes.Usuario;
+import com.example.piazza.classes.Usuari;
 import com.example.piazza.controladores.auth.AuthActivity;
 import com.example.piazza.controladores.auth.SplashScreen;
 import com.example.piazza.fireBase.session.AuthUserSession;
@@ -118,7 +118,7 @@ public class AdminActivity extends AppCompatActivity implements AuthUserSession 
 
         finish();
 
-        guardarDatosGlobalesJugador(new Usuario());
+        guardarDatosGlobalesJugador(new Usuari());
 
     }
 

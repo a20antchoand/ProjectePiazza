@@ -71,10 +71,10 @@ public class ListAdapterHistorialHores extends RecyclerView.Adapter<ListAdapterH
 
         void bindData (final ListElementHistorialHores item) {
 
-            String dataStr = String.format("%4d/%02d/%02d",item.getHorario().getAnioEntrada(), item.getHorario().getMesEntrada(), item.getHorario().getDiaEntrada());
-            String entradaStr = String.format("%d:%02d",item.getHorario().getHoraEntrada(),item.getHorario().getMinutEntrada()) ;
-            String sortidaStr = String.format("%d:%02d",item.getHorario().getHoraSalida(), item.getHorario().getMinutSalida());
-            String totalFinalStr = String.format("%dh %02dm",item.getHorario().getTotalMinutsTreballats()/60, item.getHorario().getTotalMinutsTreballats()%60);
+            String dataStr = String.format("%4d/%02d/%02d",item.getHorari().getAnioEntrada(), item.getHorari().getMesEntrada(), item.getHorari().getDiaEntrada());
+            String entradaStr = String.format("%d:%02d",item.getHorari().getHoraEntrada(),item.getHorari().getMinutEntrada()) ;
+            String sortidaStr = String.format("%d:%02d",item.getHorari().getHoraSalida(), item.getHorari().getMinutSalida());
+            String totalFinalStr = String.format("%dh %02dm",item.getHorari().getTotalMinutsTreballats()/60, item.getHorari().getTotalMinutsTreballats()%60);
 
             total.setText(totalFinalStr);
             data.setText(dataStr);

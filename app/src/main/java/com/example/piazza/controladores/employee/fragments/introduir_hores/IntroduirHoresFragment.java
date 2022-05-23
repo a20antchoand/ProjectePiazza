@@ -51,7 +51,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.piazza.classes.Horario;
+import com.example.piazza.classes.Horari;
 import com.example.piazza.commons.*;
 import com.example.piazza.controladores.auth.SplashScreen;
 import com.example.piazza.controladores.employee.EmployeeActivity;
@@ -109,7 +109,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     private Button acabarJornadaBtn;
     private LinearLayout butons;
     private DocumentSnapshot document;
-    private Horario horarioUsuario;
+    private Horari HorariUsuari;
     private DocumentReference docRefHorari;
     private Context context;
     private Query query = DDBB.collection("horari")
@@ -181,7 +181,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         iniciarJornadaBtn = binding.iniciarJornada;
         acabarJornadaBtn =binding.acabarJornada;
         butons = binding.butonsLayout;
-        horarioUsuario = new Horario();
+        HorariUsuari = new Horari();
 
         //indiquem la funció del boto iniciarJornada
         binding.iniciarJornada.setOnClickListener(l -> iniciarJornada());
@@ -216,11 +216,11 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                     break; case MotionEvent.ACTION_UP:
                     if (binding.imageView6.getX() + (binding.imageView6.getWidth() / 2) < binding.textLL.getWidth() / 2) {
                         iniciarJornadaSwipe();
-                        if (horarioUsuario.getDiaEntrada() != -1) {
+                        if (HorariUsuari.getDiaEntrada() != -1) {
                             acabarJornada();
                         }
                     } else {
-                        if (horarioUsuario.getDiaEntrada() == -1) {
+                        if (HorariUsuari.getDiaEntrada() == -1) {
 
                             if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getActivity()),
                                     Manifest.permission.ACCESS_FINE_LOCATION)
@@ -351,10 +351,10 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     }
 
     private void introduirRegistre() {
-        Horario horari = new Horario();
+        Horari horari = new Horari();
         horari.setEstatJornada(true);
-        horari.setUsuario(userAuth);
-        Horario modificacio = new Horario();
+        horari.setUsuari(userAuth);
+        Horari modificacio = new Horari();
         new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
                 .setTitleText("Estas segur que vols afegir un registre?")
                 .setContentText("L'administrador decidira si el mante o no!")
@@ -376,7 +376,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                                 long diffMinuts = diff.toMinutes();
                                 //afegim al horari el total de minuts treballats
                                 modificacio.setTotalMinutsTreballats(diffMinuts);
-                                modificacio.setUsuario(userAuth);
+                                modificacio.setUsuari(userAuth);
                                 modificacio.setEstatJornada(true);
                                 horari.setModificacio(modificacio);
                                 String docRef = getCurrTimeGMT.zdt.getYear() + "_" + getCurrTimeGMT.zdt.getMonthValue() + "_" + getCurrTimeGMT.zdt.getDayOfMonth() +  "_" + userAuth.getUid() + "_afegit_" + Calendar.getInstance().getTimeInMillis();
@@ -471,10 +471,10 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             writeOneDocument(DDBB.collection("usuaris").document(userAuth.getUid()), userAuth);
 
             //iniciem l'horari de l'usuari
-            horarioUsuario = new Horario();
+            HorariUsuari = new Horari();
 
             //indiquem l'usuari a l'horari
-            horarioUsuario.setUsuario(userAuth);
+            HorariUsuari.setUsuari(userAuth);
 
             //augmentem el numero de document en +1
             numeroDocument = numeroDocument + 1;
@@ -516,10 +516,10 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     private void actualitzarHorari(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
 
         if (documentSnapshot.exists()) {
-            Horario horario = documentSnapshot.toObject(Horario.class);
+            Horari Horari = documentSnapshot.toObject(Horari.class);
 
-            if (horario.isEstatJornada()) {
-                horarioUsuario.setEstatJornada(true);
+            if (Horari.isEstatJornada()) {
+                HorariUsuari.setEstatJornada(true);
                 iniciarJornadaSwipe();
                 stopRepeatingTask();
                 setup();
@@ -534,7 +534,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         writeOneDocument(DDBB.collection("usuaris").document(userAuth.getUid()), userAuth);
 
         //indiquem que la jornada esta acabada
-        horarioUsuario.setEstatJornada(true);
+        HorariUsuari.setEstatJornada(true);
 
         //cambiem els botons ocultant el d'acabar i mostrant el d'iniciar
         changeStateButtons.hideButton(acabarJornadaBtn);
@@ -549,10 +549,10 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
         new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
                 .setTitleText("Jornada guardada!")
-                .setContentText("La jornada ha durat: " + horarioUsuario.getTotalMinutsTreballats() / 60 + "h " + horarioUsuario.getTotalMinutsTreballats() % 60 + "m.")
+                .setContentText("La jornada ha durat: " + HorariUsuari.getTotalMinutsTreballats() / 60 + "h " + HorariUsuari.getTotalMinutsTreballats() % 60 + "m.")
                 .show();
 
-        horarioUsuario = new Horario();
+        HorariUsuari = new Horari();
     }
 
 
@@ -562,7 +562,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         writeOneDocument(DDBB.collection("usuaris").document(userAuth.getUid()), userAuth);
 
         //indiquem que la jornada esta acabada
-        horarioUsuario.setEstatJornada(true);
+        HorariUsuari.setEstatJornada(true);
 
         //cambiem els botons ocultant el d'acabar i mostrant el d'iniciar
         changeStateButtons.hideButton(acabarJornadaBtn);
@@ -570,17 +570,17 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         iniciarJornadaSwipe();
 
         //agafem la dada actual i guardem la informacio
-        calcularHores(horarioUsuario);
+        calcularHores(HorariUsuari);
 
         //parem el handler
         stopRepeatingTask();
 
         new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
                 .setTitleText("S'ha parat la jornada automaticament!")
-                .setContentText("Hem detectat la possibilitat de que no hagis marcat al sortir, si es un error pots modificar el registre: " + horarioUsuario.getTotalMinutsTreballats() / 60 + "h " + horarioUsuario.getTotalMinutsTreballats() % 60 + "m.")
+                .setContentText("Hem detectat la possibilitat de que no hagis marcat al sortir, si es un error pots modificar el registre: " + HorariUsuari.getTotalMinutsTreballats() / 60 + "h " + HorariUsuari.getTotalMinutsTreballats() % 60 + "m.")
                 .show();
 
-        horarioUsuario = new Horario();
+        HorariUsuari = new Horari();
 
     }
 
@@ -611,9 +611,9 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     }
     private void GuardarRegistroBBDD() {
         //tornem a guardar l'usuari
-        horarioUsuario.setUsuario(userAuth);
+        HorariUsuari.setUsuari(userAuth);
         //escribim el document a firestore
-        writeOneDocument(docRefHorari, horarioUsuario);
+        writeOneDocument(docRefHorari, HorariUsuari);
         //tornem a calcular el total de minuts treballats per rectificar les  dades.
         getMultipldeDocuments(queryJornada, this::totalMinutsDiaris);
     }
@@ -624,11 +624,11 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             //recorrrem els horaris
             for (DocumentSnapshot horariDocument : horarisDocuments.getResult().getDocuments()) {
                 //creem l'objecte Horari del regsistre recuperat
-                Horario horarioTemp = horariDocument.toObject(Horario.class);
+                Horari HorariTemp = horariDocument.toObject(Horari.class);
                 //Si el document pertany a l'usauri
                 if (horariDocument.getId().contains(userAuth.getUid()) && !horariDocument.getId().contains("afegit"))
                     //si dai d'entrada es igual al dia actual
-                    if (horarioTemp.getDiaEntrada() == getCurrTimeGMT.zdt.getDayOfMonth()) {
+                    if (HorariTemp.getDiaEntrada() == getCurrTimeGMT.zdt.getDayOfMonth()) {
                         //augmentem el numero de document
                         numeroDocument++;
                     }
@@ -637,9 +637,9 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     }
     private void comprovarEntradaSortida() {
         //Creem l'objecte Horari del document recuperat
-        horarioUsuario = document.toObject(Horario.class);
+        HorariUsuari = document.toObject(Horari.class);
         //si l'horari te hora d'entrada i la jornada esta acabada
-        if (!horarioUsuario.isEstatJornada()) {
+        if (!HorariUsuari.isEstatJornada()) {
             //cambiem els butons
             changeStateButtons.hideButton(iniciarJornadaBtn);
             changeStateButtons.showButton(acabarJornadaBtn);
@@ -660,36 +660,36 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         }
         //si estem registrant l'entrada guardem les dades
         if (entrada) {
-            horarioUsuario.setAnioEntrada(getCurrTimeGMT.zdt.getYear());
-            horarioUsuario.setMesEntrada(getCurrTimeGMT.zdt.getMonthValue());
-            horarioUsuario.setDiaEntrada(getCurrTimeGMT.zdt.getDayOfMonth());
-            horarioUsuario.setHoraEntrada(getCurrTimeGMT.zdt.getHour());
-            horarioUsuario.setMinutEntrada(getCurrTimeGMT.zdt.getMinute());
-            horarioUsuario.setDiaAny(getCurrTimeGMT.zdt.getDayOfYear());//si no, guadrem les dades i calculem les hores totals
+            HorariUsuari.setAnioEntrada(getCurrTimeGMT.zdt.getYear());
+            HorariUsuari.setMesEntrada(getCurrTimeGMT.zdt.getMonthValue());
+            HorariUsuari.setDiaEntrada(getCurrTimeGMT.zdt.getDayOfMonth());
+            HorariUsuari.setHoraEntrada(getCurrTimeGMT.zdt.getHour());
+            HorariUsuari.setMinutEntrada(getCurrTimeGMT.zdt.getMinute());
+            HorariUsuari.setDiaAny(getCurrTimeGMT.zdt.getDayOfYear());//si no, guadrem les dades i calculem les hores totals
         } else {
-            horarioUsuario.setAnioSalida(getCurrTimeGMT.zdt.getYear());
-            horarioUsuario.setMesSalida(getCurrTimeGMT.zdt.getMonthValue());
-            horarioUsuario.setDiaSalida(getCurrTimeGMT.zdt.getDayOfMonth());
-            horarioUsuario.setHoraSalida(getCurrTimeGMT.zdt.getHour());
-            horarioUsuario.setMinutSalida(getCurrTimeGMT.zdt.getMinute());
+            HorariUsuari.setAnioSalida(getCurrTimeGMT.zdt.getYear());
+            HorariUsuari.setMesSalida(getCurrTimeGMT.zdt.getMonthValue());
+            HorariUsuari.setDiaSalida(getCurrTimeGMT.zdt.getDayOfMonth());
+            HorariUsuari.setHoraSalida(getCurrTimeGMT.zdt.getHour());
+            HorariUsuari.setMinutSalida(getCurrTimeGMT.zdt.getMinute());
             //calculem les hores
-            calcularHores(horarioUsuario);
+            calcularHores(HorariUsuari);
         }
     }
 
-    private Horario calcularHores(Horario horario) {
+    private Horari calcularHores(Horari Horari) {
         //agafem la data d'entrada i la de sortida
-        LocalDateTime entrada = formatarDateTime(horario.getAnioEntrada(), horario.getMesEntrada(), horario.getDiaEntrada(), horario.getHoraEntrada(), horario.getMinutEntrada());
-        LocalDateTime sortida = formatarDateTime(horario.getAnioSalida(), horario.getMesSalida(), horario.getDiaSalida(), horario.getHoraSalida(), horario.getMinutSalida());
+        LocalDateTime entrada = formatarDateTime(Horari.getAnioEntrada(), Horari.getMesEntrada(), Horari.getDiaEntrada(), Horari.getHoraEntrada(), Horari.getMinutEntrada());
+        LocalDateTime sortida = formatarDateTime(Horari.getAnioSalida(), Horari.getMesSalida(), Horari.getDiaSalida(), Horari.getHoraSalida(), Horari.getMinutSalida());
         //calculem la diferencia entre entrada i sortida
         Duration diff = Duration.between(entrada, sortida);
         //ho passem a minuts
         long diffMinuts = diff.toMinutes();
         //afegim al horari el total de minuts treballats
-        horario.setTotalMinutsTreballats(diffMinuts);
+        Horari.setTotalMinutsTreballats(diffMinuts);
         //guardem registre a la BBDD
         GuardarRegistroBBDD();
-        return horario;
+        return Horari;
     }
     public void totalMinutsDiaris(Task<QuerySnapshot> horarisDocuments) {
         //si el resultat es successful
@@ -700,11 +700,11 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                 //si el document pertany a l'usuri
                 if (historialDocument.getId().contains(userAuth.getUid())) {
                     //Creem l'objecte Horari del registre que hem recuperat
-                    Horario horario = historialDocument.toObject(Horario.class);
+                    Horari Horari = historialDocument.toObject(Horari.class);
                     //si el dia de entrada recuperat es el mateix que el dia actual
-                    if (horario.getDiaEntrada() >= getCurrTimeGMT.zdt.getDayOfMonth()) {
+                    if (Horari.getDiaEntrada() >= getCurrTimeGMT.zdt.getDayOfMonth()) {
                         //calculem el total de temps treballat
-                        totalTempsTreballat += horario.getTotalMinutsTreballats();
+                        totalTempsTreballat += Horari.getTotalMinutsTreballats();
                     }
                 }
             }
@@ -825,19 +825,19 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         try {
 
             System.out.println("HANDLER");
-            horarioUsuario.setNomUbicacio(nomUbicacio);
+            HorariUsuari.setNomUbicacio(nomUbicacio);
 
             getFechaActual(false);
 
-            if (horarioUsuario.getTotalMinutsTreballats() == ((Integer.parseInt(userAuth.getHoresMensuals()) / 4) / Integer.parseInt(userAuth.getDiesSetmana())) * 60L) {
-                Notificacio.Notificar(context, "Portes " + horarioUsuario.getTotalMinutsTreballats() / 60 + ":" + horarioUsuario.getTotalMinutsTreballats() % 60 + " hores treballant", "Recorda marcar la sortida", 2);
+            if (HorariUsuari.getTotalMinutsTreballats() == ((Integer.parseInt(userAuth.getHoresMensuals()) / 4) / Integer.parseInt(userAuth.getDiesSetmana())) * 60L) {
+                Notificacio.Notificar(context, "Portes " + HorariUsuari.getTotalMinutsTreballats() / 60 + ":" + HorariUsuari.getTotalMinutsTreballats() % 60 + " hores treballant", "Recorda marcar la sortida", 2);
             }
 
-            if (horarioUsuario != null && !horarioUsuario.isEstatJornada() && horarioUsuario.getTotalMinutsTreballats() > (((Integer.parseInt(userAuth.getHoresMensuals()) / 4) / Integer.parseInt(userAuth.getDiesSetmana())) * 60L) * 1.5){
+            if (HorariUsuari != null && !HorariUsuari.isEstatJornada() && HorariUsuari.getTotalMinutsTreballats() > (((Integer.parseInt(userAuth.getHoresMensuals()) / 4) / Integer.parseInt(userAuth.getDiesSetmana())) * 60L) * 1.5){
 
-                LocalDate date = LocalDate.of(horarioUsuario.getAnioEntrada(), horarioUsuario.getMesEntrada(), horarioUsuario.getDiaEntrada());
+                LocalDate date = LocalDate.of(HorariUsuari.getAnioEntrada(), HorariUsuari.getMesEntrada(), HorariUsuari.getDiaEntrada());
 
-                LocalTime time = LocalTime.of(horarioUsuario.getHoraEntrada(), horarioUsuario.getMinutEntrada());
+                LocalTime time = LocalTime.of(HorariUsuari.getHoraEntrada(), HorariUsuari.getMinutEntrada());
                 ZoneId zoneId = ZoneId.of("Europe/Madrid");
 
                 ZonedDateTime zonedDateTime = ZonedDateTime.of(date, time, zoneId);
@@ -846,11 +846,11 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
                 zonedDateTime = zonedDateTime.plusMinutes(((Integer.parseInt(userAuth.getHoresMensuals()) / 4) / Integer.parseInt(userAuth.getDiesSetmana())) * 60L);
 
-                horarioUsuario.setDiaSalida(zonedDateTime.getDayOfMonth());
-                horarioUsuario.setMesSalida(zonedDateTime.getMonthValue());
-                horarioUsuario.setAnioSalida(zonedDateTime.getYear());
-                horarioUsuario.setHoraSalida(zonedDateTime.getHour());
-                horarioUsuario.setMinutSalida(zonedDateTime.getMinute());
+                HorariUsuari.setDiaSalida(zonedDateTime.getDayOfMonth());
+                HorariUsuari.setMesSalida(zonedDateTime.getMonthValue());
+                HorariUsuari.setAnioSalida(zonedDateTime.getYear());
+                HorariUsuari.setHoraSalida(zonedDateTime.getHour());
+                HorariUsuari.setMinutSalida(zonedDateTime.getMinute());
 
 
                 acabarJornadaAutomatic(binding.imageView6);
