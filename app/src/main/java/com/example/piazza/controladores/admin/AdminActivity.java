@@ -79,11 +79,15 @@ public class AdminActivity extends AppCompatActivity implements AuthUserSession 
             NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_admin);
             NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
             NavigationUI.setupWithNavController(binding.navView, navController);
+
+            binding.yourlogo.setOnClickListener(l -> startActivity(new Intent(AdminActivity.this, AdminActivity.class)));
+
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, "Admin " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             startActivity(new Intent(this, SplashScreen.class));
         }
+
     }
 
     @Override

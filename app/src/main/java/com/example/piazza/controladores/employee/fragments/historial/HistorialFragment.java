@@ -456,7 +456,11 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
         HandlerHistorial.removeCallbacks(mStatusChecker);
     }
 
-
+    @Override
+    public void onPause() {
+        super.onPause();
+        stopRepeatingTask();
+    }
 
     @Override
     public void onDestroyView() {

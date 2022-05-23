@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.example.piazza.classes.Usuario;
 import com.example.piazza.commons.getCurrTimeGMT;
+import com.example.piazza.controladores.admin.AdminActivity;
 import com.example.piazza.controladores.auth.AuthActivity;
 import com.example.piazza.controladores.auth.SplashScreen;
 import com.example.piazza.controladores.employee.fragments.introduir_hores.IntroduirHoresFragment;
@@ -91,6 +92,9 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
                     findViewById(R.id.nav_view).setVisibility(View.VISIBLE); // Lo haces visible
                 }
             });
+
+            binding.yourlogo.setOnClickListener(l -> startActivity(new Intent(EmployeeActivity.this, EmployeeActivity.class)));
+
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, "Employee " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
@@ -125,7 +129,7 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
 
     public void logOut() {
         FirebaseAuth.getInstance().signOut();
-        new Handler(Looper.getMainLooper()).postDelayed( this::guardarDatosGlobalesJugador, 6000);
+        new Handler(Looper.getMainLooper()).postDelayed( this::guardarDatosGlobalesJugador, 7000);
         Intent intent = new Intent(this, AuthActivity.class);
         startActivity(intent);
 
@@ -138,11 +142,6 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
         guardarDatosGlobalesJugador(new Usuario());
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-    }
 
     @Override
     protected void onRestart() {

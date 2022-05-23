@@ -85,6 +85,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -416,6 +417,9 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                         modificacio.setAnioEntrada(year);
                         modificacio.setMesEntrada(month);
                         modificacio.setDiaEntrada(day);
+                        LocalDateTime entrada = formatarDateTime(year, month, day, 0, 0);
+
+                        modificacio.setDiaAny(entrada.getDayOfYear());
                         int hour = getCurrTimeGMT.zdt.getHour();
                         int minute = getCurrTimeGMT.zdt.getMinute();
                         TimePickerDialog mTimePicker;

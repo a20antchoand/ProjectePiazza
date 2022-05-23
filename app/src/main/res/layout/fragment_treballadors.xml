@@ -15,6 +15,7 @@
         android:layout_marginBottom="8dp"
         android:clickable="true"
         android:src="@drawable/ic_baseline_stop_24"
+        android:visibility="gone"
         app:backgroundTint="@color/colorPrimary"
         app:elevation="11dp"
         app:layout_constraintBottom_toBottomOf="parent"

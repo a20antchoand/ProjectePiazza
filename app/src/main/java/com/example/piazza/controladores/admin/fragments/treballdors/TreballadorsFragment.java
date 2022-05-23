@@ -153,7 +153,7 @@ public class TreballadorsFragment extends Fragment implements ReadData, WriteDat
                         + "\n\nHora sortida: " + String.format(HORES_MINUTS_NEUTRE, horario.getModificacio().getHoraSalida(), horario.getModificacio().getMinutSalida())
                         + "\n\nTotal treballat: " + String.format(HORES_MINUTS_NEUTRE, horario.getModificacio().getTotalMinutsTreballats() / 60, horario.getModificacio().getTotalMinutsTreballats() % 60);
 
-                if (documentSnapshot.contains("afegit")) {
+                if (documentSnapshot.getId().contains("afegit")) {
                     titol = "L'empleat: " + horario.getUsuario().getNom() + " vol afegir el següent registre...";
                 } else {
                     titol = "L'empleat: " + horario.getUsuario().getNom() + " vol modificar el següent registre...";
