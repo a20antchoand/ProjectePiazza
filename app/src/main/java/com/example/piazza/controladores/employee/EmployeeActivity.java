@@ -7,12 +7,15 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.PersistableBundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,6 +49,7 @@ import java.time.LocalDateTime;
 import java.util.Calendar;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import io.grpc.android.BuildConfig;
 
 public class EmployeeActivity extends AppCompatActivity implements AuthUserSession {
 
@@ -95,11 +99,44 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
 
             binding.yourlogo.setOnClickListener(l -> startActivity(new Intent(EmployeeActivity.this, EmployeeActivity.class)));
 
+            binding.btnContinuar.setOnClickListener(l -> {
+                if (binding.checkBox.isChecked()) {
+                    binding.constraintWelcome.setVisibility(View.GONE);
+                    binding.checkBox.setTextColor(Color.BLACK);
+                } else {
+                    binding.checkBox.setTextColor(Color.RED);
+                }
+            });
+
+            switch(getFirstTimeRun()) {
+                case 0:
+                    Log.d("appPreferences", "Es la primera vez!");
+                    break;
+                case 1:
+                    Log.d("appPreferences", "ya has iniciado la app alguna vez");
+
+                    break;
+                case 2:
+                    Log.d("appPreferences", "es una versión nueva");
+                    binding.constraintWelcome.setVisibility(View.VISIBLE);
+                    break;
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, "Employee " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             startActivity(new Intent(this, SplashScreen.class));
         }
+    }
+
+    private int getFirstTimeRun() {
+        SharedPreferences sp = getSharedPreferences("Piazza", 0);
+        int result, currentVersionCode = BuildConfig.VERSION_CODE;
+        int lastVersionCode = sp.getInt("FIRSTTIMERUN", -1);
+        if (lastVersionCode == -1) result = 0; else
+            result = (lastVersionCode == currentVersionCode) ? 1 : 2;
+        sp.edit().putInt("FIRSTTIMERUN", currentVersionCode).apply();
+        return result;
     }
 
     public static float dpToPx(Context context, float valueInDp) {
@@ -121,6 +158,11 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
         switch (item.getItemId()) {
             case R.id.logout:
                 logOut();
+                break;
+            case R.id.info:
+                binding.checkBox.setVisibility(View.INVISIBLE);
+                binding.checkBox.setChecked(true);
+                binding.constraintWelcome.setVisibility(View.VISIBLE);
                 break;
         }
 

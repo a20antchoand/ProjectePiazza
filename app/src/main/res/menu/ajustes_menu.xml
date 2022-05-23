@@ -6,4 +6,9 @@
     <item
         android:id="@+id/logout"
         android:title="@string/logout"/>
+
+    <item
+        android:id="@+id/info"
+        android:icon="@drawable/lum_soft_09"
+        android:title="@string/info"/>
 </menu>

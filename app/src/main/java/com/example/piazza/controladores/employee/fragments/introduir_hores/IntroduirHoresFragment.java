@@ -147,28 +147,6 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     @SuppressLint("ClickableViewAccessibility")
     public void setup() {
 
-        switch(getFirstTimeRun()) {
-            case 0:
-                Log.d("appPreferences", "Es la primera vez!");
-                break;
-            case 1:
-                Log.d("appPreferences", "ya has iniciado la app alguna vez");
-
-                break;
-            case 2:
-                Log.d("appPreferences", "es una versión nueva");
-                binding.constraintWelcome.setVisibility(View.VISIBLE);
-                binding.btnContinuar.setOnClickListener(l -> {
-                    if (binding.checkBox.isChecked()) {
-                        binding.constraintWelcome.setVisibility(View.GONE);
-                        binding.checkBox.setTextColor(Color.BLACK);
-                    } else {
-                        binding.checkBox.setTextColor(Color.RED);
-                    }
-                });
-                break;
-        }
-
         new Handler().postDelayed(checkInternet, 5000);
 
         //Actualitzem el numero de document
@@ -452,16 +430,6 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     public void acabarJornadaSwipe() {
         binding.imageView6.setX(binding.textLL.getWidth() - (binding.imageView6.getWidth() + 4));
         binding.imageView6.setImageDrawable(context.getDrawable(R.drawable.ic_round_arrow_back_24));
-    }
-
-    private int getFirstTimeRun() {
-        SharedPreferences sp = getActivity().getSharedPreferences("Piazza", 0);
-        int result, currentVersionCode = BuildConfig.VERSION_CODE;
-        int lastVersionCode = sp.getInt("FIRSTTIMERUN", -1);
-        if (lastVersionCode == -1) result = 0; else
-            result = (lastVersionCode == currentVersionCode) ? 1 : 2;
-        sp.edit().putInt("FIRSTTIMERUN", currentVersionCode).apply();
-        return result;
     }
 
     public void iniciarJornada () {
