@@ -295,6 +295,12 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         binding.textView8.setOnClickListener(l -> ocultarSelectorData(binding.textView8, binding.constraintLayout));
         binding.textView9.setOnClickListener(l -> ocultarSelectorData(binding.textView9, binding.constraintLayout));
         binding.textView10.setOnClickListener(l -> ocultarSelectorData(binding.textView10, binding.constraintLayout));
+
+        binding.frameLayout.setOnClickListener(l -> {
+            if (binding.constraintLayout.getVisibility() == View.VISIBLE) {
+                ocultarSelectorData(null, binding.constraintLayout);
+            }
+        });
     }
 
     private void recopilarHoresTreballadesOpcio(Task<QuerySnapshot> querySnapshotTask) {
@@ -411,8 +417,10 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
     private void recopilarHoresTreballadesPersonalitzat(Task<QuerySnapshot> querySnapshotTask) {
 
         List<Horario> registres = new ArrayList<>();
-
+        SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATA);
         int horesTreballades = 0, horesMensuals;
+
+        binding.tvData2.setText(sdf.format(calendariInici.getTime()) + " - " + sdf.format(calendariFinal.getTime()));
 
         calendariInici.add(Calendar.DATE, -1);
 
@@ -423,8 +431,6 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         horesMensuals = Integer.parseInt(usuari.getHoresMensuals()) * 60;
 
         horesMensuals = horesMensuals / 4;
-
-        int differenceWeek = (int) (max.getTime() - min.getTime());
 
         int dies = (int) ChronoUnit.DAYS.between(min.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), max.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 
@@ -464,7 +470,6 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
     private void mostrarInformacioPersonalitzada(Usuario usuari, int horesTreballades, int horesMensuals, List<Horario> registres) {
 
-        SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATA);
         int residu;
 
         if (horesMensuals > horesTreballades) {
@@ -512,9 +517,6 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         binding.progressBar2.getProgressDrawable().setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN);
 
         binding.percentatgeJornada.setText((horesTreballades * 100) / horesMensuals + "%");
-
-
-        binding.tvData2.setText(sdf.format(calendariInici.getTime()) + " - " + sdf.format(calendariFinal.getTime()));
 
         mostrarRegistres(registres);
 
@@ -595,72 +597,74 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         view.setVisibility(View.GONE);
         view.startAnimation(animate);
 
-        String text = item.getText().toString();
-        if (getActivity().getString(R.string.dia).equals(text)) {
-            documentsRecuperar = 1;
-        } else if (getActivity().getString(R.string.setmana).equals(text)) {
-            documentsRecuperar = 7;
-        } else if (getActivity().getString(R.string.mes).equals(text)) {
-            documentsRecuperar = 30;
-        } else if (getActivity().getString(R.string.any).equals(text)) {
-            documentsRecuperar = 365;
-        } else if (getActivity().getString(R.string.personalitzat).equals(text)) {
+        if (item != null) {
+            String text = item.getText().toString();
+            if (getActivity().getString(R.string.dia).equals(text)) {
+                documentsRecuperar = 1;
+            } else if (getActivity().getString(R.string.setmana).equals(text)) {
+                documentsRecuperar = 7;
+            } else if (getActivity().getString(R.string.mes).equals(text)) {
+                documentsRecuperar = 30;
+            } else if (getActivity().getString(R.string.any).equals(text)) {
+                documentsRecuperar = 365;
+            } else if (getActivity().getString(R.string.personalitzat).equals(text)) {
 
 
-            DatePickerDialog.OnDateSetListener dateListenerSortida =
-                    (datePicker, year, month, dayOfMonth) -> {
+                DatePickerDialog.OnDateSetListener dateListenerSortida =
+                        (datePicker, year, month, dayOfMonth) -> {
 
-                        Calendar now = Calendar.getInstance();
+                            Calendar now = Calendar.getInstance();
 
-                        now.set(year, month, dayOfMonth);
+                            now.set(year, month, dayOfMonth);
 
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(FORMAT_DATA);
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(FORMAT_DATA);
 
-                        binding.tvData2.setText(binding.tvData2.getText() + " - " + simpleDateFormat.format(now.getTime()));
+                            binding.tvData2.setText(binding.tvData2.getText() + " - " + simpleDateFormat.format(now.getTime()));
 
-                        calendariFinal = now;
+                            calendariFinal = now;
 
-                        getMultipldeDocuments(DDBB.collection("horari").orderBy("diaEntrada"), this::recopilarHoresTreballadesPersonalitzat);
+                            getMultipldeDocuments(DDBB.collection("horari").orderBy("diaEntrada"), this::recopilarHoresTreballadesPersonalitzat);
 
-                    };
+                        };
 
-            DatePickerDialog.OnDateSetListener dateListenerEntrada =
-                    (datePicker, year, month, dayOfMonth) -> {
+                DatePickerDialog.OnDateSetListener dateListenerEntrada =
+                        (datePicker, year, month, dayOfMonth) -> {
 
-                        Calendar now = Calendar.getInstance();
+                            Calendar now = Calendar.getInstance();
 
-                        now.set(year, month, dayOfMonth);
+                            now.set(year, month, dayOfMonth);
 
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(FORMAT_DATA);
-
-
-                        binding.tvData2.setText(simpleDateFormat.format(now.getTime()));
-
-                        calendariInici = now;
-
-                        DatePickerDialog datePicker1 = new DatePickerDialog(getContext(),
-                                dateListenerSortida, getCurrTimeGMT.zdt.getYear(), (getCurrTimeGMT.zdt.getMonthValue() - 1), getCurrTimeGMT.zdt.getDayOfMonth());
-                        datePicker1.getDatePicker().setMinDate(0);
-                        datePicker1.show();
-                    };
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(FORMAT_DATA);
 
 
-            DatePickerDialog datePicker1 = new DatePickerDialog(getContext(),
-                    dateListenerEntrada, getCurrTimeGMT.zdt.getYear(), (getCurrTimeGMT.zdt.getMonthValue() - 1), getCurrTimeGMT.zdt.getDayOfMonth());
-            datePicker1.getDatePicker().setMinDate(0);
-            datePicker1.show();
+                            binding.tvData2.setText(simpleDateFormat.format(now.getTime()));
+
+                            calendariInici = now;
+
+                            DatePickerDialog datePicker1 = new DatePickerDialog(getContext(),
+                                    dateListenerSortida, getCurrTimeGMT.zdt.getYear(), (getCurrTimeGMT.zdt.getMonthValue() - 1), getCurrTimeGMT.zdt.getDayOfMonth());
+                            datePicker1.getDatePicker().setMinDate(0);
+                            datePicker1.show();
+                        };
+
+
+                DatePickerDialog datePicker1 = new DatePickerDialog(getContext(),
+                        dateListenerEntrada, getCurrTimeGMT.zdt.getYear(), (getCurrTimeGMT.zdt.getMonthValue() - 1), getCurrTimeGMT.zdt.getDayOfMonth());
+                datePicker1.getDatePicker().setMinDate(0);
+                datePicker1.show();
+
+            }
+
+            if (!getActivity().getString(R.string.personalitzat).equals(text))
+                getMultipldeDocuments(DDBB.collection("horari").orderBy("diaEntrada"), this::recopilarHoresTreballadesOpcio);
 
         }
-
-        if (!getActivity().getString(R.string.personalitzat).equals(text))
-            getMultipldeDocuments(DDBB.collection("horari").orderBy("diaEntrada"), this::recopilarHoresTreballadesOpcio);
 
         binding.textView6.setVisibility(View.GONE);
         binding.textView7.setVisibility(View.GONE);
         binding.textView8.setVisibility(View.GONE);
         binding.textView9.setVisibility(View.GONE);
         binding.textView10.setVisibility(View.GONE);
-
     }
 
     public void pedirPermisos() {

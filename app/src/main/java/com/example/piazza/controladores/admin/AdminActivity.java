@@ -84,7 +84,6 @@ public class AdminActivity extends AppCompatActivity implements AuthUserSession 
 
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(this, "Admin " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             startActivity(new Intent(this, SplashScreen.class));
         }
 

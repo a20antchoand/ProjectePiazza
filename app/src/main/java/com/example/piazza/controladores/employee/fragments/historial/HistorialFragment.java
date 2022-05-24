@@ -381,11 +381,9 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
                     getCurrTimeGMT.zdt = getCurrTimeGMT.getZoneDateTime(s);
                 } catch (ExecutionException e) {
                     e.printStackTrace();
-                    Toast.makeText(getContext(), "Error al coger la fecha", Toast.LENGTH_SHORT).show();
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                    Toast.makeText(getContext(), "Error al coger la fecha", Toast.LENGTH_SHORT).show();
 
                 }
 

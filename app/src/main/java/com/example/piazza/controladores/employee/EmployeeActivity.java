@@ -124,7 +124,6 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
 
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(this, "Employee " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             startActivity(new Intent(this, SplashScreen.class));
         }
     }

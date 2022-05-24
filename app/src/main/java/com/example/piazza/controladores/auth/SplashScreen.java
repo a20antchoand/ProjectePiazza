@@ -74,11 +74,9 @@ public class SplashScreen extends Activity implements ReadData, AuthUserSession 
                     getCurrTimeGMT.zdt = getCurrTimeGMT.getZoneDateTime(s);
                 } catch (ExecutionException e) {
                     e.printStackTrace();
-                    Toast.makeText(this, "Error al coger la fecha", Toast.LENGTH_SHORT).show();
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                    Toast.makeText(this, "Error al coger la fecha", Toast.LENGTH_SHORT).show();
 
                 }
                 //emmagatzema el resultat passant la cadena que hem recuperat a ZonedDateTime

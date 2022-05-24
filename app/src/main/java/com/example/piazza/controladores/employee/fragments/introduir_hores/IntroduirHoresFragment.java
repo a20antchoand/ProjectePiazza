@@ -477,7 +477,6 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                     .setContentText("S'ha iniciat la jornada correctament!")
                     .show();
         } catch (Exception e) {
-            Toast.makeText(context, "INICIAR JORNADA: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -690,10 +689,8 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                     getCurrTimeGMT.zdt = getCurrTimeGMT.getZoneDateTime(s);
                 } catch (ExecutionException e) {
                     e.printStackTrace();
-                    Toast.makeText(context, "Error al coger la fecha", Toast.LENGTH_SHORT).show();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                    Toast.makeText(context, "Error al coger la fecha", Toast.LENGTH_SHORT).show();
                 }
             });
             //emmagatzema el resultat passant la cadena que hem recuperat a ZonedDateTime
@@ -755,7 +752,6 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                 updateStatus(); //this function can change value of mInterval.
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(context, "RUN: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             }
         }
     };
