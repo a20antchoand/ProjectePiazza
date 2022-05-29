@@ -200,6 +200,8 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
                         horario.setModificacio(modificacio);
 
                         writeOneDocument(DDBB.collection("modificacions").document(listElementHistorialHores.getId()),horario);
+                        writeOneDocument(DDBB.collection("horari").document(listElementHistorialHores.getId()),horario);
+
                         new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
                                 .setTitleText("S'ha enviat la modificació a validar!")
                                 .show();

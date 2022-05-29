@@ -7,8 +7,6 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.example.piazza.classes.Horario;
 import com.example.piazza.classes.Usuario;

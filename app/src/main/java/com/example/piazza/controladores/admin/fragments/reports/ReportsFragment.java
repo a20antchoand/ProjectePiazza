@@ -211,7 +211,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
                     Horario temp = documentSnapshot.toObject(Horario.class);
 
-                    if (temp.getUsuario() != null) {
+                    if (temp != null && temp.getUsuario() != null) {
                         if (temp.getUsuario().getUid().equals(usuari.getUid())
                                 && temp.getMesEntrada() == getCurrTimeGMT.zdt.getMonthValue()
                                 && temp.getAnioEntrada() == getCurrTimeGMT.zdt.getYear()) {
@@ -738,6 +738,8 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
                         escriuLineaCSV(documentSnapshot, fileWriter, usuari);
 
                     }
+
+
 
                 }
 

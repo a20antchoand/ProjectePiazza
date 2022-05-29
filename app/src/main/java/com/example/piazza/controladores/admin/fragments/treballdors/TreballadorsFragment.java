@@ -1,7 +1,5 @@
 package com.example.piazza.controladores.admin.fragments.treballdors;
 
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,33 +13,27 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.piazza.classes.Horario;
 import com.example.piazza.classes.Usuario;
 import com.example.piazza.commons.Notificacio;
-import com.example.piazza.commons.getCurrTimeGMT;
 import com.example.piazza.controladores.auth.SplashScreen;
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.data.WriteData;
 import com.example.piazza.fireBase.session.AuthUserSession;
 import com.example.piazza.recyclerView.treballadors.ListAdapterTreballadors;
 import com.example.piazza.recyclerView.treballadors.ListElementTreballadors;
-import com.example.testauth.R;
 import com.example.testauth.databinding.FragmentTreballadorsBinding;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -84,8 +76,11 @@ public class TreballadorsFragment extends Fragment implements ReadData, WriteDat
             firstLoad = false;
         }, 5000);
 
-        binding.floatingActionButton.bringToFront();
-        binding.floatingActionButton.setOnClickListener(l -> {
+        getMultipldeDocuments(DDBB.collection("modificacions"), this::checkValidacions);
+
+        binding.button2.setStateListAnimator(null);
+
+        binding.button2.setOnClickListener(l -> {
             getMultipldeDocuments(DDBB.collection("modificacions"), this::mostrarValidacions);
         });
 
@@ -140,50 +135,92 @@ public class TreballadorsFragment extends Fragment implements ReadData, WriteDat
 
     }
 
-    private void mostrarValidacions(Task<QuerySnapshot> querySnapshotTask) {
+    private void checkValidacions(Task<QuerySnapshot> querySnapshotTask) {
 
-        for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult().getDocuments()) {
-            Horario horario = documentSnapshot.toObject(Horario.class);
-            if (horario.getUsuario().getEmpresa().equals(userAuth.getEmpresa()) && horario.getModificacio() != null) {
-                String HORES_MINUTS_NEUTRE = "%01dh:%02dm";
+        int size = 0;
 
-                String titol;
-                String contingut = "Data: " + horario.getModificacio().getDiaEntrada() + "/" + horario.getModificacio().getMesEntrada() + " a " + horario.getModificacio().getDiaSalida() + "/" + horario.getModificacio().getMesSalida()
-                        + "\n\nHora entrada: " + String.format(HORES_MINUTS_NEUTRE, horario.getModificacio().getHoraEntrada(), horario.getModificacio().getMinutEntrada())
-                        + "\n\nHora sortida: " + String.format(HORES_MINUTS_NEUTRE, horario.getModificacio().getHoraSalida(), horario.getModificacio().getMinutSalida())
-                        + "\n\nTotal treballat: " + String.format(HORES_MINUTS_NEUTRE, horario.getModificacio().getTotalMinutsTreballats() / 60, horario.getModificacio().getTotalMinutsTreballats() % 60);
+        for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
 
-                if (documentSnapshot.getId().contains("afegit")) {
-                    titol = "L'empleat: " + horario.getUsuario().getNom() + " vol afegir el següent registre...";
-                } else {
-                    titol = "L'empleat: " + horario.getUsuario().getNom() + " vol modificar el següent registre...";
+            Horario temp = documentSnapshot.toObject(Horario.class);
 
-                }
+            if (temp.getUsuario().getEmpresa().equals(userAuth.getEmpresa()))
+                size++;
 
-                new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText(titol)
-                        .setContentText(contingut)
-                        .setConfirmText("Validar")
-                        .setCancelText("Denegar")
-                        .setConfirmClickListener(sweetAlertDialog -> {
-
-                            Horario temp = horario.getModificacio();
-
-                            writeOneDocument(DDBB.collection("horari").document(documentSnapshot.getId()), temp);
-
-                            DDBB.collection("modificacions").document(documentSnapshot.getId()).delete();
-
-                            sweetAlertDialog.dismissWithAnimation();
-                        })
-                        .setCancelClickListener(sweetAlertDialog -> {
-
-                            DDBB.collection("modificacions").document(documentSnapshot.getId()).delete();
-
-                            sweetAlertDialog.dismissWithAnimation();
-                        }).show();
-            }
         }
 
+        if (!querySnapshotTask.getResult().isEmpty()) {
+            binding.button2.setVisibility(View.VISIBLE);
+            binding.button2.setText(""+size);
+        } else {
+            binding.button2.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void checkValidacions(int size) {
+        if (size > 0) {
+            binding.button2.setVisibility(View.VISIBLE);
+            binding.button2.setText(size + "");
+        } else {
+            binding.button2.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void mostrarValidacions(Task<QuerySnapshot> querySnapshotTask) {
+
+        AtomicInteger validacions = new AtomicInteger(querySnapshotTask.getResult().size());
+
+        if (!querySnapshotTask.getResult().isEmpty()) {
+
+            checkValidacions(querySnapshotTask);
+
+            for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult().getDocuments()) {
+                Horario horario = documentSnapshot.toObject(Horario.class);
+                if (horario.getUsuario().getEmpresa().equals(userAuth.getEmpresa()) && horario.getModificacio() != null) {
+                    String HORES_MINUTS_NEUTRE = "%01dh:%02dm";
+
+                    String titol;
+                    String contingut = "Data: " + horario.getModificacio().getDiaEntrada() + "/" + horario.getModificacio().getMesEntrada() + " a " + horario.getModificacio().getDiaSalida() + "/" + horario.getModificacio().getMesSalida()
+                            + "\n\nHora entrada: " + String.format(HORES_MINUTS_NEUTRE, horario.getModificacio().getHoraEntrada(), horario.getModificacio().getMinutEntrada())
+                            + "\n\nHora sortida: " + String.format(HORES_MINUTS_NEUTRE, horario.getModificacio().getHoraSalida(), horario.getModificacio().getMinutSalida())
+                            + "\n\nTotal treballat: " + String.format(HORES_MINUTS_NEUTRE, horario.getModificacio().getTotalMinutsTreballats() / 60, horario.getModificacio().getTotalMinutsTreballats() % 60);
+
+                    if (documentSnapshot.getId().contains("afegit")) {
+                        titol = "L'empleat: " + horario.getUsuario().getNom() + " vol afegir el següent registre...";
+                    } else {
+                        titol = "L'empleat: " + horario.getUsuario().getNom() + " vol modificar el següent registre...";
+
+                    }
+
+                    new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText(titol)
+                            .setContentText(contingut)
+                            .setConfirmText("Validar")
+                            .setCancelText("Denegar")
+                            .setConfirmClickListener(sweetAlertDialog -> {
+
+                                Horario temp = horario.getModificacio();
+
+                                temp.setModificacio(null);
+
+                                writeOneDocument(DDBB.collection("horari").document(documentSnapshot.getId()), temp);
+
+                                DDBB.collection("modificacions").document(documentSnapshot.getId()).delete();
+
+                                validacions.getAndDecrement();
+                                System.out.println("VALIDACIONS: " + validacions);
+                                checkValidacions(validacions.get());
+
+                                sweetAlertDialog.dismissWithAnimation();
+                            })
+                            .setCancelClickListener(sweetAlertDialog -> {
+
+                                DDBB.collection("modificacions").document(documentSnapshot.getId()).delete();
+
+                                sweetAlertDialog.dismissWithAnimation();
+                            }).show();
+                }
+            }
+        }
     }
 
 
@@ -249,12 +286,14 @@ public class TreballadorsFragment extends Fragment implements ReadData, WriteDat
             Log.d(TAG, "Error al recuperar varios documentos.");
         }
 
-        ListAdapterTreballadors listAdapter = new ListAdapterTreballadors(listElements, root.getContext(), this::showName);
-        binding.recyclerViewTreballadors.setLayoutManager(new LinearLayoutManager(root.getContext()));
-        binding.recyclerViewTreballadors.setAdapter(listAdapter);
+        if (binding.recyclerViewTreballadors != null) {
+            ListAdapterTreballadors listAdapter = new ListAdapterTreballadors(listElements, root.getContext(), this::showName);
+            binding.recyclerViewTreballadors.setLayoutManager(new LinearLayoutManager(root.getContext()));
+            binding.recyclerViewTreballadors.setAdapter(listAdapter);
 
-        binding.shimmerTreballador.setVisibility(View.GONE);
-        binding.recyclerViewTreballadors.setVisibility(View.VISIBLE);
+            binding.shimmerTreballador.setVisibility(View.GONE);
+            binding.recyclerViewTreballadors.setVisibility(View.VISIBLE);
+        }
 
     }
 

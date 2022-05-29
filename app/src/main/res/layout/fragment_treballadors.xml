@@ -22,6 +22,19 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="SpeakableTextPresentCheck" />
 
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/login_btn"
+        android:elevation="4dp"
+        android:text="0"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"
@@ -30,6 +43,7 @@
         android:layout_marginBottom="8dp"
         android:clickable="true"
         android:src="@drawable/ic_baseline_check_24"
+        android:visibility="gone"
         app:backgroundTint="@color/colorPrimary"
         app:elevation="11dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -432,7 +446,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/rounded_recycler_view"
-        android:elevation="8dp"
+        android:elevation="1dp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
         android:visibility="invisible"

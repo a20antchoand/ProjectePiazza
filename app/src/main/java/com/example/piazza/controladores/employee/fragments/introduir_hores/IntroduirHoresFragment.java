@@ -112,8 +112,6 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     private Horario horarioUsuario;
     private DocumentReference docRefHorari;
     private Context context;
-    private Query query = DDBB.collection("horari")
-            .orderBy("diaEntrada", Query.Direction.DESCENDING);
 
     private Query queryJornada = DDBB.collection("horari")
             .whereEqualTo("estatJornada", false);
@@ -150,7 +148,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         new Handler().postDelayed(checkInternet, 5000);
 
         //Actualitzem el numero de document
-        getMultipldeDocuments(query, this::updateDocumentNumber);
+        getMultipldeDocuments(queryJornada, this::updateDocumentNumber);
 
         //agafem la referencia del document actual
         docRefHorari = DDBB.collection("horari").document(getCurrTimeGMT.zdt.getYear() + "_" + getCurrTimeGMT.zdt.getMonthValue() + "_" + getCurrTimeGMT.zdt.getDayOfMonth() +  "_" + userAuth.getUid() + "_" + numeroDocument);
@@ -366,7 +364,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                     };
                     DatePickerDialog.OnDateSetListener mDateListenerSortida = (view, year, month, day) -> {
                         modificacio.setAnioSalida(year);
-                        modificacio.setMesSalida(month);
+                        modificacio.setMesSalida(month+1);
                         modificacio.setDiaSalida(day);
                         int hourSortida = getCurrTimeGMT.zdt.getHour();
                         int minuteSortida = getCurrTimeGMT.zdt.getMinute();
@@ -383,7 +381,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                         modificacio.setHoraEntrada(hour);
                         modificacio.setMinutEntrada(minute);
                         int year = getCurrTimeGMT.zdt.getYear();
-                        int month = getCurrTimeGMT.zdt.getMonthValue();
+                        int month = getCurrTimeGMT.zdt.getMonthValue()-1;
                         int day = getCurrTimeGMT.zdt.getDayOfMonth();
                         DatePickerDialog mTimePicker;
                         mTimePicker = new DatePickerDialog(context, mDateListenerSortida, year, month, day);//Yes 24 hour time
@@ -393,7 +391,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                     };
                     DatePickerDialog.OnDateSetListener mDateListenerEntrada = (view, year, month, day) -> {
                         modificacio.setAnioEntrada(year);
-                        modificacio.setMesEntrada(month);
+                        modificacio.setMesEntrada(month+1);
                         modificacio.setDiaEntrada(day);
                         LocalDateTime entrada = formatarDateTime(year, month, day, 0, 0);
 
@@ -407,8 +405,8 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                         mTimePicker.show();
                     };
                     int year = getCurrTimeGMT.zdt.getYear();
-                    int month = getCurrTimeGMT.zdt.getMonthValue();
-                    int day = getCurrTimeGMT.zdt.getDayOfMonth();;
+                    int month = getCurrTimeGMT.zdt.getMonthValue()-1;
+                    int day = getCurrTimeGMT.zdt.getDayOfMonth();
                     DatePickerDialog mTimePicker;
                     mTimePicker = new DatePickerDialog(context, mDateListenerEntrada, year, month, day);//Yes 24 hour time
                     mTimePicker.setTitle("Select Time");
@@ -568,6 +566,9 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                 if (horariDocument.getId().contains(userAuth.getUid())) {
                     //modifiquem la referencia del document
                     docRefHorari = horariDocument.getReference();
+
+                    Log.d("REGISTRE: ", "" + docRefHorari.getId());
+
                     //modifiquem el document
                     document = horariDocument;
                     //comprovem la entrada i sortida
@@ -654,11 +655,13 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         long diffMinuts = diff.toMinutes();
         //afegim al horari el total de minuts treballats
         horario.setTotalMinutsTreballats(diffMinuts);
+        changeTextTimeResultat(binding.totalTempsTreballat, horario.getTotalMinutsTreballats()/60, horario.getTotalMinutsTreballats()%60);
         //guardem registre a la BBDD
         GuardarRegistroBBDD();
         return horario;
     }
     public void totalMinutsDiaris(Task<QuerySnapshot> horarisDocuments) {
+        boolean treballant = false;
         //si el resultat es successful
         if (horarisDocuments.isSuccessful() && getCurrTimeGMT.zdt != null) {
             int totalTempsTreballat = 0;
@@ -669,14 +672,14 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                     //Creem l'objecte Horari del registre que hem recuperat
                     Horario horario = historialDocument.toObject(Horario.class);
                     //si el dia de entrada recuperat es el mateix que el dia actual
-                    if (horario.getDiaEntrada() >= getCurrTimeGMT.zdt.getDayOfMonth()) {
-                        //calculem el total de temps treballat
-                        totalTempsTreballat += horario.getTotalMinutsTreballats();
-                    }
+                    //calculem el total de temps treballat
+                    changeTextTimeResultat(binding.totalTempsTreballat, horario.getTotalMinutsTreballats()/60, horario.getTotalMinutsTreballats()%60);
+
+                    treballant = true;
+
                 }
             }
             //mostrem el temps total
-            changeTextTimeResultat(binding.totalTempsTreballat, totalTempsTreballat/60, totalTempsTreballat%60);
         } else {
             Log.d(TAG, "Error al recuperar varios documentos.");
             //demana el temps actual i espera resposta d ela asynk task
@@ -695,6 +698,10 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             });
             //emmagatzema el resultat passant la cadena que hem recuperat a ZonedDateTime
         }
+
+        if (!treballant) {
+            changeTextTimeResultat(binding.totalTempsTreballat, 0, 0);
+        }
     }
     private LocalDateTime formatarDateTime(int anioEntrada, int mesEntrada, int diaEntrada, int horaEntrada, int minutEntrada) {
         LocalDateTime dataEntrada;
@@ -705,7 +712,8 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
     public void changeTextTimeResultat (TextView textView, long hora, long minut) {
         //formatem el text
-        textView.setText(String.format("%01dh %02dm",hora,minut));
+        if (textView != null)
+            textView.setText(String.format("%01dh %02dm",hora,minut));
     }
 
 

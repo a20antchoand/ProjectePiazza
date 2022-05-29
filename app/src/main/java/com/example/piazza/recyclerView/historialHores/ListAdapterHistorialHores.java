@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -58,6 +59,7 @@ public class ListAdapterHistorialHores extends RecyclerView.Adapter<ListAdapterH
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView data, entrada, sortida, total;
+        RelativeLayout rl;
         CardView cv;
 
         ViewHolder(View itemView) {
@@ -66,12 +68,13 @@ public class ListAdapterHistorialHores extends RecyclerView.Adapter<ListAdapterH
             data = itemView.findViewById(R.id.dataTextView);
             entrada = itemView.findViewById(R.id.entradaTextView);
             sortida = itemView.findViewById(R.id.sortidaTextView);
+            rl = itemView.findViewById(R.id.relativeLayoutColor);
             cv = itemView.findViewById(R.id.cv);
         }
 
         void bindData (final ListElementHistorialHores item) {
 
-            String dataStr = String.format("%4d/%02d/%02d",item.getHorario().getAnioEntrada(), item.getHorario().getMesEntrada(), item.getHorario().getDiaEntrada());
+            String dataStr = String.format("%02d/%02d/%4d",item.getHorario().getDiaEntrada(), item.getHorario().getMesEntrada(), item.getHorario().getAnioEntrada());
             String entradaStr = String.format("%d:%02d",item.getHorario().getHoraEntrada(),item.getHorario().getMinutEntrada()) ;
             String sortidaStr = String.format("%d:%02d",item.getHorario().getHoraSalida(), item.getHorario().getMinutSalida());
             String totalFinalStr = String.format("%dh %02dm",item.getHorario().getTotalMinutsTreballats()/60, item.getHorario().getTotalMinutsTreballats()%60);
@@ -82,6 +85,8 @@ public class ListAdapterHistorialHores extends RecyclerView.Adapter<ListAdapterH
             sortida.setText(sortidaStr);
 
             itemView.setOnClickListener(view -> listener.onItemClickListener(item));
+
+            if (item.horario.getModificacio() != null) rl.setBackgroundColor(Color.parseColor("#F5E287"));
 
         }
     }
