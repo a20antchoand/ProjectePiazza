@@ -58,7 +58,7 @@ public class ListAdapterHistorialHores extends RecyclerView.Adapter<ListAdapterH
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView data, entrada, sortida, total;
+        TextView data, total, dia;
         RelativeLayout rl;
         CardView cv;
 
@@ -66,8 +66,7 @@ public class ListAdapterHistorialHores extends RecyclerView.Adapter<ListAdapterH
             super(itemView);
             total = itemView.findViewById(R.id.totalTextView);
             data = itemView.findViewById(R.id.dataTextView);
-            entrada = itemView.findViewById(R.id.entradaTextView);
-            sortida = itemView.findViewById(R.id.sortidaTextView);
+            dia = itemView.findViewById(R.id.txtDia);
             rl = itemView.findViewById(R.id.relativeLayoutColor);
             cv = itemView.findViewById(R.id.cv);
         }
@@ -75,14 +74,11 @@ public class ListAdapterHistorialHores extends RecyclerView.Adapter<ListAdapterH
         void bindData (final ListElementHistorialHores item) {
 
             String dataStr = String.format("%02d/%02d/%4d",item.getHorario().getDiaEntrada(), item.getHorario().getMesEntrada(), item.getHorario().getAnioEntrada());
-            String entradaStr = String.format("%d:%02d",item.getHorario().getHoraEntrada(),item.getHorario().getMinutEntrada()) ;
-            String sortidaStr = String.format("%d:%02d",item.getHorario().getHoraSalida(), item.getHorario().getMinutSalida());
             String totalFinalStr = String.format("%dh %02dm",item.getHorario().getTotalMinutsTreballats()/60, item.getHorario().getTotalMinutsTreballats()%60);
 
             total.setText(totalFinalStr);
             data.setText(dataStr);
-            entrada.setText(entradaStr);
-            sortida.setText(sortidaStr);
+            dia.setText(item.getHorario().getDiaEntrada() + "");
 
             itemView.setOnClickListener(view -> listener.onItemClickListener(item));
 

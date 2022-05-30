@@ -113,8 +113,12 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     private DocumentReference docRefHorari;
     private Context context;
 
+    private Query query = DDBB.collection("horari")
+            .whereEqualTo("diaEntrada", getCurrTimeGMT.zdt.getDayOfMonth());
+
     private Query queryJornada = DDBB.collection("horari")
             .whereEqualTo("estatJornada", false);
+
     public static int numeroDocument = 0;
     private ListenerRegistration registration;
     private FragmentIntroduirHoresBinding binding;
@@ -148,7 +152,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         new Handler().postDelayed(checkInternet, 5000);
 
         //Actualitzem el numero de document
-        getMultipldeDocuments(queryJornada, this::updateDocumentNumber);
+        getMultipldeDocuments(query, this::updateDocumentNumber);
 
         //agafem la referencia del document actual
         docRefHorari = DDBB.collection("horari").document(getCurrTimeGMT.zdt.getYear() + "_" + getCurrTimeGMT.zdt.getMonthValue() + "_" + getCurrTimeGMT.zdt.getDayOfMonth() +  "_" + userAuth.getUid() + "_" + numeroDocument);
@@ -337,6 +341,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                 .setConfirmText("Afegir")
                 .setCancelText("No")
                 .setConfirmClickListener(sDialog -> {
+
                     TimePickerDialog.OnTimeSetListener mTimeListenerSortida =
                             (view, hour, minute) -> {
                         /**
@@ -362,6 +367,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                                         .setTitleText("S'ha enviat la modificació a validar!")
                                         .show();
                     };
+
                     DatePickerDialog.OnDateSetListener mDateListenerSortida = (view, year, month, day) -> {
                         modificacio.setAnioSalida(year);
                         modificacio.setMesSalida(month+1);
@@ -373,6 +379,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                         mTimePicker.setTitle("Select Time");
                         mTimePicker.show();
                     };
+
                     TimePickerDialog.OnTimeSetListener mTimeListenerEntrada =
                             (view, hour, minute) -> {
                         /**
@@ -384,11 +391,17 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                         int month = getCurrTimeGMT.zdt.getMonthValue()-1;
                         int day = getCurrTimeGMT.zdt.getDayOfMonth();
                         DatePickerDialog mTimePicker;
-                        mTimePicker = new DatePickerDialog(context, mDateListenerSortida, year, month, day);//Yes 24 hour time
+
+                        Calendar c = Calendar.getInstance();
+                        c.set(year, month - 1, day, 0, 0);
+
+                                mTimePicker = new DatePickerDialog(context, mDateListenerSortida, year, month, day);//Yes 24 hour time
                                 mTimePicker.setTitle("Select Time");
                                 mTimePicker.setIcon(getResources().getDrawable(R.drawable.lum_soft_02));
+                                mTimePicker.getDatePicker().setMinDate(c.getTimeInMillis());
                                 mTimePicker.show();
                     };
+
                     DatePickerDialog.OnDateSetListener mDateListenerEntrada = (view, year, month, day) -> {
                         modificacio.setAnioEntrada(year);
                         modificacio.setMesEntrada(month+1);
@@ -404,6 +417,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                         mTimePicker.setIcon(getResources().getDrawable(R.drawable.lum_soft_02));
                         mTimePicker.show();
                     };
+
                     int year = getCurrTimeGMT.zdt.getYear();
                     int month = getCurrTimeGMT.zdt.getMonthValue()-1;
                     int day = getCurrTimeGMT.zdt.getDayOfMonth();
@@ -413,6 +427,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                     mTimePicker.setIcon(getResources().getDrawable(R.drawable.lum_soft_02));
                     mTimePicker.show();
                     sDialog.dismissWithAnimation();
+
                 })
                 .setCancelClickListener(sweetAlertDialog -> {
 
@@ -796,10 +811,12 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
     private void updateStatus() {
         try {
 
-            System.out.println("HANDLER");
-            horarioUsuario.setNomUbicacio(nomUbicacio);
-
             getFechaActual(false);
+
+            System.out.println("HANDLER");
+            if (horarioUsuario.getNomUbicacio().equals("") || horarioUsuario.getNomUbicacio() == null)
+                horarioUsuario.setNomUbicacio(nomUbicacio);
+
 
             if (horarioUsuario.getTotalMinutsTreballats() == ((Integer.parseInt(userAuth.getHoresMensuals()) / 4) / Integer.parseInt(userAuth.getDiesSetmana())) * 60L) {
                 Notificacio.Notificar(context, "Portes " + horarioUsuario.getTotalMinutsTreballats() / 60 + ":" + horarioUsuario.getTotalMinutsTreballats() % 60 + " hores treballant", "Recorda marcar la sortida", 2);

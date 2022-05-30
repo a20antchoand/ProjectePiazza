@@ -731,15 +731,33 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
             for (Usuario usuari : listaUsuarios) {
 
+
                 if (usuari.getRol().equals("treballador")) {
+
+                    int total = 0;
 
                     for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult().getDocuments()) {
 
-                        escriuLineaCSV(documentSnapshot, fileWriter, usuari);
+                        Horario temp = documentSnapshot.toObject(Horario.class);
 
+                        if (temp.getUsuario().getUid().equals(usuari.getUid())) {
+                            total += temp.getTotalMinutsTreballats();
+
+                            System.out.println(total + "------->" + temp.getTotalMinutsTreballats());
+
+                            escriuLineaCSV(temp, fileWriter, usuari);
+                        }
                     }
 
+                    fileWriter.append(usuari.getNom());
+                    fileWriter.append(",");
+                    fileWriter.append(",");
+                    fileWriter.append(",");
+                    fileWriter.append(",TOTAL: ");
+                    fileWriter.append(total/60 + ":" + total%60);
+                    fileWriter.append("\n");
 
+                    total = 0;
 
                 }
 
@@ -758,10 +776,12 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
                     .show();
 
         } catch (Exception e) {
+
+            e.printStackTrace();
+
             new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
                     .setTitleText("Error al generar l'informe... \n" + e.getLocalizedMessage())
                     .setConfirmClickListener(l -> {
-                        compartirFitxer(file);
                         l.dismissWithAnimation();
                     })
                     .show();
@@ -785,7 +805,9 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
             for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult().getDocuments()) {
 
-                escriuLineaCSV(documentSnapshot, fileWriter, usuari);
+                Horario horario = documentSnapshot.toObject(Horario.class);
+
+                escriuLineaCSV(horario, fileWriter, usuari);
 
             }
 
@@ -809,11 +831,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
         }
     }
 
-    private void escriuLineaCSV(DocumentSnapshot documentSnapshot, FileWriter fileWriter, Usuario usuari) throws IOException {
-
-        Horario horario = documentSnapshot.toObject(Horario.class);
-
-        if (horario.getUsuario().getUid().equals(usuari.getUid()) && horario.getMesEntrada() == (getCurrTimeGMT.zdt.getMonthValue())) {
+    private void escriuLineaCSV(Horario horario, FileWriter fileWriter, Usuario usuari) throws IOException {
 
             fileWriter.append(usuari.getNom());
             fileWriter.append(",");
@@ -823,9 +841,8 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
             fileWriter.append(",");
             fileWriter.append(horario.getHoraSalida() + ":" + String.format("%02d", horario.getMinutSalida()));
             fileWriter.append(",");
-            fileWriter.append(horario.getTotalMinutsTreballats()/60 + ":" + horario.getTotalMinutsTreballats()%60);
+            fileWriter.append(String.format("%02d:%02d", horario.getTotalMinutsTreballats()/60,horario.getTotalMinutsTreballats()%60));
             fileWriter.append("\n");
-        }
 
     }
 
