@@ -354,7 +354,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                                 //ho passem a minuts
                                 long diffMinuts = diff.toMinutes();
 
-                                if (diffMinuts > 0) {
+                                if (diffMinuts >= 0) {
 
                                     //afegim al horari el total de minuts treballats
                                     modificacio.setTotalMinutsTreballats(diffMinuts);
@@ -369,7 +369,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                                             .show();
                                 } else {
                                     new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
-                                            .setTitleText("Revisa la informació, has posat un registre que queda en negatiu!")
+                                            .setTitleText("Revisa la informació, has posat un registre que queda en negatiu! " + String.format("%01dh %02dm",diffMinuts/60,diffMinuts%60))
                                             .show();
                                 }
                     };
