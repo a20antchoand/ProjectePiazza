@@ -11,4 +11,11 @@
         android:id="@+id/info"
         android:icon="@drawable/lum_soft_09"
         android:title="@string/info"/>
+
+    <item
+        android:id="@+id/validar"
+        android:icon="@drawable/ic_baseline_check_24"
+        android:title="Cart"
+        app:actionLayout="@layout/custom_action_item_layout"
+        app:showAsAction="always"/>
 </menu>

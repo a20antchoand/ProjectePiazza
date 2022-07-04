@@ -111,6 +111,8 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
     private void setup() {
 
+        Log.d("MES_VALOR", "" + getCurrTimeGMT.zdt.getMonthValue());
+
         pedirPermisos();
 
         // Application of the Array to the Spinner
@@ -211,7 +213,9 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
                     Horario temp = documentSnapshot.toObject(Horario.class);
 
-                    if (temp != null && temp.getUsuario() != null) {
+                    System.out.println(binding.spnTreballador.getSelectedItem());
+
+                    if (temp.getUsuario().getUid() != null) {
                         if (temp.getUsuario().getUid().equals(usuari.getUid())
                                 && temp.getMesEntrada() == getCurrTimeGMT.zdt.getMonthValue()
                                 && temp.getAnioEntrada() == getCurrTimeGMT.zdt.getYear()) {
@@ -220,6 +224,8 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
                             registres.add(temp);
 
+                        } else {
+                            System.out.println("temp uid es null: " + documentSnapshot.getId());
                         }
                     }
                 }
@@ -331,16 +337,16 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
             System.out.println("DIA: " + temp.getDiaEntrada() + " DIA ANY: " + temp.getDiaAny() + " >= " + (getCurrTimeGMT.zdt.getDayOfYear() - documentsRecuperar));
 
-            if (temp.getUsuario().getUid().equals(usuari.getUid())
-                    && temp.getDiaAny() >= (getCurrTimeGMT.zdt.getDayOfYear() - documentsRecuperar)) {
+            if (temp.getUsuario().getUid() != null) {
+                if (temp.getUsuario().getUid().equals(usuari.getUid())
+                        && temp.getDiaAny() >= (getCurrTimeGMT.zdt.getDayOfYear() - documentsRecuperar)) {
 
-                horesTreballades += temp.getTotalMinutsTreballats();
+                    horesTreballades += temp.getTotalMinutsTreballats();
 
-                registres.add(temp);
+                    registres.add(temp);
 
-
+                }
             }
-
         }
 
         mostrarInformacioOpcio(usuari, horesTreballades, horesMensuals, registres);
@@ -442,25 +448,26 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
             Horario temp = documentSnapshot.toObject(Horario.class);
 
-            if (temp.getUsuario().getUid().equals(usuari.getUid())) {
+            if (temp.getUsuario().getUid() != null) {
+                if (temp.getUsuario().getUid().equals(usuari.getUid())) {
 
-                Date data = null;
-                try {
-                    data = new SimpleDateFormat("yyyy-MM-dd").parse(temp.getAnioEntrada() + "-" + temp.getMesEntrada() + "-" + temp.getDiaEntrada());
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                    Date data = null;
+                    try {
+                        data = new SimpleDateFormat("yyyy-MM-dd").parse(temp.getAnioEntrada() + "-" + temp.getMesEntrada() + "-" + temp.getDiaEntrada());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (data.after(min) && data.before(max) || data.compareTo(min) == 0 || data.compareTo(max) == 0) {
+
+                        horesTreballades += temp.getTotalMinutsTreballats();
+                        registres.add(temp);
+
+                    }
+
+
                 }
-
-                if (data.after(min) && data.before(max) || data.compareTo(min) == 0 || data.compareTo(max) == 0) {
-
-                    horesTreballades += temp.getTotalMinutsTreballats();
-                    registres.add(temp);
-
-                }
-
-
             }
-
         }
 
         mostrarInformacioPersonalitzada(usuari, horesTreballades, horesMensuals, registres);
@@ -724,6 +731,8 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
         path.mkdir();
 
+        int mesSeleccionat = getCurrTimeGMT.zdt.getMonthValue();
+
         try {
             FileWriter fileWriter = new FileWriter(file);
 
@@ -740,10 +749,8 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
 
                         Horario temp = documentSnapshot.toObject(Horario.class);
 
-                        if (temp.getUsuario().getUid().equals(usuari.getUid())) {
+                        if (temp.getUsuario().getUid().equals(usuari.getUid()) && temp.getMesEntrada() == mesSeleccionat) {
                             total += temp.getTotalMinutsTreballats();
-
-                            System.out.println(total + "------->" + temp.getTotalMinutsTreballats());
 
                             escriuLineaCSV(temp, fileWriter, usuari);
                         }
@@ -754,7 +761,7 @@ public class ReportsFragment extends Fragment implements ReadData, WriteData, Au
                     fileWriter.append(",");
                     fileWriter.append(",");
                     fileWriter.append(",TOTAL: ");
-                    fileWriter.append(total/60 + ":" + total%60);
+                    fileWriter.append(total/60 + ":" + String.format("%02d", total%60));
                     fileWriter.append("\n");
 
                     total = 0;

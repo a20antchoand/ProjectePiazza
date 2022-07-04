@@ -8,6 +8,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -39,6 +41,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.StorageReference;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -75,7 +78,9 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
                     .addOnSuccessListener(bytes -> logo.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length)));
 
             /*toolbar.setBackgroundColor(getResources().getColor(R.color.start_btn));*/
+            toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_baseline_menu_24));
 
+            toolbar.setNavigationIcon(R.drawable.ic_baseline_menu_24);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayUseLogoEnabled(true);
@@ -126,6 +131,7 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
             e.printStackTrace();
             startActivity(new Intent(this, SplashScreen.class));
         }
+
     }
 
     private int getFirstTimeRun() {
@@ -146,7 +152,7 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.ajustes_menu, menu);
+        getMenuInflater().inflate(R.menu.ajustes_menu_employee, menu);
         return true;
     }
 

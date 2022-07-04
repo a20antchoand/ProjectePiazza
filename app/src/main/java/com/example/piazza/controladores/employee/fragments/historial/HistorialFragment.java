@@ -38,7 +38,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -92,6 +94,8 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
         //Iniciem un handler
         startRepeatingTask();
 
+
+
     }
 
     public void setElements(Task<QuerySnapshot> histrorialsDocuments) {
@@ -106,7 +110,7 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
                     //Creem l'objecte Historial que hem rcuperat del document
                     Horario horario = historialDocument.toObject(Horario.class);
                     //si la jornada esta acabada
-                    if (horario.isEstatJornada() && horario.getDiaEntrada() != -1)
+                    if (horario.getMesEntrada() == getCurrTimeGMT.zdt.getMonthValue() && horario.isEstatJornada() && horario.getDiaEntrada() != -1)
                         //creem l'item de la recycler view i l'afegim a un array list d'elements
                         listElements.add(bindDataElementHistorial(horario, historialDocument.getId()));
                 }
@@ -183,12 +187,13 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
                         LocalDateTime dataEntrada = LocalDateTime.of(modificacio.getAnioEntrada(), modificacio.getMesEntrada(), modificacio.getDiaEntrada(), modificacio.getHoraEntrada(), modificacio.getMinutEntrada());
                         LocalDateTime dataSalida = LocalDateTime.of(modificacio.getAnioSalida(), modificacio.getMesSalida(), modificacio.getDiaSalida(), modificacio.getHoraSalida(), modificacio.getMinutSalida());
 
-                            //calculem la diferencia entre entrada i sortida
-                            Duration diff = Duration.between(dataEntrada, dataSalida);
+                        //calculem la diferencia entre entrada i sortida
+                        Duration diff = Duration.between(dataEntrada, dataSalida);
 
-                            //ho passem a minuts
-                            long diffMinuts = diff.toMinutes();
+                        //ho passem a minuts
+                        long diffMinuts = diff.toMinutes();
 
+                        if (diffMinuts > 0) {
                             //afegim al horari el total de minuts treballats
                             modificacio.setTotalMinutsTreballats(diffMinuts);
 
@@ -197,15 +202,20 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
 
                             modificacio.setEstatJornada(true);
 
-                        horario.setModificacio(modificacio);
+                            horario.setModificacio(modificacio);
 
-                        writeOneDocument(DDBB.collection("modificacions").document(listElementHistorialHores.getId()),horario);
-                        writeOneDocument(DDBB.collection("horari").document(listElementHistorialHores.getId()),horario);
+                            writeOneDocument(DDBB.collection("modificacions").document(listElementHistorialHores.getId()), horario);
+                            writeOneDocument(DDBB.collection("horari").document(listElementHistorialHores.getId()), horario);
 
-                        new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
-                                .setTitleText("S'ha enviat la modificació a validar!")
-                                .show();
+                            new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
+                                    .setTitleText("S'ha enviat la modificació a validar!")
+                                    .show();
+                        } else {
+                            new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
+                                    .setTitleText("Revisa la informació, has posat un registre que queda en negatiu!")
+                                    .show();
 
+                        }
                         binding.recyclerViewHistorial.getAdapter().notifyDataSetChanged();
                     };
 

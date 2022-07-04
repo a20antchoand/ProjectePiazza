@@ -76,14 +76,6 @@ public class TreballadorsFragment extends Fragment implements ReadData, WriteDat
             firstLoad = false;
         }, 5000);
 
-        getMultipldeDocuments(DDBB.collection("modificacions"), this::checkValidacions);
-
-        binding.button2.setStateListAnimator(null);
-
-        binding.button2.setOnClickListener(l -> {
-            getMultipldeDocuments(DDBB.collection("modificacions"), this::mostrarValidacions);
-        });
-
         binding.pararJornada.setOnClickListener(l -> {
             new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
                     .setTitleText("Parar jornada general")
@@ -135,93 +127,6 @@ public class TreballadorsFragment extends Fragment implements ReadData, WriteDat
 
     }
 
-    private void checkValidacions(Task<QuerySnapshot> querySnapshotTask) {
-
-        int size = 0;
-
-        for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult()) {
-
-            Horario temp = documentSnapshot.toObject(Horario.class);
-
-            if (temp.getUsuario().getEmpresa().equals(userAuth.getEmpresa()))
-                size++;
-
-        }
-
-        if (!querySnapshotTask.getResult().isEmpty()) {
-            binding.button2.setVisibility(View.VISIBLE);
-            binding.button2.setText(""+size);
-        } else {
-            binding.button2.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    private void checkValidacions(int size) {
-        if (size > 0) {
-            binding.button2.setVisibility(View.VISIBLE);
-            binding.button2.setText(size + "");
-        } else {
-            binding.button2.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    private void mostrarValidacions(Task<QuerySnapshot> querySnapshotTask) {
-
-        AtomicInteger validacions = new AtomicInteger(querySnapshotTask.getResult().size());
-
-        if (!querySnapshotTask.getResult().isEmpty()) {
-
-            checkValidacions(querySnapshotTask);
-
-            for (DocumentSnapshot documentSnapshot : querySnapshotTask.getResult().getDocuments()) {
-                Horario horario = documentSnapshot.toObject(Horario.class);
-                if (horario.getUsuario().getEmpresa().equals(userAuth.getEmpresa()) && horario.getModificacio() != null) {
-                    String HORES_MINUTS_NEUTRE = "%01dh:%02dm";
-
-                    String titol;
-                    String contingut = "Data: " + horario.getModificacio().getDiaEntrada() + "/" + horario.getModificacio().getMesEntrada() + " a " + horario.getModificacio().getDiaSalida() + "/" + horario.getModificacio().getMesSalida()
-                            + "\n\nHora entrada: " + String.format(HORES_MINUTS_NEUTRE, horario.getModificacio().getHoraEntrada(), horario.getModificacio().getMinutEntrada())
-                            + "\n\nHora sortida: " + String.format(HORES_MINUTS_NEUTRE, horario.getModificacio().getHoraSalida(), horario.getModificacio().getMinutSalida())
-                            + "\n\nTotal treballat: " + String.format(HORES_MINUTS_NEUTRE, horario.getModificacio().getTotalMinutsTreballats() / 60, horario.getModificacio().getTotalMinutsTreballats() % 60);
-
-                    if (documentSnapshot.getId().contains("afegit")) {
-                        titol = "L'empleat: " + horario.getUsuario().getNom() + " vol afegir el següent registre...";
-                    } else {
-                        titol = "L'empleat: " + horario.getUsuario().getNom() + " vol modificar el següent registre...";
-
-                    }
-
-                    new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText(titol)
-                            .setContentText(contingut)
-                            .setConfirmText("Validar")
-                            .setCancelText("Denegar")
-                            .setConfirmClickListener(sweetAlertDialog -> {
-
-                                Horario temp = horario.getModificacio();
-
-                                temp.setModificacio(null);
-
-                                writeOneDocument(DDBB.collection("horari").document(documentSnapshot.getId()), temp);
-
-                                DDBB.collection("modificacions").document(documentSnapshot.getId()).delete();
-
-                                validacions.getAndDecrement();
-                                System.out.println("VALIDACIONS: " + validacions);
-                                checkValidacions(validacions.get());
-
-                                sweetAlertDialog.dismissWithAnimation();
-                            })
-                            .setCancelClickListener(sweetAlertDialog -> {
-
-                                DDBB.collection("modificacions").document(documentSnapshot.getId()).delete();
-
-                                sweetAlertDialog.dismissWithAnimation();
-                            }).show();
-                }
-            }
-        }
-    }
 
 
     private void mostrarCampModificat(Task<QuerySnapshot> querySnapshotTask) {

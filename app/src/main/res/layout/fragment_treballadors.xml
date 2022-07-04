@@ -31,7 +31,7 @@
         android:background="@drawable/login_btn"
         android:elevation="4dp"
         android:text="0"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -58,6 +58,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/rounded_recycler_view"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/recyclerViewTreballadors"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -447,8 +448,6 @@
         android:layout_marginEnd="16dp"
         android:background="@drawable/rounded_recycler_view"
         android:elevation="1dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

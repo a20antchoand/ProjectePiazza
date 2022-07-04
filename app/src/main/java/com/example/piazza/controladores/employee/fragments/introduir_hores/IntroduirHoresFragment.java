@@ -251,6 +251,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
     }
 
+    @SuppressLint("MissingPermission")
     public boolean checkLocationPermission () {
 
         if (ContextCompat.checkSelfPermission(context,
@@ -311,9 +312,6 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
             case R.id.introduirJornada:
                 introduirRegistre();
-                break;
-            case R.id.gestionarChat:
-                gestionarChat();
                 break;
 
         }
@@ -786,7 +784,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
         public void run() {
 
             ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(getActivity().CONNECTIVITY_SERVICE);
-            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            @SuppressLint("MissingPermission") NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
             if (networkInfo != null && networkInfo.isConnected())
                 System.out.println("INTERNET OK");
@@ -814,7 +812,7 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
             getFechaActual(false);
 
             System.out.println("HANDLER");
-            if (horarioUsuario.getNomUbicacio().equals("") || horarioUsuario.getNomUbicacio() == null)
+            if (horarioUsuario.getNomUbicacio() == null)
                 horarioUsuario.setNomUbicacio(nomUbicacio);
 
 
@@ -844,11 +842,19 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
 
                 acabarJornadaAutomatic(binding.imageView6);
                 Notificacio.Notificar(context, "T'has oblidat de fitxar?", userAuth.getNom() + " hem detectat que has treballat mes del que et toca. Hem adaptat la jornada a les hores que has de treballar. Si ha estat un error pots modificar el registre.", 2);
+
+                System.out.println("UPDATE - ACABAR");
+
             } else {
+                System.out.println("UPDATE - CONTINUAR");
+
                 handlerIntroduirHores.postDelayed(mStatusChecker, mInterval);
             }
 
         } catch (Exception e) {
+
+            e.printStackTrace();
+
         }
     }
 
