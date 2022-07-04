@@ -353,17 +353,25 @@ public class IntroduirHoresFragment extends Fragment implements ReadData, WriteD
                                 Duration diff = Duration.between(dataEntrada, dataSalida);
                                 //ho passem a minuts
                                 long diffMinuts = diff.toMinutes();
-                                //afegim al horari el total de minuts treballats
-                                modificacio.setTotalMinutsTreballats(diffMinuts);
-                                modificacio.setUsuario(userAuth);
-                                modificacio.setEstatJornada(true);
-                                horari.setModificacio(modificacio);
-                                String docRef = getCurrTimeGMT.zdt.getYear() + "_" + getCurrTimeGMT.zdt.getMonthValue() + "_" + getCurrTimeGMT.zdt.getDayOfMonth() +  "_" + userAuth.getUid() + "_afegit_" + Calendar.getInstance().getTimeInMillis();
-                                writeOneDocument(DDBB.collection("horari").document(docRef),horari);
-                                writeOneDocument(DDBB.collection("modificacions").document(docRef),horari);
-                                new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
-                                        .setTitleText("S'ha enviat la modificació a validar!")
-                                        .show();
+
+                                if (diffMinuts > 0) {
+
+                                    //afegim al horari el total de minuts treballats
+                                    modificacio.setTotalMinutsTreballats(diffMinuts);
+                                    modificacio.setUsuario(userAuth);
+                                    modificacio.setEstatJornada(true);
+                                    horari.setModificacio(modificacio);
+                                    String docRef = getCurrTimeGMT.zdt.getYear() + "_" + getCurrTimeGMT.zdt.getMonthValue() + "_" + getCurrTimeGMT.zdt.getDayOfMonth() + "_" + userAuth.getUid() + "_afegit_" + Calendar.getInstance().getTimeInMillis();
+                                    writeOneDocument(DDBB.collection("horari").document(docRef), horari);
+                                    writeOneDocument(DDBB.collection("modificacions").document(docRef), horari);
+                                    new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
+                                            .setTitleText("S'ha enviat el nou registre a validar!")
+                                            .show();
+                                } else {
+                                    new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
+                                            .setTitleText("Revisa la informació, has posat un registre que queda en negatiu!")
+                                            .show();
+                                }
                     };
 
                     DatePickerDialog.OnDateSetListener mDateListenerSortida = (view, year, month, day) -> {
