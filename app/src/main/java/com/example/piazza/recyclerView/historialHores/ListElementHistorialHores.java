@@ -8,10 +8,12 @@ public class ListElementHistorialHores implements Serializable {
 
     Horario horario;
     String id;
+    int diaSetmana;
 
-    public ListElementHistorialHores(Horario horario, String id) {
+    public ListElementHistorialHores(Horario horario, String id, int diaSetmana) {
         this.horario = horario;
         this.id = id;
+        this.diaSetmana = diaSetmana;
     }
 
     public Horario getHorario() {
@@ -28,5 +30,13 @@ public class ListElementHistorialHores implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public int getDiaSetmana() {
+        return diaSetmana;
+    }
+
+    public void setDiaSetmana(int diaSetmana) {
+        this.diaSetmana = diaSetmana;
     }
 }

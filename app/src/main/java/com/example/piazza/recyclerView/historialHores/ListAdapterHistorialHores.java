@@ -17,7 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.piazza.commons.OnSwipeTouchListener;
 import com.example.testauth.R;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ListAdapterHistorialHores extends RecyclerView.Adapter<ListAdapterHistorialHores.ViewHolder> {
 
@@ -58,7 +60,7 @@ public class ListAdapterHistorialHores extends RecyclerView.Adapter<ListAdapterH
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView data, total, dia;
+        TextView data, total, dia, missatge;
         RelativeLayout rl;
         CardView cv;
 
@@ -69,20 +71,41 @@ public class ListAdapterHistorialHores extends RecyclerView.Adapter<ListAdapterH
             dia = itemView.findViewById(R.id.txtDia);
             rl = itemView.findViewById(R.id.relativeLayoutColor);
             cv = itemView.findViewById(R.id.cv);
+            missatge = itemView.findViewById(R.id.missatgeValidar);
         }
 
         void bindData (final ListElementHistorialHores item) {
+
+            Map<Integer, String> diaSetmanaString = new HashMap<>();
+            diaSetmanaString.put(1, "DIUMENGE");
+            diaSetmanaString.put(2, "DILLUNS");
+            diaSetmanaString.put(3, "DIMARTS");
+            diaSetmanaString.put(4, "DIMECRES");
+            diaSetmanaString.put(5, "DIJOUS");
+            diaSetmanaString.put(6, "DIVENDRES");
+            diaSetmanaString.put(7, "DISSABTE");
 
             String dataStr = String.format("%02d/%02d/%4d",item.getHorario().getDiaEntrada(), item.getHorario().getMesEntrada(), item.getHorario().getAnioEntrada());
             String totalFinalStr = String.format("%dh %02dm",item.getHorario().getTotalMinutsTreballats()/60, item.getHorario().getTotalMinutsTreballats()%60);
 
             total.setText(totalFinalStr);
-            data.setText(dataStr);
+            data.setText(diaSetmanaString.get(item.getDiaSetmana()) + " " + dataStr);
             dia.setText(item.getHorario().getDiaEntrada() + "");
 
             itemView.setOnClickListener(view -> listener.onItemClickListener(item));
 
-            if (item.horario.getModificacio() != null) rl.setBackgroundColor(Color.parseColor("#F5E287"));
+            if (item.horario.getModificacio() != null) {
+                if (item.horario.getModificacio().getDiaEntrada() == -1) {
+                    rl.setBackgroundColor(Color.parseColor("#FF0000"));
+                    missatge.setText("L'administrador ha denegat la teva solicitud, torna-ho a demanar si ho creus necessari!");
+                    missatge.setVisibility(View.VISIBLE);
+                } else {
+                    rl.setBackgroundColor(Color.parseColor("#F5E287"));
+                    missatge.setText("Registre pendent de validar per l'administrador!");
+                    missatge.setVisibility(View.VISIBLE);
+                }
+
+            }
 
         }
     }

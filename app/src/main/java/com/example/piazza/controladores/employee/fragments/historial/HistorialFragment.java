@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.example.piazza.classes.Horario;
+import com.example.piazza.classes.MonthYearPickerDialog;
 import com.example.piazza.controladores.auth.SplashScreen;
 import com.example.piazza.fireBase.data.ReadData;
 import com.example.piazza.fireBase.data.WriteData;
@@ -39,7 +41,9 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 
@@ -48,9 +52,14 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class HistorialFragment extends Fragment implements ReadData, WriteData, AuthUserSession{
 
     private int mInterval = 5000; // 5 seconds by default, can be changed later
+
+    public int mesSeleccionat, anioSeleccionat;
+
     public static Handler HandlerHistorial = new Handler();
 
     private int horaEntrada, minutEntrada, horaSortida, minutSortida;
+
+    private Map<Integer, String> mesosString = new HashMap<>();
 
     private static final String TAG = "HistorialFragment: ";
     private FragmentHistorialBinding binding;
@@ -77,10 +86,30 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
             startActivity(new Intent(getActivity(), SplashScreen.class));
         }
 
+
+
         return root;
     }
 
     private void setup() {
+
+        mesosString.put(1, "GENER");
+        mesosString.put(2, "FEBRER");
+        mesosString.put(3, "MARÇ");
+        mesosString.put(4, "ABRIL");
+        mesosString.put(5, "MAIG");
+        mesosString.put(6, "JUNY");
+        mesosString.put(7, "JULIOL");
+        mesosString.put(8, "AGOST");
+        mesosString.put(9, "SEPTEMBRE");
+        mesosString.put(10, "OCTUBRE");
+        mesosString.put(11, "NOVEMBRE");
+        mesosString.put(12, "DECEMBRE");
+
+        anioSeleccionat = getCurrTimeGMT.zdt.getYear();
+        mesSeleccionat = getCurrTimeGMT.zdt.getMonthValue();
+
+        binding.mesString.setText(mesosString.get(getCurrTimeGMT.zdt.getMonthValue()) + " de " + anioSeleccionat);
 
         //Recorrem tots els registres horaris
         getMultipldeDocuments(query, this::setElements);
@@ -94,12 +123,30 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
         //Iniciem un handler
         startRepeatingTask();
 
+        binding.imageButton4.setOnClickListener(l -> {
+            MonthYearPickerDialog pd = new MonthYearPickerDialog();
+            pd.setListener((view, year, month, dayOfMonth) -> {
+            anioSeleccionat = year;
+            mesSeleccionat = month;
+            //Recorrem tots els registres horaris
+            getMultipldeDocuments(query, this::setElements);
+            //Recorrem tots els registres horaris
+            getMultipldeDocuments(query, this::calcularHoresTreballades);
 
+            binding.mesString.setText(mesosString.get(month) + " de " + year);
+
+        });
+
+        pd.show(getFragmentManager(), "MonthYearPickerDialog");
+        });
 
     }
 
     public void setElements(Task<QuerySnapshot> histrorialsDocuments) {
 
+        Calendar cal = Calendar.getInstance();
+
+        listElements.clear();
         //si el resultat es successful
         if (histrorialsDocuments.isSuccessful()) {
 
@@ -109,10 +156,13 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
                 if (historialDocument.getId().contains(userAuth.getUid())) {
                     //Creem l'objecte Historial que hem rcuperat del document
                     Horario horario = historialDocument.toObject(Horario.class);
+                    cal.set(horario.getAnioEntrada(), horario.getMesEntrada() - 1, horario.getDiaEntrada());
+
                     //si la jornada esta acabada
-                    if (horario.getMesEntrada() == getCurrTimeGMT.zdt.getMonthValue() && horario.isEstatJornada() && horario.getDiaEntrada() != -1)
+                    if (horario.getMesEntrada() == mesSeleccionat && horario.getAnioEntrada() == anioSeleccionat && horario.isEstatJornada() && horario.getDiaEntrada() != -1)
+
                         //creem l'item de la recycler view i l'afegim a un array list d'elements
-                        listElements.add(bindDataElementHistorial(horario, historialDocument.getId()));
+                        listElements.add(bindDataElementHistorial(horario, historialDocument.getId(), cal.get(Calendar.DAY_OF_WEEK)));
                 }
             }
 
@@ -150,6 +200,7 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
         binding.cvResidu.setVisibility(View.VISIBLE);
         binding.cvHoresMensuals.setVisibility(View.VISIBLE);
         binding.horesTreballadesTotal.setVisibility(View.VISIBLE);
+        binding.constraintLayout2.setVisibility(View.VISIBLE);
 
         //Creem l'adaptador de la recyclerview
         ListAdapterHistorialHores listAdapter = new ListAdapterHistorialHores(listElements, root.getContext(), this::modificarRegistre);
@@ -335,6 +386,8 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
         //mostrem un titol dient que no tens registres junt amb una imatge
         binding.shimmerLayout.setVisibility(View.INVISIBLE);
 
+        binding.titolHistorial.append(" A DATA DE: " + mesosString.get(mesSeleccionat) + " DE " + anioSeleccionat);
+
         binding.titolHistorial.setVisibility(View.VISIBLE);
         binding.imatgeHistorial.setVisibility(View.VISIBLE);
         binding.recyclerViewHistorial.setVisibility(View.GONE);
@@ -347,12 +400,14 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
         binding.cvHoresMensuals.setVisibility(View.GONE);
         binding.cvResidu.setVisibility(View.GONE);
         binding.horesTreballadesTotal.setVisibility(View.GONE);
+        binding.constraintLayout4.setVisibility(View.GONE);
+        binding.divider8.setVisibility(View.GONE);
 
     }
 
-    private ListElementHistorialHores bindDataElementHistorial(Horario horario, String id) {
+    private ListElementHistorialHores bindDataElementHistorial(Horario horario, String id, int diaSetmana) {
 
-        return new ListElementHistorialHores(horario, id);
+        return new ListElementHistorialHores(horario, id, diaSetmana);
 
     }
 
@@ -369,7 +424,7 @@ public class HistorialFragment extends Fragment implements ReadData, WriteData, 
                     //creem l'objecte Horario recuperat del document
                     Horario horario = historialDocument.toObject(Horario.class);
                     //comprovem si el document és del mes actual
-                    if (horario.getMesEntrada() == getCurrTimeGMT.zdt.getMonthValue())
+                    if (horario.getMesEntrada() == mesSeleccionat && horario.getAnioEntrada() == anioSeleccionat)
                         //sumem els minuts totals treballats
                         totalTempsMes += horario.getTotalMinutsTreballats();
 

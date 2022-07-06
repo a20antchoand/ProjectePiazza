@@ -80,7 +80,6 @@ public class EmployeeActivity extends AppCompatActivity implements AuthUserSessi
             /*toolbar.setBackgroundColor(getResources().getColor(R.color.start_btn));*/
             toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_baseline_menu_24));
 
-            toolbar.setNavigationIcon(R.drawable.ic_baseline_menu_24);
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayUseLogoEnabled(true);

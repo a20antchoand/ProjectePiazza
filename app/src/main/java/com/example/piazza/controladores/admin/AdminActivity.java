@@ -23,6 +23,7 @@ import com.example.testauth.R;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -44,6 +45,8 @@ public class AdminActivity extends AppCompatActivity implements AuthUserSession,
     private ActivityAdminBinding binding;
     TextView textCartItemCount;
     int mCartItemCount = 10;
+    public MenuItem menuItem;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +70,7 @@ public class AdminActivity extends AppCompatActivity implements AuthUserSession,
             storageRef.getBytes(1024 * 1024)
                     .addOnSuccessListener(bytes -> logo.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length)));
 
+            toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_baseline_menu_24));
 
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -105,19 +109,14 @@ public class AdminActivity extends AppCompatActivity implements AuthUserSession,
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.ajustes_menu, menu);
 
-        final MenuItem menuItem = menu.findItem(R.id.validar);
+        menuItem = menu.findItem(R.id.validar);
 
         View actionView = menuItem.getActionView();
         textCartItemCount = actionView.findViewById(R.id.cart_badge);
 
         getMultipldeDocuments(DDBB.collection("modificacions"), this::setupBadge);
 
-        actionView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onOptionsItemSelected(menuItem);
-            }
-        });
+        actionView.setOnClickListener(v -> onOptionsItemSelected(menuItem));
 
         return true;
     }
@@ -135,13 +134,13 @@ public class AdminActivity extends AppCompatActivity implements AuthUserSession,
 
         }
 
-        if (!querySnapshotTask.getResult().isEmpty()) {
+        if (size > 0) {
             textCartItemCount.setText(""+size);
             textCartItemCount.setVisibility(View.VISIBLE);
-            System.out.println("VISIBLE");
+            menuItem.setVisible(true);
         } else {
             textCartItemCount.setVisibility(View.INVISIBLE);
-            System.out.println("INVISIBLE");
+            menuItem.setVisible(false);
         }
 
     }
@@ -152,10 +151,13 @@ public class AdminActivity extends AppCompatActivity implements AuthUserSession,
             textCartItemCount.setVisibility(View.VISIBLE);
             textCartItemCount.bringToFront();
             textCartItemCount.setText(size + "");
-            System.out.println("VISIBLE 2");
+
+            menuItem.setVisible(true);
+
         } else {
             textCartItemCount.setVisibility(View.INVISIBLE);
-            System.out.println("INVISIBLE 2");
+            menuItem.setVisible(false);
+
         }
     }
 
@@ -208,7 +210,13 @@ public class AdminActivity extends AppCompatActivity implements AuthUserSession,
                             })
                             .setCancelClickListener(sweetAlertDialog -> {
 
+                                horario.setModificacio(new Horario());
+
                                 DDBB.collection("modificacions").document(documentSnapshot.getId()).delete();
+                                writeOneDocument(DDBB.collection("horari").document(documentSnapshot.getId()), horario);
+
+                                validacions.getAndDecrement();
+                                setupBadge(validacions.get());
 
                                 sweetAlertDialog.dismissWithAnimation();
                             }).show();

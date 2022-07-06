@@ -59,4 +59,6 @@
     <string name="guardar">Guardar</string>
     <string name="string_guardar">GUARDAR</string>
     <string name="info">Informació</string>
+    <string name="ok">OK</string>
+    <string name="cancel">CANCEL</string>
 </resources>
